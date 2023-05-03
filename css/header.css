@@ -1,0 +1,109 @@
+.logo-image {
+    width: 100px;
+    height: 80px;
+    background-image: url("public/assets/logo2.jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    /* transform: scale(1.2); */
+    transform: rotate(45deg) scale(1.2);
+    margin-right: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.logo-image:hover {
+    background-color: transparent;
+}
+.logo-container {
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+}
+/*--------header------------------*/
+header{
+	position: fixed;
+	/* top: 5%; */
+    top: 0;
+	left: 7%;
+	width: 85vw;
+	height: 80px;
+	padding: 1rem;
+	z-index: 101;
+	transition: .3s;
+	box-shadow: var(--box-shadow);
+	background-image: linear-gradient(to top, rgba(255,255,255,0.9), rgba(255,255,255,0.3)),
+	 url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg');
+	 /* url('https://media.istockphoto.com/photos/healthy-food-background-picture-id515273512'); */
+	 /* url('https://media.istockphoto.com/photos/organic-food-background-and-copy-space-picture-id516490448'); */
+
+	/* background-image: url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg'); */
+	/* background-image: url('https://i0.wp.com/sociallover.net/wp-content/uploads/2018/12/wood5.png'); */
+}
+header.scrolled {
+    top: 0;
+    box-shadow: 0 5px 20px 0.1px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+}
+.header.scrolled a:hover{
+	color: var(--green);
+}
+.flex{
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	position: relative;
+	margin: 0 auto;
+}
+.navbar a{
+	margin: 0 1rem;
+	font-size: 1rem;
+	color: #000;
+	text-transform: uppercase;
+}
+.navbar a:hover{
+	color: var(--green);
+	text-decoration: underline;
+}
+.header .icons{
+	display: flex;
+}
+.header .icons i{
+	margin-left: 1rem;
+	font-size: 1.5rem;
+	cursor: pointer;
+	color: #000!important;
+}
+#menu-btn{
+	display: none;
+}
+.header .user-box {
+    position: absolute;
+    top: 120%;
+    right: 0rem;
+    background: rgb(255 255 255 / 80%);
+    box-shadow: var(--box-shadow);
+    border-radius: .5rem;
+    padding: 1rem;
+    text-align: center;
+    width: 20rem;
+    transform: scale(0);
+    transform-origin: top right;
+    line-height: 2;
+}
+.header .user-box .btn{
+	border-radius: .5rem;
+	padding: 0 1.5rem;
+}
+.logout-btn{
+	background: #000;
+	color: #fff;
+	text-transform: uppercase;
+	width: 11rem;
+	border-radius: .5rem;
+	margin: .5rem 0;
+	padding: .5rem 0;
+}
+.header .user-box.active{
+	transform: scale(1.0);
+	transition: .2s linear;
+}
