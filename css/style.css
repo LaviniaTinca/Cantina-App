@@ -23,9 +23,10 @@
   body{
     /* background-image: url("public/assets/logo2.jpg"); */
     /* background-image: url('public/assets/body-bg.jpg'); */
-    /* background-image: url('body-bg.jpg'); */
+    /* background-image: url('image/body-bg.jpg'); */
     background-image: url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg');
-    background-size: cover;
+    /* background-image: url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg'); */
+    background-size: auto;
     width: 100%;
   }
         .main{
@@ -38,6 +39,119 @@
     overflow: auto; 
     min-height: 100vh;
   }
+
+/* -------auth------- */
+
+    /* login container */
+
+    .Container{
+      width: cover;
+      height: 80vh;
+      padding: 20px;
+      gap: 20px;
+      align-items: center;
+      background: linear-gradient(
+          rgba(255, 255, 255, 0.2),
+          rgba(255, 255, 255, 0.2)
+        ),
+        url("https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg")
+        /* url("https://cdn8.dissolve.com/p/D2115_120_316/D2115_120_316_1200.jpg") */
+          center;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  
+  .Container .wrapper{
+      width: 25%;
+      padding: 20px;
+      background-color: transparent;
+  }
+  
+  /* .wrapper div {
+    display: inline-block;
+    vertical-align: top;
+  } */
+
+  .Container .grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 20px;
+  }
+
+  .Container h1{
+      font-size: 24px;
+      font-weight:700;
+      color: var(--teal);
+      margin-bottom: 20px;
+  }
+  
+  .Form{
+      display: flex;
+      flex-direction: column;
+  }
+  
+  .Container input{
+      flex: 1;
+      min-width: 40%;
+      margin: 5px 0;
+      padding: 10px;
+      background-color: transparent;
+  }
+  
+  .Container .button{
+      width: 40%;
+      border: none;
+      padding: 15px 20px;
+      background-color: #008080;
+      color: white;
+      cursor: pointer;
+      margin-bottom: 10px;
+  }
+  
+  .Container  a {
+      margin: 5px 0px;
+      font-size: 14px;
+      text-decoration: underline;
+      cursor: pointer;
+      color: teal;
+  }
+  
+  .Container .button:hover {
+      background-color: #067a65;
+    }
+
+  /* validate forms*/
+  .error {
+      color: red;
+      margin-left: 10px;
+    }
+    .valid {
+      color: green;
+      margin-left: 10px;
+    }
+
+    .password-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+    
+    #show-password {
+      margin-left: 10px;
+      padding: 5px 10px;
+      border: none;
+      background-color: #008080;
+      color: white;
+      cursor: pointer;
+    }
+    
+    #show-password:hover {
+      background-color: #067a65;
+    }
+    
+  /* ------------END AUTH------------- */
     
   
     .message{
@@ -523,6 +637,18 @@ height:100%;
   .show-all-products {
     margin-bottom: 1rem;
   }
+
+  .review-table {
+    color: var(--green);
+  }
+  .review-table td, th {
+    border: none;
+  }
+  .review-table th {
+    background-color: transparent;
+    color: var(--green);
+  }
+
   .toggle-reviews-btn {
     background-color: #4CAF50;
     color: white;

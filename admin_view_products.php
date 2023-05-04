@@ -87,7 +87,7 @@ if (isset($_POST['add_product'])) {
 }
 
 
-//delete user without image in the table
+//delete product without image in the table
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
     try {
@@ -309,7 +309,7 @@ if (isset($_POST['update_product2'])) {
                                     <input type="submit" name="add_product" value="Add Product">
                                 </form>
                             </section>
-                            <!-- SHOW TABLE PRODUCTS WITH SORT AND ORDER-->
+                            <!-- SHOW TABLE PRODUCTS WITH SORT AND FILTER-->
                             <section>
                                 <div class="product-table-container">
                                     <table id="product-table" class="product-table">
@@ -405,6 +405,8 @@ if (isset($_POST['update_product2'])) {
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
     <script src="script.js"></script>
 
 </body>

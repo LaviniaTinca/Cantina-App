@@ -61,21 +61,30 @@ if (isset($_POST['logout'])) {
                     </div>
                     <div class="content">
                         <div class="todo" style="color: teal">
+                            <h3>GENERAL</h3>
+                            <div class="todo-list" style="color: red; margin-left: 1rem">
+                                <p>la add folosesc aceleasi clase peste to: add-product, add-products pt toggle. Nu stiu de ce nu imi ia daca schimb numele, voiam element/s</p>
+                                <p>de stilizat formularele pt add si edit product/ user</p>
+                                <p>de stilizat sidebar + icons</p>
+                                <p>admin_product, admin_user si register_OLD sunt in plus, de vazut daca au functii pt stocare imagine mai bune</p>
+
+                            </div>
+                            <hr>
                             <h3>PRODUCT SECTION</h3>
                             <div class="todo-list" style="color: red; margin-left: 1rem">
                                 <p>de stilizat formularele pt add si edit product</p>
-                                <p>de stilizat sidebar + icons</p>
                             </div>
                             <hr>
                             <h3>CUSTOMER SECTION</h3>
                             <div class="todo-list" style="color: red; margin-left: 1rem">
-                                <p>REFORMATARE</p>
-
+                                <p>de stilizat formularele pt add si edit user</p>
+                                <p>toggle reviews nu merge dinamic dupa ce filtrez, desi mergea , dupa filtrare le deschide pe toate</p>
+                                <p>you should replace unique_id() with a function that generates a unique identifier for each user. This can be achieved using functions like uniqid() or uuid_create(), depending on your requirements.</p>
                             </div>
                             <hr>
                             <h3>AUTH SECTION</h3>
                             <div class="todo-list" style="color: red; margin-left: 1rem">
-                                <p>register reformatare</p>
+                                <p>HASH PASSWORD -> la edit trebuie sa schimb si parola + confirmare ca sa editez</p>
 
                             </div>
                         </div>
@@ -84,10 +93,13 @@ if (isset($_POST['logout'])) {
                 </div>
             </div>
         </section>
+        <!-- //END MAIN -->
     </div>
 
     <!-- SCRIPT SECTION -->
     <script src="script.js"></script>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
 
 </body>
 
