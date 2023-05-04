@@ -389,7 +389,6 @@ height:100%;
   margin-left: 200px;
   height: 100%;
   flex-grow: 1;
-  /* display: flex; */
 }
 
 .panel-container.title2 {
@@ -400,13 +399,16 @@ height:100%;
   box-shadow: var(--box-shadow);
 }
 
-.panel-container .title2 a {
-  color: var(--light-green);
+.panel-container a {
+  color: var(--green);
 }
 
 .panel-container .content {
   padding: 2rem;
   flex-grow: 1;
+}
+.content h2{
+  color: var(--green);
 }
 
 
@@ -447,3 +449,130 @@ height:100%;
   flex-grow: 1;
   padding: 20px;
 } */
+
+
+
+
+/* ----------------admin show card--------------- */
+.show-products{
+  position:relative;
+  /* margin-top: -3.5rem; */
+}
+.show-products::before{
+  top: -100px;
+}
+.show-products .box-container{
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+.box-container .box img{
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.edit, .delete{
+  color: #000;
+  padding: .5rem 1.5rem;
+  text-transform: capitalize;
+  line-height: 2;
+}
+
+
+/* ------------admin table section for products------------ */
+
+  .product-table-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem;
+    padding: 2rem;
+    box-shadow: 0 0 1rem var(--olive);
+  }
+  
+  .product-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .product-table th,
+  .product-table td {
+    padding: 0.5rem;
+    text-align: center;
+    border: 1px solid rgb(223, 235, 247);
+  }
+
+  .product-table td img {
+    max-width: 100px;
+    height: auto;
+  }
+  
+  .product-table th {
+    background-color: var(--green);
+    color: white;
+  }
+  
+  .product-table tbody tr:hover {
+    background-color: var(--light-green);
+  }
+
+  .product-table .edit {
+    color: var(--teal);
+  }
+  .product-table .delete {
+    color: rgb(233, 102, 51);
+  }
+  
+  .show-all-products {
+    margin-bottom: 1rem;
+  }
+  .toggle-reviews-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 8px;
+  }
+  
+  .toggle-reviews-btn:hover {
+    /* background-color: olivedrab; */
+    background-color: #3e8e41;
+  }
+
+
+
+  
+  /* ------------------admin update product---------- */
+  .update_container{
+    position:fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1100;
+    padding: 2rem;
+    align-items: center;
+    justify-content: center;
+    display: none;
+    flex-direction: column;
+  }
+  .update_container form{
+    box-shadow: var(--box-shadow);
+    width: 50%;
+    background: #fff;
+    padding: 1rem;
+    margin: 2rem auto;
+    text-align: center;
+  }
+  .update_container .edit, .btn{
+    width: 40%;
+    cursor: pointer;
+  }
+  .update_container form img{
+    width: 200px;
+    height: auto;
+  }
+  

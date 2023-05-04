@@ -1,117 +1,115 @@
-<?php 
- include 'php/connection.php';
- session_start();
- if (isset($_SESSION['user_id'])) {
-		$user_id = $_SESSION['user_id'];
-	}else{
-		$user_id = '';
-	}
+<?php
+include 'php/connection.php';
+session_start();
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+} else {
+    $user_id = '';
+}
 
-	if (!isset($_SESSION['user_id'])){
-        header('location:login.php');
-    }
+if (!isset($_SESSION['user_id'])) {
+    header('location:login.php');
+}
 
-	if (isset($_POST['logout'])) {
-		session_destroy();
-		header("location: login.php");
-	}
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header("location: login.php");
+}
 
-    //adding products to database
-    if (isset($_POST['add_product'])){
-        // $product_name = mysqli_real_escape_string($conn, $_POST['name']);
-        // $product_detail = mysqli_real_escape_string($conn, $_POST['detail']);
-        // $product_price = mysqli_real_escape_string($conn, $_POST['price']);
-        // $image = $_FILES['image']['name'];
-        // $image_size = $_FILES['image']['size'];
-        // $image_tmp_name = $_FILES['image']['tmp_name'];
-        // $image_folder = 'image/'.$image;
+//adding products to database
+// if (isset($_POST['add_product'])) {
+//     $product_name = mysqli_real_escape_string($conn, $_POST['name']);
+//     $product_detail = mysqli_real_escape_string($conn, $_POST['detail']);
+//     $product_price = mysqli_real_escape_string($conn, $_POST['price']);
+//     $image = $_FILES['image']['name'];
+//     $image_size = $_FILES['image']['size'];
+//     $image_tmp_name = $_FILES['image']['tmp_name'];
+//     $image_folder = 'image/' . $image;
 
-        // $query1 = "SELECT name FROM `products` WHERE name = '$product_name'";
-        // $select_product_name = mysqli_query($conn, $query1) or die ('query failed');
-        // if (mysqli_num_rows($select_product_name)>0){
-        //     $message[] ='product name already exist';
-        // }else{
-        //     $query2 = "INSERT INTO `products`(`name`, `price`, `product_detail`, `image`) VALUES ('$product_name', '$product_price', '$product_detail', '$image')";
-        //     $insert_product = mysqli_query($conn, $query2) or die ('query failed');
-        //     if ($insert_product){
-        //         if ($image_size>2000000){
-        //             $message[] = 'image size is too large';
-        //         }else{
-        //             move_uploaded_file($image_tmp_name, $image_folder);
-        //             $message[] = 'product added successfully';
-        //         }
-        //     }
-        // }
+//     $query1 = "SELECT name FROM `products` WHERE name = '$product_name'";
+//     $select_product_name = mysqli_query($conn, $query1) or die('query failed');
+//     if (mysqli_num_rows($select_product_name) > 0) {
+//         $message[] = 'product name already exist';
+//     } else {
+//         $query2 = "INSERT INTO `products`(`name`, `price`, `product_detail`, `image`) VALUES ('$product_name', '$product_price', '$product_detail', '$image')";
+//         $insert_product = mysqli_query($conn, $query2) or die('query failed');
+//         if ($insert_product) {
+//             if ($image_size > 2000000) {
+//                 $message[] = 'image size is too large';
+//             } else {
+//                 move_uploaded_file($image_tmp_name, $image_folder);
+//                 $message[] = 'product added successfully';
+//             }
+//         }
+//     }
 
-        //filter by category  this should be in the html
-        // $category = "category_name"; // Replace with the name of the category you want to filter by
+//     //filter by category  this should be in the html
+//     // $category = "category_name"; // Replace with the name of the category you want to filter by
 
-        // $query = "SELECT * FROM `products` WHERE `category` = '$category'";
-        // $select_products = mysqli_query($conn, $query) or die ('query failed');
-    }
-    //delete products from database
-    //delete user without image in the table
-    if (isset($_GET['delete'])) {
-        $delete_id = $_GET['delete'];
-        try {
-            $query = "SELECT image FROM `products` WHERE id = ?";
+//     // $query = "SELECT * FROM `products` WHERE `category` = '$category'";
+//     // $select_products = mysqli_query($conn, $query) or die ('query failed');
+// }
+//delete products from database
+//delete user without image in the table
+if (isset($_GET['delete'])) {
+    $delete_id = $_GET['delete'];
+    try {
+        $query = "SELECT image FROM `products` WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$delete_id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            unlink('image/' . $result['image']);
+
+            $query = "DELETE FROM `products` WHERE id = ?";
             $stmt = $conn->prepare($query);
             $stmt->execute([$delete_id]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-            if ($result) {
-                unlink('image/'.$result['image']);
 
-                $query = "DELETE FROM `products` WHERE id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->execute([$delete_id]);
-        
-                $query = "DELETE FROM `wishlist` WHERE user_id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->execute([$delete_id]);
+            $query = "DELETE FROM `wishlist` WHERE user_id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute([$delete_id]);
 
-                $query = "DELETE FROM `cart` WHERE id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->execute([$delete_id]);
-            }
-        
-            header('location: admin_user.php');
-        } catch (PDOException $e) {
-            echo "Error deleting product: " . $e->getMessage();
-            
+            $query = "DELETE FROM `cart` WHERE id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute([$delete_id]);
         }
-        
+
+        header('location: admin_user.php');
+    } catch (PDOException $e) {
+        echo "Error deleting product: " . $e->getMessage();
     }
+}
 
-    //update product
-    // if (isset($_POST['update_product'])){
-    //     $update_id = $_POST['update_id'];
-    //     $update_name = $_POST['update_name'];
-    //     $update_detail = $_POST['update_detail'];
-    //     $update_price = $_POST['update_price'];
-    //     $update_image = $_FILES['update_image']['name'];
-    //     $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
-    //     $update_image_folder = 'image/'.$update_image;
+//update product
+// if (isset($_POST['update_product'])){
+//     $update_id = $_POST['update_id'];
+//     $update_name = $_POST['update_name'];
+//     $update_detail = $_POST['update_detail'];
+//     $update_price = $_POST['update_price'];
+//     $update_image = $_FILES['update_image']['name'];
+//     $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
+//     $update_image_folder = 'image/'.$update_image;
 
-    //     $query1 = "UPDATE `products` SET `id`='$update_id', `name`='$update_name', `price`='$update_price', `product_detail`='$update_detail',
-    //                 `image`='$update_image' where id = '$update_id'";
-    //     $update_query = mysqli_query($conn, $query1) or die ('query failed');
-    //     if ($update_query){
-    //         move_uploaded_file($update_image_tmp_name, $update_image_folder);
-    //         header('location: admin_product.php');
-    //     }
-    // }
+//     $query1 = "UPDATE `products` SET `id`='$update_id', `name`='$update_name', `price`='$update_price', `product_detail`='$update_detail',
+//                 `image`='$update_image' where id = '$update_id'";
+//     $update_query = mysqli_query($conn, $query1) or die ('query failed');
+//     if ($update_query){
+//         move_uploaded_file($update_image_tmp_name, $update_image_folder);
+//         header('location: admin_product.php');
+//     }
+// }
 
-    //update product
-    //update product
-if (isset($_POST['update_product'])){
+//update product
+//update product
+if (isset($_POST['update_product'])) {
     $update_id = $_POST['update_id'];
     $update_name = $_POST['update_name'];
     $update_detail = $_POST['update_detail'];
     $update_price = $_POST['update_price'];
     $update_image = $_FILES['update_image']['name'];
     $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
-    $update_image_folder = 'image/'.$update_image;
+    $update_image_folder = 'image/' . $update_image;
 
     try {
         $conn->beginTransaction();
@@ -121,7 +119,7 @@ if (isset($_POST['update_product'])){
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($result && !empty($update_image)) {
-            unlink('image/'.$result['image']);
+            unlink('image/' . $result['image']);
             move_uploaded_file($update_image_tmp_name, $update_image_folder);
 
             $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=?, `image`=? WHERE id = ?";
@@ -142,8 +140,8 @@ if (isset($_POST['update_product'])){
 }
 
 
-    //update product with validation, shoud add old image and transaction
-if (isset($_POST['update_product2'])){
+//update product with validation, shoud add old image and transaction
+if (isset($_POST['update_product2'])) {
     $update_id = $_POST['update_id'];
     $update_name = $_POST['update_name'];
     $update_detail = $_POST['update_detail'];
@@ -174,7 +172,7 @@ if (isset($_POST['update_product2'])){
 
     $update_image = $_FILES['update_image']['name'];
     $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
-    $update_image_folder = 'image/'.$update_image;
+    $update_image_folder = 'image/' . $update_image;
 
     try {
         $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=?, `image`=? WHERE `id`=?";
@@ -202,6 +200,7 @@ if (isset($_POST['update_product2'])){
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -273,6 +272,7 @@ if (isset($_POST['update_product2'])){
     </style> -->
     <title>admin_product</title>
 </head>
+
 <body>
     <?php include 'components/admin/header.php'; ?>
 
@@ -280,22 +280,22 @@ if (isset($_POST['update_product2'])){
         <div class="detail">
             <h1>Admin Dashboard</h1>
             <?php
-                if (isset($message))
-                {
-                    foreach ($message as $message)
-                    {
-                        echo '
+            if (isset($message)) {
+                foreach ($message as $message) {
+                    echo '
                             <div class="message">
-                                <span>'.$message.'</span>
+                                <span>' . $message . '</span>
                                 <i class = "bi bi-x-circle" onclick="this.parentElement.remove()"></i>
                             </div> 
                         ';
-                    }
                 }
+            }
             ?>
         </div>
         <!-- Add Product Button/Link -->
-        <a href="#" id="add-product-btn"><h1>Add Product</h1></a>
+        <a href="#" id="add-product-btn">
+            <h1>Add Product</h1>
+        </a>
 
         <!-- Add Product Section (initially hidden) -->
         <section class="add-products Container" style="display: none; background-image:none">
@@ -325,32 +325,32 @@ if (isset($_POST['update_product2'])){
         <section class="show-products">
             <div class="box-container">
                 <?php
-                    $query = "SELECT * FROM `products`";
-                    $stmt = $conn->prepare($query);
-                    $stmt->execute();
-                    $fetch_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $query = "SELECT * FROM `products`";
+                $stmt = $conn->prepare($query);
+                $stmt->execute();
+                $fetch_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    if (!empty($products)){
-                        foreach($fetch_products as $product) {
+                if (!empty($products)) {
+                    foreach ($fetch_products as $product) {
                 ?>
-                <div class="box">
-                    <img src="image/<?php  echo $product['image']; ?>" alt="product image">
-                    <p>price : <?php echo $product['price']; ?> lei</p>
-                    <h4><?php echo $product['name']; ?></h4>
-                    <details> <?php echo $product['product_detail']; ?> </details>
-                    <a href="admin_product.php?edit=<?php echo $product['id'];?>" class="edit">edit</a>
-                    <a href="admin_product.php?delete=<?php echo $product['id'];?>" class="delete" onclick="
+                        <div class="box">
+                            <img src="image/<?php echo $product['image']; ?>" alt="product image">
+                            <p>price : <?php echo $product['price']; ?> lei</p>
+                            <h4><?php echo $product['name']; ?></h4>
+                            <details> <?php echo $product['product_detail']; ?> </details>
+                            <a href="admin_product.php?edit=<?php echo $product['id']; ?>" class="edit">edit</a>
+                            <a href="admin_product.php?delete=<?php echo $product['id']; ?>" class="delete" onclick="
                         return confirm('You really want to delete this product?'); ">delete</a>
-                </div>
-                <?php 
-                        }
-                    }else{
-                        echo '
+                        </div>
+                <?php
+                    }
+                } else {
+                    echo '
                             <div class="empty">
                                 <p>no products added yet</p>
                             </div>
                         ';
-                    }
+                }
                 ?>
             </div>
         </section>
@@ -358,9 +358,11 @@ if (isset($_POST['update_product2'])){
 
 
     <!-- SHOW TABLE PRODUCTS WITH SORT AND ORDER-->
-    <a href="#" id="show-product-btn" ><h1>Show all products with search and order</h1></a>
+    <a href="#" id="show-product-btn">
+        <h1>Show all products with search and order</h1>
+    </a>
     <input type="text" id="search-input" placeholder="Search by keyword...">
-    <section >
+    <section>
         <div class="product-table-container">
             <table id="product-table" class="product-table">
                 <thead>
@@ -374,7 +376,7 @@ if (isset($_POST['update_product2'])){
                     </tr>
                 </thead>
                 <tbody>
-                <?php
+                    <?php
                     $query = "SELECT * FROM `products`";
                     $stmt = $conn->prepare($query);
                     $stmt->execute();
@@ -383,7 +385,7 @@ if (isset($_POST['update_product2'])){
                     if (count($fetch_products) > 0) {
                         foreach ($fetch_products as $product) {
                     ?>
-                            <tr >
+                            <tr>
                                 <td><?php echo $product['image']; ?></td>
                                 <td><?php echo $product['name']; ?></td>
                                 <td><?php echo $product['price']; ?></td>
@@ -413,43 +415,43 @@ if (isset($_POST['update_product2'])){
     <hr>
     <!-- EDIT PRODUCT SECTION -->
     <section class="update-container">
-    <?php 
-    if (isset($_GET['edit'])) {
-        $edit_id = $_GET['edit'];
-        $query = "SELECT * FROM `products` WHERE id = '$edit_id'";
-        $stmt = $conn->prepare($query);
-        $stmt->execute();
-        // Get the number of rows returned by the SELECT statement
-        $num_rows = $stmt->rowCount();
+        <?php
+        if (isset($_GET['edit'])) {
+            $edit_id = $_GET['edit'];
+            $query = "SELECT * FROM `products` WHERE id = '$edit_id'";
+            $stmt = $conn->prepare($query);
+            $stmt->execute();
+            // Get the number of rows returned by the SELECT statement
+            $num_rows = $stmt->rowCount();
 
-        if ($num_rows > 0) {
-            while ($fetch_edit = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    ?>
-    <div class="form-container">
-        <form action="" method="post" enctype="multipart/form-data">
-            <img src="image/<?php echo $fetch_edit['image'];?>" alt="product to be edited">
-            <input type="hidden" name="update_id" value="<?php echo $fetch_edit['id'];?>"><br>
-            <label for="name">Name:</label>
-            <input type="text" name="update_name" value="<?php echo $fetch_edit['name'];?>">
-            <label for="price">Price:</label>
-            <input type="number" name="update_price" min="0" value="<?php echo $fetch_edit['price'];?>">
-            <label for="product_detail">Product Detail:</label>
-            <textarea name="update_detail"><?php echo $fetch_edit['product_detail'];?></textarea>
-            <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png, image/webp">
-            <div class="button-container">
-                <input type="submit" name="update_product" value="Update" class="edit" onclick="closeForm()">
-                <button type="button" class="close-btn" onclick="closeForm()">Close</button>
-            </div>
-        </form>
-    </div>
-    <?php
+            if ($num_rows > 0) {
+                while ($fetch_edit = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        ?>
+                    <div class="form-container">
+                        <form action="" method="post" enctype="multipart/form-data">
+                            <img src="image/<?php echo $fetch_edit['image']; ?>" alt="product to be edited">
+                            <input type="hidden" name="update_id" value="<?php echo $fetch_edit['id']; ?>"><br>
+                            <label for="name">Name:</label>
+                            <input type="text" name="update_name" value="<?php echo $fetch_edit['name']; ?>">
+                            <label for="price">Price:</label>
+                            <input type="number" name="update_price" min="0" value="<?php echo $fetch_edit['price']; ?>">
+                            <label for="product_detail">Product Detail:</label>
+                            <textarea name="update_detail"><?php echo $fetch_edit['product_detail']; ?></textarea>
+                            <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png, image/webp">
+                            <div class="button-container">
+                                <input type="submit" name="update_product" value="Update" class="edit" onclick="closeForm()">
+                                <button type="button" class="close-btn" onclick="closeForm()">Close</button>
+                            </div>
+                        </form>
+                    </div>
+        <?php
+                }
+            } else {
+                //no results found
             }
-        }else{
-            //no results found
         }
-    }
-    ?>
-</section>
+        ?>
+    </section>
 
 
 
@@ -472,38 +474,38 @@ if (isset($_POST['update_product2'])){
     </form> -->
 
 
-<script>
-    var addProductBtn = document.getElementById('add-product-btn');
-    var addProductSection = document.querySelector('.add-products');
+    <script>
+        var addProductBtn = document.getElementById('add-product-btn');
+        var addProductSection = document.querySelector('.add-products');
 
-    addProductBtn.addEventListener('click', function() {
-        if (addProductSection.style.display === 'none') {
-            addProductSection.style.display = 'block';
-        } else {
-            addProductSection.style.display = 'none';
-        }
-    });
+        addProductBtn.addEventListener('click', function() {
+            if (addProductSection.style.display === 'none') {
+                addProductSection.style.display = 'block';
+            } else {
+                addProductSection.style.display = 'none';
+            }
+        });
 
-    var showProductBtn = document.getElementById('show-product-btn');
-    var showProductSection = document.querySelector('.show-all-products');
+        var showProductBtn = document.getElementById('show-product-btn');
+        var showProductSection = document.querySelector('.show-all-products');
 
-    showProductBtn.addEventListener('click', function() {
-        if (showProductSection.style.display === 'none') {
-            showProductSection.style.display = 'block';
-        } else {
-            showProductSection.style.display = 'none';
-        }
-    });
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $(document).ready(function() {
-    $("#show-product-btn").click(function() {
-      $(".product-table-container").toggle();
-    });
-  });
-</script>
-<!-- <script>
+        showProductBtn.addEventListener('click', function() {
+            if (showProductSection.style.display === 'none') {
+                showProductSection.style.display = 'block';
+            } else {
+                showProductSection.style.display = 'none';
+            }
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#show-product-btn").click(function() {
+                $(".product-table-container").toggle();
+            });
+        });
+    </script>
+    <!-- <script>
   $(document).ready(function() {
     $("#filter-form").submit(function(e) {
       e.preventDefault();
@@ -522,21 +524,21 @@ if (isset($_POST['update_product2'])){
     });
   });
 </script> -->
-<script>
-    $(document).ready(function() {
-    // Hide the reviews table by default
-    $(".review-table").hide();
-    
-    // Add a click event listener to the toggle button
-    $("#toggle-reviews-btn").click(function() {
-        // Toggle the visibility of the reviews table
-        $(".review-table").toggle();
-        //     $(this).next(".review-table").toggle(); //this is to set a unique id but something is not working properly
+    <script>
+        $(document).ready(function() {
+            // Hide the reviews table by default
+            $(".review-table").hide();
 
-    });
-    });
-</script>
-<!-- <script>
+            // Add a click event listener to the toggle button
+            $("#toggle-reviews-btn").click(function() {
+                // Toggle the visibility of the reviews table
+                $(".review-table").toggle();
+                //     $(this).next(".review-table").toggle(); //this is to set a unique id but something is not working properly
+
+            });
+        });
+    </script>
+    <!-- <script>
   const closeBtn = document.querySelector('.close-btn');
   const updateContainer = document.querySelector('.update-container');
 
@@ -544,7 +546,7 @@ if (isset($_POST['update_product2'])){
     updateContainer.style.display = 'none';
   });
 </script> -->
-<!-- <script>
+    <!-- <script>
     // select the elements
 const updateContainer = document.querySelector('.update-container');
 const closeButton = document.querySelector('.update-container .close-btn');
@@ -561,7 +563,7 @@ if (updateContainer && closeButton) {
   }
 }
 </script> -->
-<!-- <script>
+    <!-- <script>
     const updateContainer = document.querySelector('.update-container');
     const closeButton = document.querySelector('.close-btn');
     const updateButton = document.querySelector('.edit');
@@ -573,7 +575,7 @@ if (updateContainer && closeButton) {
     });
     updateContainer.style.display = 'flex';
 </script> -->
-<!-- <script>
+    <!-- <script>
   document.addEventListener("click", function(event) {
     var updateContainer = document.querySelector('.update-container');
     var formContainer = document.querySelector('.form-container');
@@ -582,64 +584,64 @@ if (updateContainer && closeButton) {
     }
   });
 </script> -->
-<!-- <script>
+    <!-- <script>
     function closeForm() {
         document.querySelector('.update-container').style.display = 'none';
         location.reload();
     }
 </script> -->
-<script>
-    $(document).ready(function() {
-        //for the image popup
-        // Show popup when the image is clicked
-        $(".form-container img").on("click", function() {
-            $("#popup-image").attr("src", $(this).attr("src"));
-            $("#popup-container").fadeIn();
+    <script>
+        $(document).ready(function() {
+            //for the image popup
+            // Show popup when the image is clicked
+            $(".form-container img").on("click", function() {
+                $("#popup-image").attr("src", $(this).attr("src"));
+                $("#popup-container").fadeIn();
+            });
+
+            // Close popup when the close button is clicked
+            $(".close-popup-btn").on("click", function() {
+                $("#popup-container").fadeOut();
+            });
+
+            // Close popup when the update button is clicked
+            $(".edit").on("click", function() {
+                $("#popup-container").fadeOut();
+            });
         });
 
-        // Close popup when the close button is clicked
-        $(".close-popup-btn").on("click", function() {
-            $("#popup-container").fadeOut();
+        //to show the edit popup
+        $(document).ready(function() {
+            $('.edit-btn').click(function(e) {
+                e.preventDefault(); // prevent form submission
+                $('#edit-form-container').show(); // display the popup
+            });
         });
 
-        // Close popup when the update button is clicked
-        $(".edit").on("click", function() {
-            $("#popup-container").fadeOut();
-        });
-    });
+        //Add jQuery code to handle the close button click event and hide the popup
+        $(document).ready(function() {
+            $('.edit-btn').click(function(e) {
+                e.preventDefault(); // prevent form submission
+                $('#edit-form-container').show(); // display the popup
+            });
 
-    //to show the edit popup
-    $(document).ready(function() {
-        $('.edit-btn').click(function(e) {
-            e.preventDefault(); // prevent form submission
-            $('#edit-form-container').show(); // display the popup
-        });
-    });
-
-    //Add jQuery code to handle the close button click event and hide the popup
-    $(document).ready(function() {
-        $('.edit-btn').click(function(e) {
-            e.preventDefault(); // prevent form submission
-            $('#edit-form-container').show(); // display the popup
+            $('#close-btn').click(function() {
+                $('#edit-form-container').hide(); // hide the popup
+            });
         });
 
-        $('#close-btn').click(function() {
-            $('#edit-form-container').hide(); // hide the popup
-        });
-    });
 
+        ///fade in and out, maybe duplicate see above
+        $(document).ready(function() {
+            $('#edit-btn').click(function() {
+                $('#popup-container').fadeIn();
+            });
 
-    ///fade in and out, maybe duplicate see above
-    $(document).ready(function(){
-        $('#edit-btn').click(function(){
-            $('#popup-container').fadeIn();
+            $('.close-btn').click(function() {
+                $('#popup-container').fadeOut();
+            });
         });
-        
-        $('.close-btn').click(function(){
-            $('#popup-container').fadeOut();
-        });
-    });
-</script>
+    </script>
 
     <!-- for sorting and searching -->
     <!-- <script>
@@ -677,9 +679,9 @@ if (updateContainer && closeButton) {
 
         });
     </script> -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- <script>
+    <!-- <script>
     // PENTRU TABELUL IN PLUS PE CARE INCERC SA APLIC SORTARE
     $(document).ready(function() {
 
@@ -721,8 +723,9 @@ if (updateContainer && closeButton) {
     });
 
 </script> -->
-<script src="script.js"></script>
+    <script src="script.js"></script>
 
 
 </body>
+
 </html>

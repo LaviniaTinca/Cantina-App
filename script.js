@@ -16,7 +16,38 @@ userBtn.addEventListener('click', function(){
 
 // --homepage slider---
 
-//sortable table
+// --visibility of add element button--JQuery  
+
+$(document).ready(function() {
+    $("#add-product-btn").click(function() {
+        $(".add-products").toggle();
+    });
+});
+
+// $(document).ready(function() {
+//     $("#show-product-btn").click(function() {
+//         $(".product-table-container").toggle();
+//     });
+// });
+
+
+//toggle nested table review
+$(document).ready(function() {
+    // Hide the reviews table by default
+    $(".review-table").hide();
+
+    // Add a click event listener to the toggle button
+    $("#toggle-reviews-btn").click(function() {
+        // Toggle the visibility of the reviews table
+        $(".review-table").toggle();
+        //     $(this).next(".review-table").toggle(); //this is to set a unique id but something is not working properly
+
+    });
+});
+
+  
+
+//sortable table -- JQuery
 $(document).ready(function() {
 
     // Search by keyword

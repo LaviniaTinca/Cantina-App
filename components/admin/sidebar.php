@@ -8,18 +8,18 @@
     </li>
     <li>
       <i class="bx bxs-user" id="user-btn" style="color: #556b2f"></i>
-      <a href="#">Dashboard</a>
+      <a href="admin.php">Dashboard</a>
     </li>
     <li>
       <i class="bx bxs-user" style="color: #556b2f" id="user-btn"></i>
-      <a href="#">Products</a>
+      <a href="admin_view_products.php">Products</a>
       <ul>
         <li><a href="#">. Add Product</a></li>
         <li><a href="admin_view_products.php">. View Products</a></li>
       </ul>
     </li>
     <li> <i class="bx bxs-user" style="color: var(--dark-olive)" id="user-btn"></i>
-      <a href="#">Customers</a>
+      <a href="admin_user.php">Customers</a>
     </li>
     <li><a href="#">Orders</a></li>
     <li><a href="#">Orders</a></li>

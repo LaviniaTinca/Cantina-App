@@ -26,7 +26,6 @@ if (isset($_POST['logout'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/header.css">
     <!-- <link rel="stylesheet" href="css/styleMainAdmin.css"> -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
@@ -61,7 +60,26 @@ if (isset($_POST['logout'])) {
                         <a href="admin.php" style="color: var(--green);">admin </a><span>/ dashboard</span>
                     </div>
                     <div class="content">
-                        <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam pretium, leo non eleifend sollicitudin, justo nibh pulvinar eros, nec dapibus nunc enim nec nulla. Aenean vitae varius ex. Quisque at vestibulum elit, ut aliquet ipsum. Duis efficitur suscipit felis, sed pellentesque est fringilla vel. Ut eleifend ligula sit amet nibh tempor aliquet. Proin lacinia, quam vel commodo bibendum, sapien sapien bibendum ante, sed semper tellus arcu id ipsum. Aliquam dignissim, nisl a tempus tristique, velit augue elementum nunc, vel pretium orci sapien eget lacus. Vestibulum ac mauris lectus. Nullam tristique vel augue quis elementum. Donec euismod purus nec libero pretium, in tempor felis pretium. Ut euismod varius aliquet. Duis ut pulvinar velit.</p>
+                        <div class="todo" style="color: teal">
+                            <h3>PRODUCT SECTION</h3>
+                            <div class="todo-list" style="color: red; margin-left: 1rem">
+                                <p>de stilizat formularele pt add si edit product</p>
+                                <p>de stilizat sidebar + icons</p>
+                            </div>
+                            <hr>
+                            <h3>CUSTOMER SECTION</h3>
+                            <div class="todo-list" style="color: red; margin-left: 1rem">
+                                <p>REFORMATARE</p>
+
+                            </div>
+                            <hr>
+                            <h3>AUTH SECTION</h3>
+                            <div class="todo-list" style="color: red; margin-left: 1rem">
+                                <p>register reformatare</p>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
