@@ -84,6 +84,7 @@ if (isset($_POST['logout'])) {
                 </div>
             </div>
         </section>
+        <!-- //END MAIN -->
     </div>
 
     <!-- SCRIPT SECTION -->

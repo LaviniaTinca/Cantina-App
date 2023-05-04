@@ -23,9 +23,10 @@
   body{
     /* background-image: url("public/assets/logo2.jpg"); */
     /* background-image: url('public/assets/body-bg.jpg'); */
-    /* background-image: url('body-bg.jpg'); */
+    /* background-image: url('image/body-bg.jpg'); */
     background-image: url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg');
-    background-size: cover;
+    /* background-image: url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg'); */
+    background-size: auto;
     width: 100%;
   }
         .main{
@@ -523,6 +524,18 @@ height:100%;
   .show-all-products {
     margin-bottom: 1rem;
   }
+
+  .review-table {
+    color: var(--green);
+  }
+  .review-table td, th {
+    border: none;
+  }
+  .review-table th {
+    background-color: transparent;
+    color: var(--green);
+  }
+
   .toggle-reviews-btn {
     background-color: #4CAF50;
     color: white;

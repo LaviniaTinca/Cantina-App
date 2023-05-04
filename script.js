@@ -13,8 +13,19 @@ userBtn.addEventListener('click', function(){
     userBox.classList.toggle('active')
 })
 
-
+//RUN TO SECTION
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelector(this.getAttribute('href')).scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  });
+  
 // --homepage slider---
+
+
 
 // --visibility of add element button--JQuery  
 
@@ -24,26 +35,72 @@ $(document).ready(function() {
     });
 });
 
+//toggle review button ONLY WHEN THE PAGE LOADS
 // $(document).ready(function() {
-//     $("#show-product-btn").click(function() {
-//         $(".product-table-container").toggle();
+//     $(".toggle-reviews-btn").click(function() {
+//         var id = $(this).attr("id").split("-")[3]; // get the user id from the button id
+//         $("#review-row-"+id+" .review-table").toggle(); // toggle the display property of the review table
 //     });
 // });
 
+//toggle review button when actions are performed, page loads + search (dynamically created toggle buttons
+  $(document).ready(function() {
+    // Hide reviews table rows
+    $('.review-row').hide();
+  
+    // Bind the event listener to a parent element
+    // and specify the child selector for the dynamically created toggle buttons
+    $('.product-table').on('click', '.toggle-reviews-btn', function() {
+      var reviewsRow = $(this).closest('tr').next('.review-row');
+      reviewsRow.toggle();
+    });
+  });
+  
+  
+
+
+
 
 //toggle nested table review
-$(document).ready(function() {
-    // Hide the reviews table by default
-    $(".review-table").hide();
+// $(document).ready(function() {
+//     // Hide the reviews table by default
+//     $(".review-table").hide();
 
-    // Add a click event listener to the toggle button
-    $("#toggle-reviews-btn").click(function() {
-        // Toggle the visibility of the reviews table
-        $(".review-table").toggle();
-        //     $(this).next(".review-table").toggle(); //this is to set a unique id but something is not working properly
+//     // Add a click event listener to the toggle button
+//     $("#toggle-reviews-btn").click(function() {
+//         // Toggle the visibility of the reviews table
+//         $(".review-table").toggle();
+//         //     $(this).next(".review-table").toggle(); //this is to set a unique id BUT something is NOT WORKING properly
 
-    });
-});
+//     });
+// });
+
+//TOGGLE REVIEWS
+// Get all the toggle review buttons
+// const toggleReviewButtons = document.querySelectorAll('.toggle-reviews-btn');
+
+// // Loop through the buttons
+// toggleReviewButtons.forEach(button => {
+//   // Get the user ID from the button's ID
+//    const userId = button.id.split('-')[2];
+
+//   // Get the review table for the corresponding user
+//   const reviewTable = document.querySelector(`#review-row-${userId}`);
+
+//   // Hide the review table initially
+//   reviewTable.style.display = 'none';
+
+//   // Add an event listener to the button
+//   button.addEventListener('click', () => {
+//     // Toggle the visibility of the review table
+//     if (reviewTable.style.display === 'none') {
+//       reviewTable.style.display = 'table-row';
+//     } else {
+//       reviewTable.style.display = 'none';
+//     }
+//   });
+// });
+
 
   
 

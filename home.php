@@ -16,10 +16,6 @@ if (isset($_POST['logout'])) {
   header("location: login.php");
 }
 
-// $user_data = check_login($_SESSION['user_email']);
-// var_dump($user_id);
-// var_dump($_SESSION['user_email']);
-
 ?>
 
 
@@ -31,9 +27,11 @@ if (isset($_POST['logout'])) {
 
   <title>Cantina</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/slider.css">
   <link rel="stylesheet" href="css/header.css">
+
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -118,18 +116,17 @@ if (isset($_POST['logout'])) {
     }
   </script>
   <script>
-    //RUN TO SECTION
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-          behavior: 'smooth'
-        });
-      });
-    });
+    // //RUN TO SECTION
+    // document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    //   anchor.addEventListener('click', function(e) {
+    //     e.preventDefault();
+    //     document.querySelector(this.getAttribute('href')).scrollIntoView({
+    //       behavior: 'smooth'
+    //     });
+    //   });
+    // });
   </script>
 
-  <!-- <script src="script.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
   <script src="script.js"></script>
   <?php include 'components/alert.php'; ?>
