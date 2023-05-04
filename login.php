@@ -7,8 +7,10 @@ if (isset($_SESSION['user_id'])) {
 } else {
   $user_id = '';
 }
+$messages = array();
 
-//login user
+//login user HASH PASSWORD
+// login user
 if (isset($_POST['submit'])) {
 
   $email = $_POST['email'];
@@ -16,22 +18,46 @@ if (isset($_POST['submit'])) {
   $pass = $_POST['password'];
   $pass = filter_var($pass, FILTER_SANITIZE_STRING);
 
-  $select_user = $conn->prepare("SELECT * FROM `users` WHERE  email = ? AND password = ?");
-  $select_user->execute([$email, $pass]);
+  $select_user = $conn->prepare("SELECT * FROM `users` WHERE  email = ?");
+  $select_user->execute([$email]);
   $user_data = $select_user->fetch(PDO::FETCH_ASSOC);
 
-  if ($select_user->rowCount() > 0) {
+  if ($select_user->rowCount() > 0 && password_verify($pass, $user_data['password'])) {
     $_SESSION['user_id'] = $user_data['id'];
-    // $_SESSION['user_firstName'] = $user_data['firstName'];
-    // $_SESSION['user_lastName'] = $user_data['lastName'];
     $_SESSION['user_name'] = $user_data['name'];
     $_SESSION['user_email'] = $user_data['email'];
     $_SESSION['user_type'] = $user_data['user_type'];
     header('location: home.php');
   } else {
-    $warning_msg[] = 'incorrect username or password';
+    $messages[] = 'incorrect username or password';
   }
 }
+
+
+//login user NO HASH
+// if (isset($_POST['submit'])) {
+
+//   $email = $_POST['email'];
+//   $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+//   $pass = $_POST['password'];
+//   $pass = filter_var($pass, FILTER_SANITIZE_STRING);
+
+//   $select_user = $conn->prepare("SELECT * FROM `users` WHERE  email = ? AND password = ?");
+//   $select_user->execute([$email, $pass]);
+//   $user_data = $select_user->fetch(PDO::FETCH_ASSOC);
+
+//   if ($select_user->rowCount() > 0) {
+//     $_SESSION['user_id'] = $user_data['id'];
+//     // $_SESSION['user_firstName'] = $user_data['firstName'];
+//     // $_SESSION['user_lastName'] = $user_data['lastName'];
+//     $_SESSION['user_name'] = $user_data['name'];
+//     $_SESSION['user_email'] = $user_data['email'];
+//     $_SESSION['user_type'] = $user_data['user_type'];
+//     header('location: home.php');
+//   } else {
+//     $warning_msg[] = 'incorrect username or password';
+//   }
+// }
 
 ?>
 
@@ -70,8 +96,8 @@ if (isset($_POST['submit'])) {
       <div class="wrapper">
         <!-- de adaugat mesajele -modificat in primul login.php -->
         <?php
-        if (isset($message)) {
-          foreach ($message as $message) {
+        if (isset($messages)) {
+          foreach ($messages as $message) {
             echo '
                         <div class="message">
                             <span>' . $message . '</span>

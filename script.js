@@ -12,16 +12,6 @@ userBtn.addEventListener('click', function(){
     let userBox = document.querySelector('.user-box');
     userBox.classList.toggle('active')
 })
-
-//RUN TO SECTION
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      document.querySelector(this.getAttribute('href')).scrollIntoView({
-        behavior: 'smooth'
-      });
-    });
-  });
   
 // --homepage slider---
 
@@ -34,6 +24,7 @@ $(document).ready(function() {
         $(".add-products").toggle();
     });
 });
+
 
 //toggle review button ONLY WHEN THE PAGE LOADS
 // $(document).ready(function() {

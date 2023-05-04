@@ -363,6 +363,8 @@ if (isset($_POST['update_product2'])) {
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
     <script src="script.js"></script>
 
 </body>

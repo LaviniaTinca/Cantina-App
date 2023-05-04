@@ -21,7 +21,7 @@
         justify-content: center;
     }
     
-    .wrapper{
+    .Container .wrapper{
         width: 25%;
         padding: 20px;
         background-color: transparent;

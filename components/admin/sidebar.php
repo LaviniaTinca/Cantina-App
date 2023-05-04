@@ -37,6 +37,7 @@
     </li>
   </ul>
   <div class="logout">
-    <a href="#">Logout</a>
+    <box-icon style="color: var(--dark-olive)" name='run'></box-icon>
+    <a href="logout.php">Logout</a>
   </div>
 </aside>
