@@ -44,7 +44,8 @@ if (isset($_POST['logout'])) {
     <?php include 'components/header.php'; ?>
   </section>
 
-  <div class="main" style=" margin-top: 80px;">
+  <!-- <div class="main" style=" margin-top: 80px;"> -->
+  <div class="main" style=" margin-top: 100px;">
 
     <!-- SLIDER SECTION -->
     <section>
@@ -57,30 +58,28 @@ if (isset($_POST['logout'])) {
       <?php include 'components/icons.php'; ?>
     </section>
 
+    <div class="banner" style="background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
+      <!-- MENU SUMMARY SECTION -->
+      <section id="menu">
+        <?php include 'components/menu0.php'; ?>
+      </section>
+    </div>
 
     <!-- ABOUT US SECTION -->
     <section id="about" style="margin-top: 30px;">
       <?php include 'components/about.php'; ?>
     </section>
 
-
-    <!-- MENU SUMMARY SECTION -->
-    <section id="menu">
-      <?php include 'components/menu0.php'; ?>
-    </section>
-
     <!-- newsletter SECTION -->
     <section>
       <?php include 'components/newsletter.php'; ?>
     </section>
-
-
-    <!-- FOOTER SECTION -->
-    <section>
-      <?php include 'components/footer.php'; ?>
-    </section>
-
   </div>
+
+  <!-- FOOTER SECTION -->
+  <section id="menu">
+    <?php include 'components/footer.php'; ?>
+  </section>
 
   <script>
     //SLIDER

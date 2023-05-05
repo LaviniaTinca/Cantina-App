@@ -16,7 +16,7 @@ if (isset($_POST['submit'])) {
   $email = $_POST['email'];
   $email = filter_var($email, FILTER_SANITIZE_EMAIL);
   $pass = $_POST['password'];
-  $pass = filter_var($pass, FILTER_SANITIZE_STRING);
+  $pass = htmlspecialchars($pass, ENT_QUOTES, 'UTF-8');
 
   $select_user = $conn->prepare("SELECT * FROM `users` WHERE  email = ?");
   $select_user->execute([$email]);
@@ -33,32 +33,6 @@ if (isset($_POST['submit'])) {
   }
 }
 
-
-//login user NO HASH
-// if (isset($_POST['submit'])) {
-
-//   $email = $_POST['email'];
-//   $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-//   $pass = $_POST['password'];
-//   $pass = filter_var($pass, FILTER_SANITIZE_STRING);
-
-//   $select_user = $conn->prepare("SELECT * FROM `users` WHERE  email = ? AND password = ?");
-//   $select_user->execute([$email, $pass]);
-//   $user_data = $select_user->fetch(PDO::FETCH_ASSOC);
-
-//   if ($select_user->rowCount() > 0) {
-//     $_SESSION['user_id'] = $user_data['id'];
-//     // $_SESSION['user_firstName'] = $user_data['firstName'];
-//     // $_SESSION['user_lastName'] = $user_data['lastName'];
-//     $_SESSION['user_name'] = $user_data['name'];
-//     $_SESSION['user_email'] = $user_data['email'];
-//     $_SESSION['user_type'] = $user_data['user_type'];
-//     header('location: home.php');
-//   } else {
-//     $warning_msg[] = 'incorrect username or password';
-//   }
-// }
-
 ?>
 
 
@@ -70,28 +44,18 @@ if (isset($_POST['submit'])) {
 
   <title>Login</title>
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/auth.css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
 </head>
 
 <body>
-  <!-- <header class="Navbar">
-        <div class="logo logo-image"></div>
-    <a  href="index.php">Cantina</a>
-      <ul>
-       
-        <li><a class="active" href="login.php">Login</a></li>
-        <li><a href="register.php">Register</a></li>
-      </ul>
-    </header> -->
 
   <!-- HEADER SECTION include headerAuth -->
   <section>
     <?php include 'components/headerAuth.php'; ?>
   </section>
 
-  <div class="main" style=" margin-top: 30px;">
+  <div class="main" style=" margin-top: 100px;">
     <div class="Container">
       <div class="wrapper">
         <!-- de adaugat mesajele -modificat in primul login.php -->
@@ -122,12 +86,12 @@ if (isset($_POST['submit'])) {
         </form>
       </div>
     </div>
-
-    <!-- FOOTER SECTION -->
-    <section id="menu">
-      <?php include 'components/footer.php'; ?>
-    </section>
   </div>
+
+  <!-- FOOTER SECTION -->
+  <section id="menu">
+    <?php include 'components/footer.php'; ?>
+  </section>
   <!-- formValidation has register fields and needs a property for login to work -->
   <!-- <script src="formValidation.js"></script> -->
 

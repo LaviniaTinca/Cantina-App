@@ -2,7 +2,7 @@
 	<div class="flex">
 		<div class="logo-container">
 			<a href="home.php" class="logo-image"></a>
-			<a href="home.php" style="text-decoration: none; color:teal; margin-left:10px;">
+			<a href="home.php" style="text-decoration: none; color:var(--olive); margin-left:10px;">
 				<h3>CANTINA</h3>
 			</a>
 			<a href="home.php" class="logo-image" style="background-image: url('https://thumbs.dreamstime.com/z/four-bowls-saffron-pepper-ras-en-hanout-fresh-mint-garlic-teak-wood-table-top-66262939.jpg');     transform: rotate(90deg) scale(1.2); width:50px; height:40px"></a>

@@ -10,7 +10,8 @@ if (isset($_POST['add_user'])) {
   if (empty($_POST['add_name'])) {
     $messages[] = "Name is required.";
   } else {
-    $add_name = filter_var($_POST['add_name'], FILTER_SANITIZE_STRING);
+    // $add_name = filter_var($_POST['add_name'], FILTER_SANITIZE_STRING);
+    $add_name = htmlspecialchars($_POST['add_name'], ENT_QUOTES, 'UTF-8');
   }
 
   if (empty($_POST['add_email'])) {
@@ -51,9 +52,8 @@ if (isset($_POST['add_user'])) {
     } catch (PDOException $e) {
       $conn->rollback();
       echo "Error adding user: " . $e->getMessage();
+      $messages[] = "Error: " . $e->getMessage();
     }
-  } else {
-    // Display errors
   }
 }
 
@@ -74,7 +74,7 @@ if (isset($_POST['add_user'])) {
 
 
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/auth.css" />
+  <!-- <link rel="stylesheet" href="css/auth.css" /> -->
   <title>Register</title>
 
 </head>
@@ -85,7 +85,7 @@ if (isset($_POST['add_user'])) {
   <section>
     <?php include 'components/headerAuth.php'; ?>
   </section>
-  <div class="main" style="margin-top: 30px;">
+  <div class="main" style="margin-top: 100px;">
 
 
     <div class="Container">
@@ -114,18 +114,18 @@ if (isset($_POST['add_user'])) {
           <span id="emailError"></span>
 
           <label for="add-password">Password:</label>
-          <div class="password-container">
-            <input type="password" name="add_password" id="add-password" value="" required><span id="passwordError" class="error"></span>
-            <button type="button" id="show-password-btn" onclick="togglePasswordVisibility('add-password', 'show-password-btn')"><box-icon name='low-vision'></box-icon></button>
-          </div>
-          <span id="passwordError"></span>
+          <!-- <div class="password-container"> -->
+          <input type="password" name="add_password" id="add-password" value="" required><span id="passwordError" class="error"></span>
+          <!-- <button type="button" id="show-password-btn" onclick="togglePasswordVisibility('add-password', 'show-password-btn')"><box-icon name='low-vision'></box-icon></button> -->
+          <!-- </div> -->
+          <!-- <span id="passwordError"></span> -->
 
           <label for="add-confirm-password">Confirm Password:</label>
-          <div class="password-container">
-            <input type="password" name="add_confirm_password" id="add-confirm-password" value="" required><span id="confirmPasswordError" class="error"></span>
-            <button type="button" id="show-confirm-password-btn" onclick="togglePasswordVisibility('add-confirm-password', 'show-confirm-password-btn')"><box-icon name='low-vision'></box-icon></button>
-          </div>
-          <span id="confirmPasswordError"></span>
+          <!-- <div class="password-container"> -->
+          <input type="password" name="add_confirm_password" id="add-confirm-password" value="" required><span id="confirmPasswordError" class="error"></span>
+          <!-- <button type="button" id="show-confirm-password-btn" onclick="togglePasswordVisibility('add-confirm-password', 'show-confirm-password-btn')"><box-icon name='low-vision'></box-icon></button> -->
+          <!-- </div> -->
+          <!-- <span id="confirmPasswordError"></span> -->
 
           <!-- <label for="add-password">Password:</label>
           <input type="password" name="add_password" id="add-password" required><span id="passwordError" class="error"></span>
@@ -145,13 +145,11 @@ if (isset($_POST['add_user'])) {
       </div>
     </div>
 
-
-    <!-- FOOTER SECTION -->
-    <section id="menu">
-      <?php include 'components/footer.php'; ?>
-    </section>
-
   </div>
+  <!-- FOOTER SECTION -->
+  <section id="menu">
+    <?php include 'components/footer.php'; ?>
+  </section>
   <!-- //toggle faculty list
   <script>
     function toggleFacultyList() {
@@ -279,7 +277,7 @@ if (isset($_POST['add_user'])) {
   <script src="formValidation.js"></script>
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.min.js" integrity="sha512-8Zb//S7l1Dwomj0oWwnveUc4I88zF6vnj1x68TY8aQYwsYqloIqocwOJaxW8/uRyM0oH5D5GX5Db5W1gRJZfIQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js" integrity="sha512-NsKjivVh27/rMnIBmVXpZof+FJNSPG40gysJLdtDR1iVJ1tQqxGtOuOJfX9tVetPfYefit7Vch1wQGh7VbhUpg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+  <!-- <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script> -->
 
 </body>
 

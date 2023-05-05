@@ -14,14 +14,13 @@ if (isset($_POST['email'])) {
 
   // Execute statement
   if ($stmt->execute()) {
-    echo "Subscribed with email: " . $email;
+    // echo "Subscribed with email: " . $email;
+    $messages = "Error subscribing with email: " . $email;
   } else {
-    echo "Error subscribing with email: " . $email;
+    $messages = "Error subscribing with email: " . $email;
   }
 
   $stmt->close();
-} else {
-  echo "Please enter a valid email address.";
 }
 
 ?>
@@ -39,6 +38,7 @@ if (isset($_POST['email'])) {
       width: 80%;
       margin: 110px auto;
       text-align: center;
+      padding: 30px;
     }
 
     .subscribe-title {
@@ -46,7 +46,7 @@ if (isset($_POST['email'])) {
       display: flex;
       align-items: baseline;
       justify-content: space-around;
-      color: var(--teal);
+      color: var(--olive);
     }
 
     .subscribe-icon {
@@ -76,7 +76,7 @@ if (isset($_POST['email'])) {
 
     .subscribe-button {
       padding: 10px 20px;
-      background-color: var(--teal);
+      background-color: var(--olive);
       border: none;
       border-radius: 0 5px 5px 0;
       color: white;
@@ -92,13 +92,13 @@ if (isset($_POST['email'])) {
 
 <body>
 
-  <div class="subscribe-container">
-    <h1 class="subscribe-title">
-      <box-icon name='envelope'></box-icon>
-      Subscribe to our newsletter
-    </h1>
+  <div class="subscribe-container" style="background: rgba(255, 255, 255, 0.1) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
+    <h3 class="subscribe-title">
+      Newsletter
+    </h3>
     <p class="subscribe-description">for the daily menu</p>
     <div class="subscribe-input-container">
+      <box-icon name='envelope'></box-icon>
       <input type="text" class="subscribe-input" placeholder="Enter email here..." />
       <button class="subscribe-button">Subscribe</button>
     </div>

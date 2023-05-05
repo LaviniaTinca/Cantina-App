@@ -152,6 +152,60 @@
     }
     
   /* ------------END AUTH------------- */
+
+
+/* FOOTER  */
+    /* Footer style */
+    footer {
+      background-color: #e7e7ab;
+      background-image: url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg');;
+      color: #333;
+      padding: 80px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      text-align: center;
+
+  }
+
+  .footer-column {
+      width: 30%;
+      margin-right: auto;
+      margin-left: auto;
+  }
+
+  .footer-column:last-child {
+      margin-right: 0;
+  }
+
+  .footer-column h3 {
+      margin-bottom: 20px;
+  }
+
+  footer ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  footer ul li {
+      margin-bottom: 10px;
+      text-align: center;
+  }
+
+  footer a {
+      color: #333;
+      text-decoration: none;
+  }
+
+  footer a:hover {
+      color: #555;
+  }
+  /* -------------END FOOTER------------- */
     
   
     .message{
@@ -171,7 +225,8 @@
       cursor: pointer;
     }
     .main-page-title {
-        text-align: center; 
+        text-align: center;
+        color: var(--olive) 
     }
 
     #search-input {

@@ -15,7 +15,7 @@ if (isset($_POST['logout'])) {
     session_destroy();
     header("location: login.php");
 }
-$message = array();
+$messages = array();
 
 //add user //!!!!! good for register but without IMAGE
 // Add user to the database
@@ -108,12 +108,12 @@ if (isset($_GET['delete'])) {
         $query = "DELETE FROM `wishlist` WHERE user_id = ?";
         $stmt = $conn->prepare($query);
         $stmt->execute([$delete_id]);
-        $message[] = 'User deleted!';
+        $messages[] = 'User deleted!';
 
         header('location: admin_users.php');
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
-        $message[] = $e->getMessage();
+        $messages[] = $e->getMessage();
     }
 }
 
@@ -172,6 +172,7 @@ if (isset($_GET['delete'])) {
         header('location: admin_users.php');
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
+        $messages[] = "Error: " . $e->getMessage();
     }
 }
 
@@ -212,6 +213,7 @@ if (isset($_POST['update_user2'])) {
     } catch (PDOException $e) {
         $conn->rollback();
         echo "Error: " . $e->getMessage();
+        $messages[] = "Error: " . $e->getMessage();
     }
 }
 
@@ -242,7 +244,7 @@ if (isset($_POST['update_user'])) {
         $stmt->execute([$update_name, $update_email, $update_password, $update_id]);
         header('location: admin_users.php');
     } catch (PDOException $e) {
-        $message[] = "Error: " . $e->getMessage();
+        $messages[] = "Error: " . $e->getMessage();
     }
 }
 
