@@ -1,9 +1,14 @@
 <aside class="sidebar">
   <ul>
     <li>
-      <a href="home.php">
-        <h1 style="margin-left:60px">CANTINA</h1><br>
+      <!-- <a href="home.php"> -->
+      <a href="home.php"><img src="img/logo1.png" alt="logo" class="logo-image">
+        <h1 style="margin-left:60px">CANTINA</h1>
       </a>
+
+      <!-- <h1 style="margin-left:60px">CANTINA</h1> -->
+      <br>
+      <!-- </a> -->
       <hr>
     </li>
     <li>

@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu summary</title>
-    <style>
+    <!-- <style>
         .menu0-btn {
             width: 20%;
             border: none;
@@ -67,14 +67,14 @@
         }
 
         .show-products::before {
-            top: -100px;
+            top: 100px;
         }
 
         .show-products .box-container {
             grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
         }
 
-        .box-container .box img {
+        .show-products .box-container .box img {
             width: 100%;
             margin-bottom: 1rem;
         }
@@ -86,7 +86,7 @@
             text-transform: capitalize;
             line-height: 2;
         }
-    </style>
+    </style> -->
 </head>
 
 <body>

@@ -4,8 +4,8 @@
     background-image: url("public/assets/logo2.jpg");
     background-size: contain;
     background-repeat: no-repeat;
-    transform: rotate(45deg) scale(1.2);
-    margin-right: 10px;
+    /* transform: rotate(45deg) scale(1.2); */
+    /* margin-right: 10px; */
     border-radius: 50%;
     display: inline-block;
 }
@@ -24,7 +24,7 @@ header{
     top: 0;
 	left: 7%;
 	width: 85vw;
-	height: 80px;
+	height: 82px;
 	padding: 1rem;
 	z-index: 101;
 	transition: .3s;

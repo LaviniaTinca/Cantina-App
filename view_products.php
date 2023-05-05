@@ -46,7 +46,8 @@ if (isset($_POST['add_to_cart'])) {
 	$product_id = $_POST['product_id'];
 
 	$qty = $_POST['qty'];
-	$qty = filter_var($qty, FILTER_SANITIZE_STRING);
+	$qty = htmlspecialchars($qty, ENT_QUOTES, 'UTF-8');
+
 
 	$varify_cart = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ? AND product_id = ?");
 	$varify_cart->execute([$user_id, $product_id]);
@@ -80,54 +81,69 @@ if (isset($_POST['add_to_cart'])) {
 	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/header.css">
-	<link rel="stylesheet" href="css/view_products.css">
 
 	<title>Cantina - user products</title>
 </head>
 
 <body>
-	<?php include 'components/header.php'; ?>
-	<div class="main">
-		<div class="banner">
-			<h1>products</h1>
+
+	<!-- HEADER SECTION -->
+	<section>
+		<?php include 'components/header.php'; ?>
+	</section>
+
+	<div class="main" style=" margin-top: 100px;">
+		<div class="banner" style=" height: 200px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
+			<h1 style="color:var(--green)">today's menu</h1>
 		</div>
 		<div class="title2">
-			<a href="home.php">home </a><span>/ our offer</span>
+			<a href="home.php">home </a><span>/ menu</span>
 		</div>
-		<section class="products">
-			<div class="box-container">
-				<?php
-				$select_products = $conn->prepare("SELECT * FROM `products`");
-				$select_products->execute();
-				if ($select_products->rowCount() > 0) {
-					while ($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)) {
+
+		<!-- SHOW PRODUCTS SECTION -->
+
+		<div class="menu1">
+			<section class="products">
+				<div class="box-container">
+					<?php
+					$select_products = $conn->prepare("SELECT * FROM `products`");
+					$select_products->execute();
+					if ($select_products->rowCount() > 0) {
+						while ($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)) {
 
 
-				?>
-						<form action="" method="post" class="box">
-							<img src="image/<?= $fetch_products['image']; ?>" class="img">
-							<div class="button">
-								<button type="submit" name="add_to_cart"><i class="bx bx-cart"></i></button>
-								<button type="submit" name="add_to_wishlist"><i class="bx bx-heart"></i></button>
-								<a href="view_page.php?pid=<?php echo $fetch_products['id']; ?>" class="bx bxs-show"></a>
-							</div>
-							<h3 class="name"><?= $fetch_products['name']; ?></h3>
-							<input type="hidden" name="product_id" value="<?= $fetch_products['id']; ?>">
-							<div class="flex">
-								<p class="price">price $<?= $fetch_products['price']; ?>/-</p>
-								<input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
-							</div>
-							<a href="checkout.php?get_id=<?= $fetch_products['id']; ?>" class="btn">buy now</a>
+					?>
+							<form action="" method="post" class="box">
+								<a href="checkout.php?get_id=<?= $fetch_products['id']; ?>" class="btn">add</a>
 
-						</form>
-				<?php
+								<img src="image/<?= $fetch_products['image']; ?>" alt="product image" class="img">
+								<br>
+								<div class="button">
+									<button type="submit" name="add_to_cart"><i class="bx bx-cart"></i></button>
+									<button type="submit" name="add_to_wishlist"><i class="bx bx-heart"></i></button>
+									<a href="view_page.php?pid=<?php echo $fetch_products['id']; ?>" class="bx bxs-show"></a>
+								</div>
+								<br>
+								<h3 class="name"><?= $fetch_products['name']; ?></h3>
+								<input type="hidden" name="product_id" value="<?= $fetch_products['id']; ?>">
+								<div class="flex">
+									<p class="price">price <?= $fetch_products['price']; ?> Ron</p>
+									<input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
+								</div>
+								<a href="checkout.php?get_id=<?= $fetch_products['id']; ?>" class="btn">add</a>
+
+							</form>
+					<?php
+						}
+					} else {
+						echo '<p class="empty">no products added yet!</p>';
 					}
-				} else {
-					echo '<p class="empty">no products added yet!</p>';
-				}
-				?>
-			</div>
-		</section>
+					?>
+				</div>
+			</section>
+		</div>
+
+		<!-- END MAIN -->
 	</div>
 
 	<!-- FOOTER SECTION -->

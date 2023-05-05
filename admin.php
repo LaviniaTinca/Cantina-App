@@ -35,7 +35,6 @@ if (isset($_POST['logout'])) {
 <body>
     <!-- HEADER SECTION -->
     <section>
-        <?php include 'components/admin/header.php'; ?>
     </section>
 
     <div class="main" style="margin-top: 50px">
@@ -55,11 +54,15 @@ if (isset($_POST['logout'])) {
         <section>
             <div class="admin-container">
                 <?php include('components/admin/sidebar.php'); ?>
+
                 <div class="panel-container">
-                    <div class="title2">
-                        <a href="admin.php" style="color: var(--green);">admin </a><span>/ dashboard</span>
+                    <div class="banner" style=" height: 100px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
+                        <h1 style="color:var(--green)">dashboard</h1>
                     </div>
-                    <div class="content">
+                    <div class="title2">
+                        <a href="admin.php">admin </a><span>/ dashboard</span>
+                    </div>
+                    <div class=" content">
                         <div class="todo" style="color: teal">
                             <h3>GENERAL</h3>
                             <div class="todo-list" style="color: red; margin-left: 1rem">
@@ -67,6 +70,10 @@ if (isset($_POST['logout'])) {
                                 <p>de stilizat formularele pt add si edit product/ user</p>
                                 <p>de stilizat sidebar + icons</p>
                                 <p>admin_product, admin_user si register_OLD sunt in plus, de vazut daca au functii pt stocare imagine mai bune</p>
+                                <br>
+                                <p>menu0 newsletter, icons au style imbricat, de mutat in style.css</p>
+                                <p>am eliminat auth.css, mutat in style.css -> de verificat daca ma folosesc undeva</p>
+                                <p>mesaj la subscribe success</p>
 
                             </div>
                             <hr>
@@ -85,10 +92,8 @@ if (isset($_POST['logout'])) {
                             <h3>AUTH SECTION</h3>
                             <div class="todo-list" style="color: red; margin-left: 1rem">
                                 <p>HASH PASSWORD -> la edit trebuie sa schimb si parola + confirmare ca sa editez</p>
-
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

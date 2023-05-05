@@ -10,7 +10,6 @@ if (isset($_SESSION['user_id'])) {
 $messages = array();
 
 //login user HASH PASSWORD
-// login user
 if (isset($_POST['submit'])) {
 
   $email = $_POST['email'];
@@ -58,7 +57,6 @@ if (isset($_POST['submit'])) {
   <div class="main" style=" margin-top: 100px;">
     <div class="Container">
       <div class="wrapper">
-        <!-- de adaugat mesajele -modificat in primul login.php -->
         <?php
         if (isset($messages)) {
           foreach ($messages as $message) {
@@ -92,9 +90,6 @@ if (isset($_POST['submit'])) {
   <section id="menu">
     <?php include 'components/footer.php'; ?>
   </section>
-  <!-- formValidation has register fields and needs a property for login to work -->
-  <!-- <script src="formValidation.js"></script> -->
-
 
   <script>
     function validateForm() {

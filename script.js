@@ -12,6 +12,21 @@ userBtn.addEventListener('click', function(){
     let userBox = document.querySelector('.user-box');
     userBox.classList.toggle('active')
 })
+
+//newsletter
+const emailInput = document.querySelector(".subscribe-input");
+    const subscribeButton = document.querySelector(".subscribe-button");
+
+    subscribeButton.addEventListener("click", () => {
+      const email = emailInput.value.trim();
+
+      if (email !== "") {
+        // Send email to server to subscribe to newsletter
+        console.log("Subscribed with email:", email);
+      } else {
+        alert("Please enter a valid email address.");
+      }
+    });
   
 // --homepage slider---
 

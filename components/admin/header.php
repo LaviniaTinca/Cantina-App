@@ -4,14 +4,17 @@
 	<!-- <header class="header" style="background-image: url('https://image.freepik.com/free-photo/fresh-vegetables-frame-white-wood-with-copy-space_116547-627.jpg');"> -->
 	<!-- <header class="header" style="background-image: url('https://thumbs.dreamstime.com/z/vegetables-top-view-kitchen-table-white-wooden-natural-vegetable-garden-bio-product-concept-copy-space-template-vegetables-top-103025196.jpg');"> -->
 	<!-- <header class="header" style="background-image: url('https://thumbs.dreamstime.com/z/collection-fresh-green-vegetables-white-rustic-background-lettuce-celery-beans-capsicum-peppers-peas-brussels-sprouts-77627101.jpg');"> -->
-	<!-- <header class="header" style="background-image: url('https://thumbs.dreamstime.com/z/minced-meat-frame-white-bowl-white-wooden-table-45427435.jpg');"> -->
-	<!-- <header class="header" style="background-image: url('https://thumbs.dreamstime.com/z/glass-green-healthy-juice-fruits-vegetables-glass-green-healthy-juice-fruits-vegetables-table-110670507.jpg');"> -->
-	<header class="header" style="background-image: linear-gradient(to top, rgba(255,255,255,0.7), rgba(255,255,255,0.1)),
-	url('https://thumbs.dreamstime.com/z/variety-autumn-harvest-vegetables-variety-autumn-harvest-vegetables-carrot-parsnip-chard-paprika-hokkaido-pumpkin-mushrooms-99887900.jpg');">
+	<header class="header" style="background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size: cover">
+		<!-- <header class="header" style="background-image: url('https://thumbs.dreamstime.com/z/glass-green-healthy-juice-fruits-vegetables-glass-green-healthy-juice-fruits-vegetables-table-110670507.jpg');"> -->
+		<!-- <header class="header" style="background-image: linear-gradient(to top, rgba(255,255,255,0.7), rgba(255,255,255,0.1)),
+	url('https://thumbs.dreamstime.com/z/variety-autumn-harvest-vegetables-variety-autumn-harvest-vegetables-carrot-parsnip-chard-paprika-hokkaido-pumpkin-mushrooms-99887900.jpg');"> -->
 		<!-- <header class="header" style="background-image: url('https://image.shutterstock.com/z/stock-photo-organic-food-background-high-resolution-product-studio-photo-of-different-vegetables-on-wooden-330712538.jpg');"> -->
 		<!-- <header class="header" style="background-image: linear-gradient(to top, rgba(255,255,255,0.7), rgba(255,255,255,0.1)),
 	url('https://i.pinimg.com/originals/a1/12/15/a112152ef5b6d8fe425dd3cf0c3c7dd7.jpg');"> -->
 		<!-- <header class="header" style="background-image: url('https://thumbs.dreamstime.com/z/vegetables-fruit-wood-background-healthy-food-salad-tomato-bell-pepper-parsley-egg-orange-kiwi-copy-space-concept-diet-80960046.jpg');"> -->
+
+		<!-- <header class="header" style="background-image: linear-gradient(to top, rgba(255,255,255,0.7), rgba(255,255,255,0.1)),
+	url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover"> -->
 
 		<div class="flex">
 			<!-- <div class="logo2 logo-image"></div> -->

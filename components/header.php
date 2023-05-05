@@ -1,17 +1,16 @@
 <header class="header">
 	<div class="flex">
 		<div class="logo-container">
-			<a href="home.php" class="logo-image"></a>
-			<a href="home.php" style="text-decoration: none; color:var(--olive); margin-left:10px;">
-				<h3>CANTINA</h3>
+			<a href="home.php"><img src="img/logo1.png" class="logo-image" alt="logo" style=" transform: rotate(185deg) scale(1.2);"></a>
+			<a href="home.php" style="text-decoration: none; color:var(--olive);">
+				<h3 style="font-family: 'Lucida Handwriting'; text-decoration: underline;">CANTINA</h3>
 			</a>
-			<a href="home.php" class="logo-image" style="background-image: url('https://thumbs.dreamstime.com/z/four-bowls-saffron-pepper-ras-en-hanout-fresh-mint-garlic-teak-wood-table-top-66262939.jpg');     transform: rotate(90deg) scale(1.2); width:50px; height:40px"></a>
-			<!-- <a href="home.php" class="logo-image" style="background-image: url('https://thumbs.dreamstime.com/z/rosemary-spices-isolates-white-12048699.jpg'); "></a> -->
+			<a href="home.php"><img src="img/logo1.png" class="logo-image" alt="logo" style=" transform: rotate(45deg) scale(1.2);"></a>
 		</div>
 		<nav class=" navbar">
 			<a href="home.php">home</a>
 			<a href="#about">about</a>
-			<a href="#menu">menu</a>
+			<a href="view_products.php">menu</a>
 		</nav>
 		<div class="icons">
 			<i class="bx bxs-user" id="user-btn"></i>

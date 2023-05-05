@@ -16,6 +16,23 @@ if (isset($_POST['logout'])) {
   header("location: login.php");
 }
 
+// Handle email subscription
+if (isset($_POST['email'])) {
+  $email = $_POST['email'];
+  $id = unique_id();
+
+  // Prepare and bind statement
+  $stmt = $conn->prepare("INSERT INTO subscribers (id, email) VALUES (?,?)");
+  $stmt->execute([$id, $email]);
+
+  // Execute statement
+  if ($stmt->execute()) {
+    $success_msg[] = "Subscribed with email: " . $email;
+  } else {
+    $warning_msg[] = "Error subscribing with email: " . $email;
+  }
+}
+
 ?>
 
 
@@ -53,9 +70,9 @@ if (isset($_POST['logout'])) {
     </section>
 
 
-    <!-- ICONS SECTION -->
-    <section id="icons" style="margin-top: 30px;">
-      <?php include 'components/icons.php'; ?>
+    <!-- //ROTATE ICONS SECTION -->
+    <section>
+      <?php include 'components/rotateIcons.php'; ?>
     </section>
 
     <div class="banner" style="background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
@@ -127,6 +144,8 @@ if (isset($_POST['logout'])) {
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+
   <script src="script.js"></script>
   <?php include 'components/alert.php'; ?>
 
