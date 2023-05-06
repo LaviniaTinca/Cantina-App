@@ -15,6 +15,37 @@ if (isset($_POST['logout'])) {
 	session_destroy();
 	header("location: login.php");
 }
+
+// // Get the requested page from the URL
+// $request_uri = $_SERVER['REQUEST_URI'];
+
+// // Check if the requested page or resource exists
+// if (!file_exists($request_uri)) {
+// 	// Redirect to the custom "not found" page
+// 	header('Location: not_found.php');
+// 	exit;
+// }
+
+
+// List of pages that don't exist yet
+$not_found_pages = array(
+	'/wishlist.php',
+	'/cart.php'
+);
+
+// Get the requested page from the URL
+$request_uri = $_SERVER['REQUEST_URI'];
+
+// Check if the requested page is in the "not found" pages array
+if (in_array($request_uri, $not_found_pages)) {
+	// Redirect to the custom "not found" page
+	header('Location: not_found.php');
+	exit;
+}
+
+
+
+
 //adding products in wishlist
 if (isset($_POST['add_to_wishlist'])) {
 	$id = unique_id();
@@ -102,10 +133,10 @@ if (isset($_POST['add_to_cart'])) {
 		<!-- SHOW PRODUCTS SECTION -->
 
 		<div class="menu1">
+			<div id="popup-container" style="display: none;">
+				<img id="popup-image" src="" alt="popup image">
+			</div>
 			<section class="products">
-				<div id="popup-container" style="display: none;">
-					<img id="popup-image" src="" alt="popup image">
-				</div>
 				<div class="box-container">
 					<?php
 					$select_products = $conn->prepare("SELECT * FROM `products`");
@@ -116,14 +147,16 @@ if (isset($_POST['add_to_cart'])) {
 
 					?>
 							<form action="" method="post" class="box">
-								<a href="checkout.php?get_id=<?= $fetch_products['id']; ?>" class="btn">add</a>
+								<a href="not_found.php?page=checkout?get_id=<?= $fetch_products['id']; ?>" class="add-btn">add</a>
+								<div class="products-img-wrapper">
+									<img src="image/<?= $fetch_products['image']; ?>" alt="product image" class="img product-image">
 
-								<img src="image/<?= $fetch_products['image']; ?>" alt="product image" class="img product-image">
+								</div>
 								<br>
 								<div class="button">
 									<button type="submit" name="add_to_cart"><i class="bx bx-cart"></i></button>
 									<button type="submit" name="add_to_wishlist"><i class="bx bx-heart"></i></button>
-									<a href="view_page.php?pid=<?php echo $fetch_products['id']; ?>" class="bx bxs-show"></a>
+									<a href="not_found.php?page=details?pid=<?php echo $fetch_products['id']; ?>" class="bx bxs-show"></a>
 								</div>
 								<br>
 								<h3 class="name"><?= $fetch_products['name']; ?></h3>
@@ -132,7 +165,6 @@ if (isset($_POST['add_to_cart'])) {
 									<p class="price">price <?= $fetch_products['price']; ?> Ron</p>
 									<input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
 								</div>
-								<a href="checkout.php?get_id=<?= $fetch_products['id']; ?>" class="btn">add</a>
 
 							</form>
 					<?php

@@ -90,7 +90,7 @@ if (isset($_POST['email'])) {
   </main>
 
   <!-- FOOTER SECTION -->
-  <section id="menu">
+  <section>
     <?php include 'components/footer.php'; ?>
   </section>
 
