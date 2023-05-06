@@ -15,6 +15,7 @@ if (isset($_POST['logout'])) {
     session_destroy();
     header("location: login.php");
 }
+$current_page = basename($_SERVER['PHP_SELF']);
 $messages = array();
 
 
@@ -244,8 +245,6 @@ if (isset($_POST['update_product2'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/header.css">
-
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <title>Cantina - admin</title>
@@ -264,11 +263,12 @@ if (isset($_POST['update_product2'])) {
                 <div class="admin-container">
                     <?php include('components/admin/sidebar.php'); ?>
                     <div class="panel-container">
-                        <!-- <div class="banner-container"> -->
+                        <div class="banner" style=" height: 100px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
+                            <h1 style="color:var(--green)">edit product</h1>
+                        </div>
                         <div class="title2">
                             <a href="admin.php" style="color: var(--green);">admin </a><span>/ edit product</span>
                         </div>
-                        <!-- </div> -->
 
                         <div class="content">
                             <!-- //MESSAGES -->
@@ -302,8 +302,10 @@ if (isset($_POST['update_product2'])) {
                                         while ($fetch_edit = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                 ?>
                                             <div class="form-container">
-                                                <form action="" method="post" enctype="multipart/form-data">
-                                                    <img src="image/<?php echo $fetch_edit['image']; ?>" alt="product to be edited">
+                                                <form class="Form" action="" method="post" enctype="multipart/form-data">
+                                                    <div class="form-img">
+                                                        <img src="image/<?php echo $fetch_edit['image']; ?>" alt="product to be edited">
+                                                    </div>
                                                     <input type="hidden" name="update_id" value="<?php echo $fetch_edit['id']; ?>"><br>
                                                     <label for="name">Name:</label>
                                                     <input type="text" name="update_name" value="<?php echo $fetch_edit['name']; ?>">
@@ -313,8 +315,7 @@ if (isset($_POST['update_product2'])) {
                                                     <textarea name="update_detail"><?php echo $fetch_edit['product_detail']; ?></textarea>
                                                     <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png, image/webp">
                                                     <div class="button-container">
-                                                        <input type="submit" name="update_product" value="Update" class="edit" onclick="closeForm()">
-                                                        <button type="button" class="close-btn" onclick="closeForm()">Close</button>
+                                                        <input class="form-button" type="submit" name="update_product" value="Update" class="edit" onclick="closeForm()">
                                                     </div>
                                                 </form>
                                             </div>
@@ -326,34 +327,6 @@ if (isset($_POST['update_product2'])) {
                                 }
                                 ?>
                             </section>
-
-                            <section class="NO NO NOT YET">
-                                <!-- //varianta 4 mai incerc cu mai multe tabel dar NU inca -->
-                                <!-- <form action="update_product.php" method="POST" enctype="multipart/form-data">
-                                    <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
-
-                                <label for="name">Name:</label>
-                                <input type="text" name="name" id="name" value="<?php echo $product['name']; ?>">
-
-                                <label for="description">Description:</label>
-                                <textarea name="description" id="description"><?php echo $product['description']; ?></textarea>
-
-                                <label for="image">Image:</label>
-                                <?php if ($product['image']) { ?>
-                                    <img src="image/<?php echo $product['image']; ?>" alt="product image"><br>
-                                    <input type="checkbox" name="delete_image" id="delete_image">
-                                    <label for="delete_image">Delete image</label>
-                                <?php } ?>
-                                <input type="file" name="image" id="image">
-
-                                <label for="price">Price:</label>
-                                <input type="text" name="price" id="price" value="<?php echo $product['price']; ?>">
-                                <input type="submit" name="update_product" value="Update" class="edit">
-                                <input type="submit" name="submit" value="Save">
-
-                                </form> -->
-                            </section>
-
                         </div>
                     </div>
                 </div>
@@ -363,8 +336,6 @@ if (isset($_POST['update_product2'])) {
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
-
     <script src="script.js"></script>
 
 </body>

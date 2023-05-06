@@ -15,6 +15,8 @@ if (isset($_POST['logout'])) {
     session_destroy();
     header("location: login.php");
 }
+
+$current_page = basename($_SERVER['PHP_SELF']);
 $messages = array();
 
 
@@ -241,13 +243,11 @@ if (isset($_POST['update_product2'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantina - admin</title>
 
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/header.css">
-
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
-    <title>Cantina - admin</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -263,12 +263,12 @@ if (isset($_POST['update_product2'])) {
                 <div class="admin-container">
                     <?php include('components/admin/sidebar.php'); ?>
                     <div class="panel-container">
-                        <!-- <div class="banner-container"> -->
+                        <div class="banner" style=" height: 100px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
+                            <h1 style="color:var(--green)">products</h1>
+                        </div>
                         <div class="title2">
                             <a href="admin.php" style="color: var(--green);">admin </a><span>/ view products</span>
-                            <input type="text" id="search-input" placeholder="Search by keyword..." style="width:min-content">
                         </div>
-                        <!-- </div> -->
 
                         <div class="content">
                             <!-- //MESSAGES -->
@@ -292,8 +292,7 @@ if (isset($_POST['update_product2'])) {
                                 <h2 style="color: var(--green); margin-left: 30px;"> * Add Product</h2>
                             </a>
                             <section class="add-products" id="add-products" style=" display: none; margin:0px 30px">
-                                <h3 style="color:red">de stilizat formularul!!!</h3>
-                                <form action="admin_view_products.php" method="post" enctype="multipart/form-data">
+                                <form class="Form" action="admin_view_products.php" method="post" enctype="multipart/form-data">
                                     <label for="add-name">Product Name:</label>
                                     <input type="text" name="add_name" id="add-name" required>
 
@@ -306,11 +305,14 @@ if (isset($_POST['update_product2'])) {
                                     <label for="add-image">Product Image:</label>
                                     <input type="file" name="add_image" id="add-image" required>
 
-                                    <input type="submit" name="add_product" value="Add Product">
+                                    <input class="form-button" type="submit" name="add_product" value="Add Product">
                                 </form>
                             </section>
                             <!-- SHOW TABLE PRODUCTS WITH SORT AND FILTER-->
                             <section>
+                                <div id="popup-container" style="display: none;">
+                                    <img id="popup-image" src="" alt="popup image">
+                                </div>
                                 <div class="product-table-container">
                                     <table id="product-table" class="product-table">
                                         <thead>
@@ -334,7 +336,7 @@ if (isset($_POST['update_product2'])) {
                                                 foreach ($fetch_products as $product) {
                                             ?>
                                                     <tr>
-                                                        <td><img src="image/<?php echo $product['image']; ?>" alt="product image"></td>
+                                                        <td> <img src="image/<?php echo $product['image']; ?>" alt="product image" class="product-image"></td>
                                                         <td><?php echo $product['name']; ?></td>
                                                         <td><?php echo $product['price']; ?></td>
                                                         <td><?php echo substr($product['product_detail'], 0, 15) . '...'; ?></td>
@@ -404,11 +406,22 @@ if (isset($_POST['update_product2'])) {
     </section> -->
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
-
     <script src="script.js"></script>
+    <script>
+        // popup 
+        $(document).ready(function() {
+            $('.product-image').on('click', function() {
+                var src = $(this).attr('src');
+                $('#popup-image').attr('src', src);
+                $('#popup-container').fadeIn();
+            });
 
+            $('#popup-container').on('click', function() {
+                $(this).fadeOut();
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -65,9 +65,9 @@ if (isset($_POST['add_user'])) {
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="css/style.css" />
   <title>Register</title>
 
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
@@ -76,7 +76,8 @@ if (isset($_POST['add_user'])) {
   <section>
     <?php include 'components/headerAuth.php'; ?>
   </section>
-  <div class="main" style="margin-top: 100px;">
+
+  <main class="main" style="margin-top: 100px;">
     <div class="Container">
       <div class="wrapper">
 
@@ -113,10 +114,10 @@ if (isset($_POST['add_user'])) {
             <h3>Already have an account? Sign In here</h3>
           </a>
         </form>
-
       </div>
     </div>
-  </div>
+  </main>
+
 
   <!-- FOOTER SECTION -->
   <section id="menu">

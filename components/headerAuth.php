@@ -1,6 +1,3 @@
-<style type="text/css">
-	<?php include 'css/header.css'; ?>
-</style>
 <header class="header">
 	<div class="flex">
 		<div class="logo-container">

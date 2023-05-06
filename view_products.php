@@ -78,11 +78,10 @@ if (isset($_POST['add_to_cart'])) {
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Cantina - products</title>
 	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="css/header.css">
-
-	<title>Cantina - user products</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -92,7 +91,7 @@ if (isset($_POST['add_to_cart'])) {
 		<?php include 'components/header.php'; ?>
 	</section>
 
-	<div class="main" style=" margin-top: 100px;">
+	<main class="main" style=" margin-top: 100px;">
 		<div class="banner" style=" height: 200px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
 			<h1 style="color:var(--green)">today's menu</h1>
 		</div>
@@ -104,6 +103,9 @@ if (isset($_POST['add_to_cart'])) {
 
 		<div class="menu1">
 			<section class="products">
+				<div id="popup-container" style="display: none;">
+					<img id="popup-image" src="" alt="popup image">
+				</div>
 				<div class="box-container">
 					<?php
 					$select_products = $conn->prepare("SELECT * FROM `products`");
@@ -116,7 +118,7 @@ if (isset($_POST['add_to_cart'])) {
 							<form action="" method="post" class="box">
 								<a href="checkout.php?get_id=<?= $fetch_products['id']; ?>" class="btn">add</a>
 
-								<img src="image/<?= $fetch_products['image']; ?>" alt="product image" class="img">
+								<img src="image/<?= $fetch_products['image']; ?>" alt="product image" class="img product-image">
 								<br>
 								<div class="button">
 									<button type="submit" name="add_to_cart"><i class="bx bx-cart"></i></button>
@@ -144,7 +146,7 @@ if (isset($_POST['add_to_cart'])) {
 		</div>
 
 		<!-- END MAIN -->
-	</div>
+	</main>
 
 	<!-- FOOTER SECTION -->
 	<section id="menu">
@@ -153,6 +155,7 @@ if (isset($_POST['add_to_cart'])) {
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 	<script src="script.js"></script>
+	<script src="popup.js"></script>
 	<?php include 'components/alert.php'; ?>
 </body>
 

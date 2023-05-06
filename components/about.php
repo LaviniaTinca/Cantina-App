@@ -1,4 +1,4 @@
- <div class="about-us-container">
+ <div class="about-us-container" id="about-us">
 
    <h1 class=" main-page-title" style="color: var(--olive)">About Us</h1>
 

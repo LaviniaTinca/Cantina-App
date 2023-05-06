@@ -40,21 +40,19 @@ if (isset($_POST['submit'])) {
 
 <head>
   <meta charset="UTF-8">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login</title>
   <link rel="stylesheet" href="css/style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
 </head>
 
 <body>
 
-  <!-- HEADER SECTION include headerAuth -->
+  <!-- HEADER SECTION -->
   <section>
     <?php include 'components/headerAuth.php'; ?>
   </section>
 
-  <div class="main" style=" margin-top: 100px;">
+  <main class="main" style=" margin-top: 100px;">
     <div class="Container">
       <div class="wrapper">
         <?php
@@ -84,7 +82,7 @@ if (isset($_POST['submit'])) {
         </form>
       </div>
     </div>
-  </div>
+  </main>
 
   <!-- FOOTER SECTION -->
   <section id="menu">

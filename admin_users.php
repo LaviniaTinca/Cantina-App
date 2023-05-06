@@ -15,6 +15,7 @@ if (isset($_POST['logout'])) {
     session_destroy();
     header("location: login.php");
 }
+$current_page = basename($_SERVER['PHP_SELF']);
 $messages = array();
 
 //add user //!!!!! good for register but without IMAGE
@@ -294,12 +295,12 @@ if (isset($_POST['update_user'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/header.css">
-
     <title>Cantina - admin</title>
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 
 <body>
@@ -309,19 +310,19 @@ if (isset($_POST['update_user'])) {
         <?php include 'components/admin/header.php'; ?>
     </section>
 
-    <div class="main" style="margin-top: 50px; ">
+    <main class="main" style="margin-top: 50px; ">
         <!-- SIDEBAR AND PANEL-CONTAINER  SECTION-->
         <section>
             <div class="a-container">
                 <div class="admin-container">
                     <?php include('components/admin/sidebar.php'); ?>
                     <div class="panel-container">
-                        <!-- <div class="banner-container"> -->
+                        <div class="banner" style=" height: 100px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
+                            <h1 style="color:var(--green)">USERS</h1>
+                        </div>
                         <div class="title2">
                             <a href="admin.php" style="color: var(--green);">admin </a><span>/ view users</span>
-                            <input type="text" id="search-input" placeholder="Search by keyword..." style="width:min-content">
                         </div>
-                        <!-- </div> -->
 
                         <div class="content">
                             <!-- //MESSAGES -->
@@ -345,29 +346,27 @@ if (isset($_POST['update_user'])) {
                                 <h2 style="color: var(--green); margin-left: 30px;"> * Add User</h2>
                             </a>
                             <section class="add-products" id="add-products" style=" display: none; margin:0px 30px">
-                                <h3 style="color:red">de stilizat formularul!!!</h3>
+                                <div class="form-container">
+                                    <form class="Form" onsubmit="return validateForm()" action="register.php" method="post" enctype="multipart/form-data">
+                                        <label for="add-name">Name:</label>
+                                        <input type="text" name="add_name" id="add-name" required>
+                                        <span id="nameError"></span>
 
-                                <form class="Form" onsubmit="return validateForm()" action="register_copy.php" method="post" enctype="multipart/form-data">
-                                    <label for="add-name">Name:</label>
-                                    <input type="text" name="add_name" id="add-name" required>
-                                    <span id="nameError"></span>
+                                        <label for="add-email">Email:</label>
+                                        <input type="email" name="add_email" id="add-email" required><span id="emailError" class="error"></span>
+                                        <span id="emailError"></span>
 
-                                    <label for="add-email">Email:</label>
-                                    <input type="email" name="add_email" id="add-email" required><span id="emailError" class="error"></span>
-                                    <span id="emailError"></span>
+                                        <label for="add-password">Password:</label>
+                                        <input type="password" name="add_password" id="add-password" required><span id="passwordError" class="error"></span>
+                                        <span id="passwordError"></span>
 
-                                    <label for="add-password">Password:</label>
-                                    <input type="password" name="add_password" id="add-password" required><span id="passwordError" class="error"></span>
-                                    <span id="passwordError"></span>
+                                        <label for="add-confirm-password">Confirm Password:</label>
+                                        <input type="password" name="add_confirm_password" id="add-confirm-password" required><span id="confirmPasswordError" class="error"></span>
+                                        <span id="confirmPasswordError"></span>
+                                        <input class="form-button" type="submit" name="add_user" value="REGISTER">
+                                    </form>
+                                </div>
 
-                                    <label for="add-confirm-password">Confirm Password:</label>
-                                    <input type="password" name="add_confirm_password" id="add-confirm-password" required><span id="confirmPasswordError" class="error"></span>
-                                    <span id="confirmPasswordError"></span>
-
-                                    <!-- <input type="submit" name="add_user" value="Add User"> -->
-                                    <button type="submit" name="add_user">REGISTER</button>
-
-                                </form>
                                 <!-- <form action="admin_users.php" method="post" enctype="multipart/form-data">
                                     <label for="add-name">Name:</label>
                                     <input type="text" name="add_name" id="add-name" required>
@@ -508,9 +507,8 @@ if (isset($_POST['update_user'])) {
                 </div>
             </div>
         </section>
-    </div>
+    </main>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
 
     <script src="script.js"></script>

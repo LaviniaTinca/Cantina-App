@@ -15,6 +15,7 @@ if (isset($_POST['logout'])) {
     session_destroy();
     header("location: login.php");
 }
+$current_page = basename($_SERVER['PHP_SELF']);
 $messages = array();
 
 
@@ -157,8 +158,6 @@ if (isset($_POST['update_user'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/header.css">
-
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <title>Cantina - admin</title>
@@ -177,11 +176,12 @@ if (isset($_POST['update_user'])) {
                 <div class="admin-container">
                     <?php include('components/admin/sidebar.php'); ?>
                     <div class="panel-container">
-                        <!-- <div class="banner-container"> -->
+                        <div class="banner" style=" height: 100px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
+                            <h1 style="color:var(--green)">edit user</h1>
+                        </div>
                         <div class="title2">
                             <a href="admin.php" style="color: var(--green);">admin </a><span>/ edit user</span>
                         </div>
-                        <!-- </div> -->
 
                         <div class="content">
                             <!-- //MESSAGES -->
@@ -235,20 +235,14 @@ if (isset($_POST['update_user'])) {
 
 
                                                     <label for="add-password">Password:</label>
-                                                    <div class="password-container">
-                                                        <input type="password" name="add_password" id="add-password" value="" required><span id="passwordError" class="error"></span>
-                                                        <button type="button" id="show-password-btn" onclick="togglePasswordVisibility('add-password', 'show-password-btn')"><box-icon name='low-vision'></box-icon></button>
-                                                    </div>
+                                                    <input type="password" name="add_password" id="add-password" value="" required><span id="passwordError" class="error"></span>
                                                     <span id="passwordError"></span>
 
                                                     <label for="add-confirm-password">Confirm Password:</label>
-                                                    <div class="password-container">
-                                                        <input type="password" name="add_confirm_password" id="add-confirm-password" value="" required><span id="confirmPasswordError" class="error"></span>
-                                                        <button type="button" id="show-confirm-password-btn" onclick="togglePasswordVisibility('add-confirm-password', 'show-confirm-password-btn')"><box-icon name='low-vision'></box-icon></button>
-                                                    </div>
+                                                    <input type="password" name="add_confirm_password" id="add-confirm-password" value="" required><span id="confirmPasswordError" class="error"></span>
                                                     <span id="confirmPasswordError"></span>
                                                     <!-- <input type="submit" name="add_user" value="Add User"> -->
-                                                    <button type="submit" name="update_user">UPDATE</button>
+                                                    <input class="form-button" type="submit" name="update_user" value="UPDATE">
 
                                                 </form>
                                             </div>

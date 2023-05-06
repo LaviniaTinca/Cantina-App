@@ -41,28 +41,24 @@ if (isset($_POST['email'])) {
 
 <head>
   <meta charset="UTF-8">
-
-  <title>Cantina</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
+  <title>Cantina</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/slider.css">
-  <link rel="stylesheet" href="css/header.css">
-
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <body>
 
-  <!-- HEADER SECTION -->
+  <!--NAVBAR  HEADER SECTION -->
   <section>
     <?php include 'components/header.php'; ?>
   </section>
 
-  <!-- <div class="main" style=" margin-top: 80px;"> -->
-  <div class="main" style=" margin-top: 100px;">
+  <main class="main">
 
     <!-- SLIDER SECTION -->
     <section>
@@ -83,7 +79,7 @@ if (isset($_POST['email'])) {
     </div>
 
     <!-- ABOUT US SECTION -->
-    <section id="about" style="margin-top: 30px;">
+    <section id="about">
       <?php include 'components/about.php'; ?>
     </section>
 
@@ -91,7 +87,7 @@ if (isset($_POST['email'])) {
     <section>
       <?php include 'components/newsletter.php'; ?>
     </section>
-  </div>
+  </main>
 
   <!-- FOOTER SECTION -->
   <section id="menu">

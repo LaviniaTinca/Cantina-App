@@ -14,23 +14,38 @@ userBtn.addEventListener('click', function(){
 })
 
 //newsletter
-const emailInput = document.querySelector(".subscribe-input");
-    const subscribeButton = document.querySelector(".subscribe-button");
+// const emailNewsletterInput = document.querySelector(".subscribe-input");
+//     const subscribeButton = document.querySelector(".subscribe-button");
 
-    subscribeButton.addEventListener("click", () => {
-      const email = emailInput.value.trim();
+//     subscribeButton.addEventListener("click", () => {
+//       const email = emailNewsletterInput.value.trim();
 
-      if (email !== "") {
-        // Send email to server to subscribe to newsletter
-        console.log("Subscribed with email:", email);
-      } else {
-        alert("Please enter a valid email address.");
-      }
-    });
+//       if (email !== "") {
+//         // Send email to server to subscribe to newsletter
+//         console.log("Subscribed with email:", email);
+//       } else {
+//         alert("Please enter a valid email address.");
+//       }
+//     });
+$(document).ready(function() {
+  const emailNewsletterInput = $(".subscribe-input");
+  const subscribeButton = $(".subscribe-button");
+
+  subscribeButton.click(function() {
+    const email = emailNewsletterInput.val().trim();
+
+    if (email !== "") {
+      // Send email to server to subscribe to newsletter
+      console.log("Subscribed with email:", email);
+    } else {
+      alert("Please enter a valid email address.");
+    }
+  });
+});
+
   
 // --homepage slider---
-
-
+// --popup image
 
 // --visibility of add element button--JQuery  
 
