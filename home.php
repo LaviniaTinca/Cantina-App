@@ -21,17 +21,25 @@ if (isset($_POST['email'])) {
   $email = $_POST['email'];
   $id = unique_id();
 
-  // Prepare and bind statement
-  $stmt = $conn->prepare("INSERT INTO subscribers (id, email) VALUES (?,?)");
-  $stmt->execute([$id, $email]);
+  // Check if email already exists
+  $stmt = $conn->prepare("SELECT COUNT(*) FROM subscribers WHERE email = ?");
+  $stmt->execute([$email]);
+  $count = $stmt->fetchColumn();
 
-  // Execute statement
-  if ($stmt->execute()) {
-    $success_msg[] = "Subscribed with email: " . $email;
+  if ($count > 0) {
+    // Email already exists
+    $warning_msg[] = "Email address is already subscribed.";
   } else {
-    $warning_msg[] = "Error subscribing with email: " . $email;
+    // Email does not exist, insert into database
+    $stmt = $conn->prepare("INSERT INTO subscribers (id, email) VALUES (?,?)");
+    if ($stmt->execute([$id, $email])) {
+      $success_msg[] = "Subscribed with email: " . $email;
+    } else {
+      $warning_msg[] = "Error subscribing with email: " . $email;
+    }
   }
 }
+
 
 ?>
 
@@ -71,7 +79,7 @@ if (isset($_POST['email'])) {
       <?php include 'components/rotateIcons.php'; ?>
     </section>
 
-    <div class="banner" style="background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
+    <div class="banner">
       <!-- MENU SUMMARY SECTION -->
       <section id="menu">
         <?php include 'components/menu0.php'; ?>
@@ -126,17 +134,6 @@ if (isset($_POST['email'])) {
       slides[slideIndex - 1].style.display = "block";
       dots[slideIndex - 1].className += " active";
     }
-  </script>
-  <script>
-    // //RUN TO SECTION
-    // document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    //   anchor.addEventListener('click', function(e) {
-    //     e.preventDefault();
-    //     document.querySelector(this.getAttribute('href')).scrollIntoView({
-    //       behavior: 'smooth'
-    //     });
-    //   });
-    // });
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>

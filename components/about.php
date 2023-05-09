@@ -1,8 +1,8 @@
  <div class="about-us-container" id="about-us">
 
-   <h1 class=" main-page-title" style="color: var(--olive)">About Us</h1>
+   <h1 class=" main-page-title">About Us</h1>
 
-   <img src="public/assets/staff.webp" alt="Our Team" class="about-us-img">
+   <img src="images/staff.webp" alt="Our Team" class="about-us-img">
 
    <p class="about-us-content">
      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et tortor quis nisl efficitur semper eu ac odio.

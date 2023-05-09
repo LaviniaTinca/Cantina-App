@@ -26,6 +26,8 @@ if (isset($_POST['submit'])) {
     $_SESSION['user_name'] = $user_data['name'];
     $_SESSION['user_email'] = $user_data['email'];
     $_SESSION['user_type'] = $user_data['user_type'];
+    $_SESSION['location'] = $_POST['county'] . ', ' . $_POST['city'];
+
     header('location: home.php');
   } else {
     $messages[] = 'incorrect username or password';
@@ -52,6 +54,32 @@ if (isset($_POST['submit'])) {
     <?php include 'components/headerAuth.php'; ?>
   </section>
 
+  <!-- MODAL POPUP -->
+  <!-- <section>
+    <div id="location-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Select Your Location</h2>
+        <form method="post" action="login.php" class="Form" target="_self">
+          <label for="county">County:</label>
+          <select id="county" name="county" onchange="populateCities(this.value)">
+            <option value="">Select a county</option>
+            <option value="Cluj">Cluj</option>
+            <option value="Salaj">Salaj</option>
+            <option value="Maramures">Maramures</option>
+          </select>
+
+          <label for="city">City:</label>
+          <select id="city" name="city">
+            <option value="">Select a city</option>
+          </select>
+
+          <input type="submit" value="Submit" name="location">
+        </form>
+      </div>
+    </div>
+  </section> -->
+
   <main class="main" style=" margin-top: 100px;">
     <div class="Container">
       <div class="wrapper">
@@ -73,8 +101,22 @@ if (isset($_POST['submit'])) {
           <input type="email" id="email" name="email"><span id="emailError" class="error"></span><br><br>
           <label for="password"><b>Password:</b></label><br>
           <input type="password" id="password" name="password"><span id="passwordError" class="error"></span><br><br>
+          <h4>Set the location:</h4>
+          <div class="wrapper-row">
+            <select id="county" name="county" onchange="populateCities(this.value)">
+              <option value="">Select a county</option>
+              <option value="Cluj">Cluj</option>
+              <option value="Salaj">Salaj</option>
+              <option value="Maramures">Maramures</option>
+              <!-- Add more counties here -->
+            </select>
+            <select id="city" name="city">
+              <option value="">Select a city</option>
+            </select>
+          </div>
+          <!-- <input type="submit" name="submit" value="login now" class="auth-button"> -->
+          <button type="submit" name="submit" class="auth-button">LOGIN</button>
 
-          <input type="submit" name="submit" value="login now" class="auth-button">
 
           <a href="register.php">
             <h3>Don't have an account? Register here</h3>
@@ -156,6 +198,26 @@ if (isset($_POST['submit'])) {
         passwordError.innerHTML = "";
         passwordInput.classList.remove("error");
         passwordInput.classList.add("valid");
+      }
+    }
+  </script>
+
+  <script>
+    var citiesByCounty = {
+      Cluj: ['Cluj-Napoca', 'Turda', 'Dej', 'Gherla'],
+      Salaj: ['Zalau', 'Simleu Silvaniei', 'Jibou', 'Cehu Silvaniei'],
+      Maramures: ['Baia Mare', 'Sighetu Marmatiei', 'Baia Sprie', 'Viseu de Sus'],
+    };
+
+    function populateCities(county) {
+      var cities = citiesByCounty[county];
+      var citySelect = document.getElementById('city');
+      citySelect.innerHTML = '';
+      for (var i = 0; i < cities.length; i++) {
+        var cityOption = document.createElement('option');
+        cityOption.value = cities[i];
+        cityOption.text = cities[i];
+        citySelect.appendChild(cityOption);
       }
     }
   </script>

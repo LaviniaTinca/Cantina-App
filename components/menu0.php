@@ -55,6 +55,7 @@
         });
     });
 
+    //js for read-more button
     document.getElementById("read-more-btn").addEventListener("click", function() {
         window.location.href = "view_products.php";
     });

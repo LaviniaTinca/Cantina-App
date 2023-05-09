@@ -122,9 +122,9 @@ if (isset($_POST['add_to_cart'])) {
 		<?php include 'components/header.php'; ?>
 	</section>
 
-	<main class="main" style=" margin-top: 100px;">
+	<main class="main">
 		<div class="banner" style=" height: 200px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
-			<h1 style="color:var(--green)">today's menu</h1>
+			<h1 style="color: var(--green)">today's menu</h1>
 		</div>
 		<div class="title2">
 			<a href="home.php">home </a><span>/ menu</span>
@@ -144,10 +144,9 @@ if (isset($_POST['add_to_cart'])) {
 					if ($select_products->rowCount() > 0) {
 						while ($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)) {
 
-
 					?>
 							<form action="" method="post" class="box">
-								<a href="not_found.php?page=checkout?get_id=<?= $fetch_products['id']; ?>" class="add-btn">add</a>
+								<!-- <a href="not_found.php?page=checkout?get_id=<?= $fetch_products['id']; ?>" class="add-btn">add</a> -->
 								<div class="products-img-wrapper">
 									<img src="image/<?= $fetch_products['image']; ?>" alt="product image" class="img product-image">
 

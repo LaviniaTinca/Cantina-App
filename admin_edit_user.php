@@ -60,37 +60,6 @@ if (isset($_POST['update_user2'])) {
     }
 }
 
-//update simple var1
-if (isset($_POST['update_user2'])) {
-    $update_id = $_POST['update_id'];
-    $update_firstName = $_POST['update_name'];
-    $update_email = $_POST['update_email'];
-    $update_password = $_POST['update_password'];
-
-    $query = "UPDATE `users` SET `name`=?, `email`=?, `password`=? WHERE id=?";
-    $stmt = $conn->prepare($query);
-    $stmt->execute([$update_name, $update_email, $update_password, $update_id]);
-
-    header('location: admin_users.php');
-}
-
-//another update for the form
-if (isset($_POST['update_user2'])) {
-    $update_id = $_POST['edit_id'];
-    $update_name = $_POST['edit_name'];
-    $update_email = $_POST['edit_email'];
-    $update_password = $_POST['edit_password'];
-
-    try {
-        $query = "UPDATE `users` SET `name`=?, `email`=?, `password`=? WHERE id=?";
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$update_name, $update_email, $update_password, $update_id]);
-        header('location: admin_users.php');
-    } catch (PDOException $e) {
-        $messages[] = "Error at update: " . $e->getMessage();
-    }
-}
-
 //EFIT USER SECTION GOOD
 if (isset($_POST['update_user'])) {
     try {
@@ -180,7 +149,7 @@ if (isset($_POST['update_user'])) {
                             <h1 style="color:var(--green)">edit user</h1>
                         </div>
                         <div class="title2">
-                            <a href="admin.php" style="color: var(--green);">admin </a><span>/ edit user</span>
+                            <a href="admin.php">admin </a><span>/ edit user</span>
                         </div>
 
                         <div class="content">
@@ -208,7 +177,6 @@ if (isset($_POST['update_user'])) {
                                     $query = "SELECT * FROM `users` WHERE id = '$edit_id'";
                                     $stmt = $conn->prepare($query);
                                     $stmt->execute();
-                                    // Get the number of rows returned by the SELECT statement
                                     $num_rows = $stmt->rowCount();
 
                                     if ($num_rows > 0) {
@@ -241,7 +209,6 @@ if (isset($_POST['update_user'])) {
                                                     <label for="add-confirm-password">Confirm Password:</label>
                                                     <input type="password" name="add_confirm_password" id="add-confirm-password" value="" required><span id="confirmPasswordError" class="error"></span>
                                                     <span id="confirmPasswordError"></span>
-                                                    <!-- <input type="submit" name="add_user" value="Add User"> -->
                                                     <input class="form-button" type="submit" name="update_user" value="UPDATE">
 
                                                 </form>

@@ -66,18 +66,6 @@ function togglePassword() {
       passwordInput.type = "password";
     }
   }
-//   function togglePasswordVisibility() {
-//     var passwordInput = document.getElementById("add-password");
-//     var showPasswordBtn = document.getElementById("show-password-btn");
-  
-//     if (passwordInput.type === "password") {
-//       passwordInput.type = "text";
-//       showPasswordBtn.textContent = "Hide";
-//     } else {
-//       passwordInput.type = "password";
-//       showPasswordBtn.textContent = "Show";
-//     }
-//   }
 
 //CORRECT TOGGLE -UNIQUE ID
 function togglePasswordVisibility(inputId, buttonId) {

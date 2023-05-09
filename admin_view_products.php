@@ -120,24 +120,6 @@ if (isset($_GET['delete'])) {
     }
 }
 
-//update product
-// if (isset($_POST['update_product'])){
-//     $update_id = $_POST['update_id'];
-//     $update_name = $_POST['update_name'];
-//     $update_detail = $_POST['update_detail'];
-//     $update_price = $_POST['update_price'];
-//     $update_image = $_FILES['update_image']['name'];
-//     $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
-//     $update_image_folder = 'image/'.$update_image;
-
-//     $query1 = "UPDATE `products` SET `id`='$update_id', `name`='$update_name', `price`='$update_price', `product_detail`='$update_detail',
-//                 `image`='$update_image' where id = '$update_id'";
-//     $update_query = mysqli_query($conn, $query1) or die ('query failed');
-//     if ($update_query){
-//         move_uploaded_file($update_image_tmp_name, $update_image_folder);
-//         header('location: admin_product.php');
-//     }
-// }
 
 //update product
 if (isset($_POST['update_product'])) {
@@ -267,7 +249,7 @@ if (isset($_POST['update_product2'])) {
                             <h1 style="color:var(--green)">products</h1>
                         </div>
                         <div class="title2">
-                            <a href="admin.php" style="color: var(--green);">admin </a><span>/ view products</span>
+                            <a href="admin.php">admin </a><span>/ view products</span>
                         </div>
 
                         <div class="content">
@@ -308,6 +290,7 @@ if (isset($_POST['update_product2'])) {
                                     <input class="form-button" type="submit" name="add_product" value="Add Product">
                                 </form>
                             </section>
+
                             <!-- SHOW TABLE PRODUCTS WITH SORT AND FILTER-->
                             <section>
                                 <div id="popup-container" style="display: none;">
@@ -350,7 +333,7 @@ if (isset($_POST['update_product2'])) {
                                             } else {
                                                 echo '
                                                         <tr>
-                                                            <td colspan="5" class="empty">
+                                                            <td colspan="5" rowspan="2" class="empty">
                                                                 <p>No products added yet</p>
                                                             </td>
                                                         </tr>

@@ -108,8 +108,9 @@ if (isset($_POST['add_user'])) {
 
           <label for="add-confirm-password">Confirm Password:</label>
           <input type="password" name="add_confirm_password" id="add-confirm-password" value="" required><span id="confirmPasswordError" class="error"></span>
+          <!-- <input type="submit" name="add_user" value="register now" class="auth-button"> -->
 
-          <button type="submit" name="add_user">REGISTER</button>
+          <button type="submit" name="add_user" class="auth-button">REGISTER</button>
           <a href="login.php">
             <h3>Already have an account? Sign In here</h3>
           </a>

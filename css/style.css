@@ -21,11 +21,8 @@
     -webkit-text-size-adjust: 100%;
   }
   body{
-    /* background-image: url("public/assets/logo2.jpg"); */
-    /* background-image: url('public/assets/body-bg.jpg'); */
     /* background-image: url('image/body-bg.jpg'); */
     background-image: url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg');
-    /* background-image: url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg'); */
     background-size: auto;
     width: 100%;
   }
@@ -39,6 +36,10 @@
     padding: 2%;
     overflow: auto; 
     min-height: 100vh;
+  }
+
+  .not-ready{
+    text-decoration: line-through;
   }
 
   .not-found {
@@ -61,7 +62,6 @@
     text-align: center;
     text-transform: uppercase;
   }
-  
 
 /* -------auth------- */
 
@@ -78,7 +78,6 @@
           rgba(255, 255, 255, 0.2)
         ),
         url("https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg")
-        /* url("https://cdn8.dissolve.com/p/D2115_120_316/D2115_120_316_1200.jpg") */
           center;
       background-size: cover;
       display: flex;
@@ -123,7 +122,7 @@
       background-color: transparent;
   }
   
-  .Container .button{
+   .auth-button{
       width: 40%;
       border: none;
       padding: 15px 20px;
@@ -141,7 +140,7 @@
       color: teal;
   }
   
-  .Container .button:hover {
+  .Container .auth-button:hover {
       background-color: #067a65;
     }
 
@@ -179,11 +178,10 @@
 .logo-image {
   width: 100px;
   height: 80px;
-  background-image: url("public/assets/logo2.jpg");
+  /* background: url("images/logo1.png"); */
   background-size: contain;
   background-repeat: no-repeat;
-  /* transform: rotate(45deg) scale(1.2); */
-  /* margin-right: 10px; */
+  transform: rotate(185deg) scale(1.2);
   border-radius: 50%;
   display: inline-block;
 }
@@ -194,6 +192,14 @@
   display: flex;
   align-items: center;
   margin-right: auto;
+}
+.logo-container a{
+  text-decoration: none;
+  color:var(--olive);
+}
+.logo-container .h3{
+  font-family: 'Lucida Handwriting';
+  text-decoration: underline;
 }
 /*--------header------------------*/
 header{
@@ -349,6 +355,8 @@ transition: .2s linear;
     margin: 80px auto;
     text-align: center;
     padding: 50px;
+    background: rgba(255, 255, 255, 0.1) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ;
+    background-size:cover;
   }
 
   .subscribe-title {
@@ -416,7 +424,7 @@ transition: .2s linear;
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 2rem;
-    color: teal;
+    color: var(--dark-olive);
   }
 
   .about-us-content {
@@ -443,7 +451,7 @@ transition: .2s linear;
     height: auto;
     border-radius: 20%;
     border: 1px solid var(--olive);
-    background: url('public/assets/staff.webp') no-repeat center center;
+    /* background: url('images/staff.webp') no-repeat center center; */
     background-size: cover;
 
   }
@@ -494,6 +502,8 @@ transition: .2s linear;
 
   .thumb .box-container .box img {
     transition: all 800ms ease-in-out;
+    height:100px;
+    width:150px;
   }
 
   .thumb .box-container .box:hover img {
@@ -721,8 +731,8 @@ ul{
 }
 
 .banner{
-	background-image: url('public/assets/banner1.png');
-	background-size: cover;
+  background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ;
+  background-size:cover;
 	background-position: center;
 	background-color: var(--green);
 	width: 100%;
@@ -1047,19 +1057,17 @@ float: left;
 
 .products .button button,
 .products .button a {
-  background-color: var(--green);
-  color: white;
-  border: none;
+  /* background-color: var(--green); */
+  color: var(--dark-olive);
   padding: 10px;
   margin-right: 5px;
   border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
 .products .button button:hover,
 .products .button a:hover {
-  background-color: var(--dark-olive);
+  background-color: var(--light-olive);
 }
 
 .products button i {

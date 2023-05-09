@@ -1,15 +1,14 @@
 <header class="header">
 	<div class="flex">
 		<div class="logo-container">
-			<a href="home.php"><img src="img/logo1.png" class="logo-image" alt="logo" style=" transform: rotate(185deg) scale(1.2);"></a>
-			<a href="home.php" style="text-decoration: none; color:var(--olive);">
-				<h3 style="font-family: 'Lucida Handwriting'; text-decoration: underline;">CANTINA</h3>
+			<a href="home.php"><img src="images/logo1.png" class="logo-image" alt="logo"></a>
+			<a href="home.php">
+				<h3 class="h3">CANTINA</h3>
 			</a>
-			<a href="home.php"><img src="img/logo1.png" class="logo-image" alt="logo" style=" transform: rotate(45deg) scale(1.2);"></a>
+			<a href="home.php"><img src="images/logo1.png" class="logo-image" alt="logo" style=" transform: rotate(45deg) scale(1.2);"></a>
 		</div>
 		<nav class=" navbar">
 			<a href="home.php">home</a>
-			<a href="#about">about</a>
 			<a href="view_products.php">menu</a>
 		</nav>
 		<div class="icons">
@@ -30,6 +29,7 @@
 		</div>
 		<div class="user-box">
 			<p>Hello, <span><?php echo $_SESSION['user_name']; ?></span></p>
+			<p>Location, <span><?php echo $_SESSION['location']; ?></span></p>
 			<?php
 			if ($_SESSION['user_type'] == 'admin') { ?>
 				<a href="admin.php">Admin Section</a>

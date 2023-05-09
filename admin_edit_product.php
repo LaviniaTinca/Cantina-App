@@ -19,126 +19,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
 $messages = array();
 
 
-// //add product to the db
-// if (isset($_POST['add_product'])) {
-//     // Validate input
-//     if (empty($_POST['add_name'])) {
-//         $messages[] = "Product name is required.";
-//     } else {
-//         $add_name = filter_var($_POST['add_name'], FILTER_SANITIZE_STRING);
-//     }
-
-//     if (empty($_POST['add_detail'])) {
-//         $messages[] = "Product detail is required.";
-//     } else {
-//         $add_detail = filter_var($_POST['add_detail'], FILTER_SANITIZE_STRING);
-//     }
-
-//     if (empty($_POST['add_price'])) {
-//         $messages[] = "Product price is required.";
-//     } else {
-//         $add_price = filter_var($_POST['add_price'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-//     }
-
-//     if (empty($_FILES['add_image']['name'])) {
-//         $messages[] = "Product image is required.";
-//     } else {
-//         if ($_FILES['add_image']['error'] == UPLOAD_ERR_INI_SIZE || $_FILES['add_image']['error'] == UPLOAD_ERR_FORM_SIZE) {
-//             $messages[] = "The uploaded file is too large.";
-//         } elseif ($_FILES['add_image']['error'] == UPLOAD_ERR_NO_FILE) {
-//             $messages[] = "No file was uploaded.";
-//         } elseif ($_FILES['add_image']['error'] == UPLOAD_ERR_PARTIAL) {
-//             $messages[] = "The uploaded file was only partially uploaded.";
-//         } elseif ($_FILES['add_image']['error'] == UPLOAD_ERR_NO_TMP_DIR || $_FILES['add_image']['error'] == UPLOAD_ERR_CANT_WRITE || $_FILES['add_image']['error'] == UPLOAD_ERR_EXTENSION) {
-//             $messages[] = "An error occurred while uploading the file. Please try again later.";
-//         } elseif (!in_array($_FILES['add_image']['type'], ['image/jpeg', 'image/png', 'image/gif'])) {
-//             $messages[] = "The uploaded file must be a JPEG, PNG, or GIF image.";
-//         } else {
-//             $add_image_name = $_FILES['add_image']['name'];
-//             $add_image_tmp_name = $_FILES['add_image']['tmp_name'];
-//             $add_image_folder = 'image/' . $add_image_name;
-//         }
-//     }
-
-//     // Insert product into database
-//     if (empty($messages)) {
-//         try {
-//             $conn->beginTransaction();
-
-//             // If image was uploaded, move it to the "image" directory
-//             if (!empty($add_image_name)) {
-//                 move_uploaded_file($add_image_tmp_name, $add_image_folder);
-//             }
-
-//             $query = "INSERT INTO `products` (`name`, `price`, `product_detail`, `image`) VALUES (?, ?, ?, ?)";
-//             $stmt = $conn->prepare($query);
-//             $stmt->execute([$add_name, $add_price, $add_detail, $add_image_folder]);
-
-//             $conn->commit();
-//             header('location: admin_view_products.php');
-//         } catch (PDOException $e) {
-//             $conn->rollback();
-//             echo "Error adding product: " . $e->getMessage();
-//         }
-//     } else {
-//         // Display messages
-//         // foreach ($errors as $error) {
-//         //     echo $error . "<br>";
-//         // }
-//     }
-// }
-
-
-// //delete user without image in the table
-// if (isset($_GET['delete'])) {
-//     $delete_id = $_GET['delete'];
-//     try {
-//         $query = "SELECT image FROM `products` WHERE id = ?";
-//         $stmt = $conn->prepare($query);
-//         $stmt->execute([$delete_id]);
-//         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-//         if ($result) {
-//             unlink('image/' . $result['image']);
-
-//             $query = "DELETE FROM `products` WHERE id = ?";
-//             $stmt = $conn->prepare($query);
-//             $stmt->execute([$delete_id]);
-
-//             $query = "DELETE FROM `wishlist` WHERE user_id = ?";
-//             $stmt = $conn->prepare($query);
-//             $stmt->execute([$delete_id]);
-
-//             $query = "DELETE FROM `cart` WHERE id = ?";
-//             $stmt = $conn->prepare($query);
-//             $stmt->execute([$delete_id]);
-//         }
-
-//         header('location: admin_user.php');
-//     } catch (PDOException $e) {
-//         echo "Error deleting product: " . $e->getMessage();
-//     }
-// }
-
-// //update product
-// // if (isset($_POST['update_product'])){
-// //     $update_id = $_POST['update_id'];
-// //     $update_name = $_POST['update_name'];
-// //     $update_detail = $_POST['update_detail'];
-// //     $update_price = $_POST['update_price'];
-// //     $update_image = $_FILES['update_image']['name'];
-// //     $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
-// //     $update_image_folder = 'image/'.$update_image;
-
-// //     $query1 = "UPDATE `products` SET `id`='$update_id', `name`='$update_name', `price`='$update_price', `product_detail`='$update_detail',
-// //                 `image`='$update_image' where id = '$update_id'";
-// //     $update_query = mysqli_query($conn, $query1) or die ('query failed');
-// //     if ($update_query){
-// //         move_uploaded_file($update_image_tmp_name, $update_image_folder);
-// //         header('location: admin_product.php');
-// //     }
-// // }
-
 //update product
 if (isset($_POST['update_product'])) {
     $update_id = $_POST['update_id'];
@@ -267,7 +147,7 @@ if (isset($_POST['update_product2'])) {
                             <h1 style="color:var(--green)">edit product</h1>
                         </div>
                         <div class="title2">
-                            <a href="admin.php" style="color: var(--green);">admin </a><span>/ edit product</span>
+                            <a href="admin.php">admin </a><span>/ edit product</span>
                         </div>
 
                         <div class="content">
@@ -295,7 +175,6 @@ if (isset($_POST['update_product2'])) {
                                     $query = "SELECT * FROM `products` WHERE id = '$edit_id'";
                                     $stmt = $conn->prepare($query);
                                     $stmt->execute();
-                                    // Get the number of rows returned by the SELECT statement
                                     $num_rows = $stmt->rowCount();
 
                                     if ($num_rows > 0) {

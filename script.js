@@ -27,21 +27,21 @@ userBtn.addEventListener('click', function(){
 //         alert("Please enter a valid email address.");
 //       }
 //     });
-$(document).ready(function() {
-  const emailNewsletterInput = $(".subscribe-input");
-  const subscribeButton = $(".subscribe-button");
+// $(document).ready(function() {
+//   const emailNewsletterInput = $(".subscribe-input");
+//   const subscribeButton = $(".subscribe-button");
 
-  subscribeButton.click(function() {
-    const email = emailNewsletterInput.val().trim();
+//   subscribeButton.click(function() {
+//     const email = emailNewsletterInput.val().trim();
 
-    if (email !== "") {
-      // Send email to server to subscribe to newsletter
-      console.log("Subscribed with email:", email);
-    } else {
-      alert("Please enter a valid email address.");
-    }
-  });
-});
+//     if (email !== "") {
+//       // Send email to server to subscribe to newsletter
+//       console.log("Subscribed with email:", email);
+//     } else {
+//       alert("Please enter a valid email address.");
+//     }
+//   });
+// });
 
   
 // --homepage slider---
