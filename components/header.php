@@ -10,6 +10,7 @@
 		<nav class=" navbar">
 			<a href="home.php">home</a>
 			<a href="view_products.php">menu</a>
+			<a href="contact.php">contact</a>
 		</nav>
 		<div class="icons">
 			<i class="bx bxs-user" id="user-btn"></i>

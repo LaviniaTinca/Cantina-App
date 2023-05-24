@@ -11,6 +11,10 @@ if (!isset($_SESSION['user_id'])) {
     header('location:login.php');
 }
 
+if ($_SESSION['user_type'] === 'user') {
+    header('location:home.php');
+}
+
 if (isset($_POST['logout'])) {
     session_destroy();
     header("location: login.php");

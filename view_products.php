@@ -123,7 +123,7 @@ if (isset($_POST['add_to_cart'])) {
 	</section>
 
 	<main class="main">
-		<div class="banner" style=" height: 200px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
+		<div class="banner" style=" height: 200px; ">
 			<h1 style="color: var(--green)">today's menu</h1>
 		</div>
 		<div class="title2">
