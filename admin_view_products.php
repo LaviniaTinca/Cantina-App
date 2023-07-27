@@ -163,7 +163,7 @@ if (isset($_POST['update_product'])) {
 }
 
 
-//update product with validation, shoud add old image and transaction
+//update product with validation, should add old image and transaction
 if (isset($_POST['update_product2'])) {
     $update_id = $_POST['update_id'];
     $update_name = $_POST['update_name'];
@@ -248,12 +248,12 @@ if (isset($_POST['update_product2'])) {
                 <div class="admin-container">
                     <?php include('components/admin/sidebar.php'); ?>
                     <div class="panel-container">
-                        <div class="banner" style=" height: 100px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
+                        <!-- <div class="banner" style=" height: 100px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
                             <h1 style="color:var(--green)">products</h1>
                         </div>
                         <div class="title2">
                             <a href="admin.php">admin </a><span>/ view products</span>
-                        </div>
+                        </div> -->
 
                         <div class="content">
                             <!-- //MESSAGES -->
@@ -274,7 +274,7 @@ if (isset($_POST['update_product2'])) {
 
                             <!-- Add Product Section (initially hidden) -->
                             <a href="#" id="add-product-btn" style="text-decoration: none;">
-                                <h2 style="color: var(--green); margin-left: 30px;"> * Add Product</h2>
+                                <h2 style="color: var(--green); margin-left: 30px;"> + Add Product</h2>
                             </a>
                             <section class="add-products" id="add-products" style=" display: none; margin:0px 30px">
                                 <form class="Form" action="admin_view_products.php" method="post" enctype="multipart/form-data">
@@ -293,6 +293,7 @@ if (isset($_POST['update_product2'])) {
                                     <input class="form-button" type="submit" name="add_product" value="Add Product">
                                 </form>
                             </section>
+                            <!-- <input type="text" id="search-input" placeholder="Search by keyword..." style="width:min-content"> -->
 
                             <!-- SHOW TABLE PRODUCTS WITH SORT AND FILTER-->
                             <section>
@@ -306,7 +307,7 @@ if (isset($_POST['update_product2'])) {
                                                 <th class="sortable" data-column="image">Image</th>
                                                 <th class="sortable" data-column="name">Name</th>
                                                 <th class="sortable" data-column="price">Price</th>
-                                                <th class="sortable" data-column="product_detail">Details</th>
+                                                <th class="sortable" data-column="category">Category</th>
                                                 <!-- <th>Image</th> -->
                                                 <th>Actions</th>
                                             </tr>
@@ -323,10 +324,18 @@ if (isset($_POST['update_product2'])) {
                                             ?>
                                                     <tr>
                                                         <td> <img src="image/<?php echo $product['image']; ?>" alt="product image" class="product-image"></td>
-                                                        <td><?php echo $product['name']; ?></td>
+                                                        <td><?php echo substr($product['name'], 0, 25) . '...'; ?></td>
                                                         <td><?php echo $product['price']; ?></td>
-                                                        <td><?php echo substr($product['product_detail'], 0, 15) . '...'; ?></td>
+                                                        <td><?php echo substr($product['category'], 0, 15) . '...'; ?></td>
                                                         <td>
+                                                            <!-- <a href="admin_menu.php?edit=<?php echo $product['id']; ?>" class="add-to-menu" id="add">menu</a> -->
+                                                            <form action="admin_menu.php" method="post" class="add-to-menu-form">
+                                                                <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                                                                <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
+                                                                <input class="form-button" type="submit" name="add-to-menu" value="-> menu">
+
+                                                                <!-- <button type="submit" class="add-to-menu">Add to Menu</button> -->
+                                                            </form>
                                                             <a href="admin_edit_product.php?edit=<?php echo $product['id']; ?>" class="edit" id="edit">edit</a>
                                                             <a href="admin_view_products.php?delete=<?php echo $product['id']; ?>" class="delete" onclick="return confirm('You really want to delete <?php echo $product['name']; ?>?');">delete</a>
                                                         </td>
@@ -408,6 +417,8 @@ if (isset($_POST['update_product2'])) {
             });
         });
     </script>
+    <?php include 'components/alert.php'; ?>
+
 </body>
 
 </html>

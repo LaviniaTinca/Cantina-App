@@ -17,7 +17,7 @@ if (isset($_POST['logout'])) {
 }
 
 // Handle email subscription
-if (isset($_POST['email'])) {
+if (isset($_POST['subscribe-button'])) {
   $email = $_POST['email'];
   $id = unique_id();
 
@@ -77,12 +77,12 @@ if (isset($_POST['email'])) {
       <?php include 'components/rotateIcons.php'; ?>
     </section>
 
-    <div class="banner">
-      <!-- MENU SUMMARY SECTION -->
-      <section id="menu">
-        <?php include 'components/menu0.php'; ?>
-      </section>
-    </div>
+    <!-- <div class="banner"> -->
+    <!-- MENU SUMMARY SECTION -->
+    <section id="menu">
+      <?php include 'components/menu0.php'; ?>
+    </section>
+    <!-- </div> -->
 
     <!-- ABOUT US SECTION -->
     <section id="about">
@@ -100,42 +100,8 @@ if (isset($_POST['email'])) {
     <?php include 'components/footer.php'; ?>
   </section>
 
-  <script>
-    //SLIDER
-    let slideIndex = 1;
-    showSlides(slideIndex);
-
-    function plusSlides(n) {
-      showSlides(slideIndex += n);
-    }
-
-    function currentSlide(n) {
-      showSlides(slideIndex = n);
-    }
-
-    function showSlides(n) {
-      let i;
-      let slides = document.getElementsByClassName("mySlides");
-      let dots = document.getElementsByClassName("dot");
-      if (n > slides.length) {
-        slideIndex = 1
-      }
-      if (n < 1) {
-        slideIndex = slides.length
-      }
-      for (i = 0; i < slides.length; i++) {
-        slides[i].style.display = "none";
-      }
-      for (i = 0; i < dots.length; i++) {
-        dots[i].className = dots[i].className.replace(" active", "");
-      }
-      slides[slideIndex - 1].style.display = "block";
-      dots[slideIndex - 1].className += " active";
-    }
-  </script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+  <!-- <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script> -->
 
   <script src="script.js"></script>
   <?php include 'components/alert.php'; ?>

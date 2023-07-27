@@ -1,5 +1,5 @@
-		<header class="header" style="background: rgba(255, 255, 255, 0.9) url('images/banner1.png') ; background-size: cover">
-
+		<!-- <header class="header" style="background: rgba(255, 255, 255, 0.9) url('images/banner1.png') ; background-size: cover"> -->
+		<header class="header">
 			<div class="flex">
 
 				<div class="logo-container">
@@ -9,7 +9,10 @@
 					</a>
 				</div>
 				<nav class=" navbar">
+					<!-- <input type="text" id="search-input" placeholder="Search by keyword..." style="width:min-content"> -->
+					<!-- <input type="date" class="menu-date-picker" id="datePicker" onchange="updateMenuHeading()"> -->
 					<input type="text" id="search-input" placeholder="Search by keyword..." style="width:min-content">
+
 				</nav>
 				<div class="icons">
 					<i class="bx bxs-user" id="user-btn"></i>

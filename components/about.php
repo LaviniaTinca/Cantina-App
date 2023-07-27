@@ -1,24 +1,21 @@
  <div class="about-us-container" id="about-us">
+   <!-- <div class="banner">
+     <h1 class=" main-page-title">About Us</h1>
 
-   <h1 class=" main-page-title">About Us</h1>
+   </div> -->
+   <h1 class=" main-page-title">Despre noi</h1>
 
    <img src="images/staff.webp" alt="Our Team" class="about-us-img">
 
    <p class="about-us-content">
-     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et tortor quis nisl efficitur semper eu ac odio.
-     Nullam eget velit tincidunt, blandit ipsum nec, viverra lorem. Vestibulum posuere quam a vestibulum finibus.
-     Aenean aliquam sapien at ante sollicitudin commodo. Fusce quis imperdiet magna, nec egestas ipsum.
-     Morbi faucibus enim vitae urna commodo, at semper nisi luctus. Sed pharetra erat eu diam commodo, id viverra eros tristique.
+     Suntem o echipă unită de bucătari pasionați, dedicați să aducem experiențe culinare de neuitat pentru fiecare client. Cu o bogată experiență în arta culinară și o dragoste profundă pentru ingrediente proaspete și autentice, ne străduim să punem în valoare aromele și gusturile autentice ale fiecărui preparat. Fiecare membru al echipei noastre aduce un talent unic și creativitate în bucătărie, asigurându-ne că fiecare masă servită este o operă de artă culinară. Ne mândrim cu profesionalismul și atenția noastră la detalii, creând astfel experiențe gastronomice inedite, care să încânte toate simțurile clienților noștri.
    </p>
 
    <p class="about-us-content">
-     Morbi in quam auctor, elementum libero eu, tincidunt odio. Etiam sit amet purus et sapien rhoncus consectetur.
-     Fusce vel lacinia sapien. Nullam laoreet sem vel mauris pharetra dictum. Praesent vitae massa sed ante luctus rutrum vel eu enim.
-     Praesent id dolor ut velit tincidunt tincidunt ut at erat. Nullam ultrices nulla et sagittis elementum.
-     Phasellus euismod, leo ut auctor dignissim, lorem eros sagittis turpis, sit amet suscipit nulla lacus a est.
+     Cu o grijă deosebită pentru toate preferințele alimentare, echipa noastră de bucătari este pregătită să facă față tuturor cerințelor dietetice, inclusiv zilele de post și sărbătorile speciale. Cu o abordare creativă și inspirată, pregătim mâncăruri delicioase și sănătoase pentru a sărbători fiecare ocazie cu bucurie și gust. Fie că este vorba despre preparate vegane și vegetariene pentru zilele de post sau rețete tradiționale adaptate pentru sărbători, ne asigurăm că fiecare masă este plină de savoare și iubire.
    </p>
 
    <p class="about-us-contact">
-     Come to visit us and take the <a href="#menu"><strong>lunch meal!</strong></a>.
+     Vino și savurează <a href="view_menu.php"><strong> un prânz delicios!</strong></a>.
    </p>
  </div>

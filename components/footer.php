@@ -1,36 +1,30 @@
   <footer>
     <div class="wrapper">
       <div class="footer-column">
-        <h3>About Us</h3>
+        <h3>Cantina</h3>
         <ul>
-          <li><a href="#">Our Story</a></li>
-          <li><a href="#">The Team</a></li>
-          <li><a href="#">Jobs</a></li>
+          <li><i class='bx bx-home'></i><a href="home.php"> Acasă</a></li>
+          <li><i class='bx bx-group'></i><a href="#about"> Despre noi</a></li>
+          <li><i class='bx bx-menu'></i><a href="view_menu.php"> Meniu</a></li>
         </ul>
       </div>
       <div class="footer-column">
-        <h3>Menu</h3>
+        <h3>Program</h3>
         <ul>
-          <li><a href="#">Food</a></li>
-          <li><a href="#">Drinks</a></li>
-          <li><a href="#">Specials</a>
-            <ul>
-              <li><a href="#">Happy Hour</a></li>
-              <li><a href="#">Daily Specials</a></li>
-            </ul>
-          </li>
+          <li>Luni-Vineri</li>
+          <li><i class='bx bx-time'></i> 12-15</li>
         </ul>
       </div>
       <div class="footer-column">
-        <h3>Contact Us</h3>
+        <h3>Contact</h3>
         <ul>
-          <li>Dorobantilor FN St.</li>
-          <li>Cluj-Napoca, RO</li>
-          <li>0742 222 222</li>
-          <li><a href="#">cantina@example.ro</a></li>
+          <li> <i class='bx bx-phone'></i>
+            0742 222 222</li>
+          <li><a href="contact.php"><i class='bx bx-map'></i> Str. Episcop Nicolae Ivan, FN </a></li>
+          <li><a href="contact.php"> Cluj-Napoca, RO</li></a>
         </ul>
       </div>
     </div>
 
-    <p>&copy; 2023 Cantina - Lavinia Tinca. All Rights Reserved.</p>
+    <p>&copy; 2023 Cantina - Lavinia Ținca. All Rights Reserved.</p>
   </footer>

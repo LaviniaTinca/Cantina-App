@@ -61,6 +61,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                                 <p>de stilizat sidebar + icons</p>
                                 <br>
                                 <p>mesaj la subscribe success</p>
+                                <p>add product - SELECT CATEGORY / ADD CATEGORY</p>
+                                <p>data meniului - la alegerea datei din picker se actualizeaza in link dar la refresh dispare</p>
 
                             </div>
                             <hr>
