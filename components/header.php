@@ -15,18 +15,10 @@
 			<a href="contact.php" <?php if (basename($_SERVER['PHP_SELF']) == 'contact.php') echo 'class="active"'; ?>>contact</a>
 			<?php
 			if ($_SESSION['user_type'] == 'admin') { ?>
-				<!-- <a href="view_products.php" <?php echo (basename($_SERVER['PHP_SELF']) == 'view_products.php') ? 'class="active"' : ''; ?>>products</a> -->
-				<a href="admin.php" <?php if (basename($_SERVER['PHP_SELF']) == 'admin.php') echo 'class="active"'; ?>>Admin</a>
+				<a href="admin/admin.php" <?php if (basename($_SERVER['PHP_SELF']) == 'admin.php') echo 'class="active"'; ?>>Admin</a>
 			<?php } ?>
 		</nav>
 		<div class="icons">
-			<!-- <i class="bx bxs-user" id="user-btn"></i> -->
-			<!-- <?php
-					$count_wishlist_items = $conn->prepare("SELECT * FROM `wishlist` WHERE user_id = ?");
-					$count_wishlist_items->execute([$user_id]);
-					$total_wishlist_items = $count_wishlist_items->rowCount();
-					?>
-			<a href="not_found.php?page=wishlist" class="cart-btn"><i class="bx bx-heart"></i><sup><?= $total_wishlist_items ?></sup></a> -->
 			<?php
 			$count_cart_items = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ?");
 			$count_cart_items->execute([$user_id]);
@@ -37,12 +29,8 @@
 			<i class="bx bxs-user" id="user-btn"></i>
 		</div>
 		<div class="user-box">
-			<p>Buna ziua, <span><?php echo $_SESSION['user_name']; ?></span></p>
-			<!-- <?php
-					if ($_SESSION['user_type'] == 'admin') { ?>
-				<a href="admin.php">Admin Section</a>
-			<?php } ?> -->
-			<a href="logout.php" class="logout-btn">Logout</a>
+			<p><span><?php echo $_SESSION['user_name']; ?></span></p>
+			<a href="logout.php" class="logout-btn">Deconectare</a>
 		</div>
 
 	</div>

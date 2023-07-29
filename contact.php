@@ -19,22 +19,30 @@ if (isset($_POST['logout'])) {
 // Handle contact us 
 if (isset($_POST['contact'])) {
     $id = unique_id();
+    $name = $_POST['name'];
     $email = $_POST['email'];
     $message = $_POST['message'];
     $number = $_POST['number'];
 
 
-    // Check if email already exists
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    try {
+        // Check if email already exists
+
+        // $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+        // $stmt->execute([$email]);
+        // $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 
-    $stmt = $conn->prepare("INSERT INTO messages(`id`, `user_id`, `message`, `number`) VALUES (?,?,?, ?)");
-    if ($stmt->execute([$id, $user['id'], $message, $number])) {
-        $success_msg[] = "Mesajul a fost trimis!";
-    } else {
-        $error_msg[] = "Eroare la trimiterea mesajului";
+        // $stmt = $conn->prepare("INSERT INTO messages(`id`, `user_id`, `message`, `number`) VALUES (?,?,?, ?)");
+        $stmt = $conn->prepare("INSERT INTO messages(`id`, `name`, `email`, `number`, `message`) VALUES (?,?,?,?,?)");
+        // if ($stmt->execute([$id, $user['id'], $message, $number])) {
+        if ($stmt->execute([$id, $name, $email, $number, $message])) {
+            $success_msg[] = "Mesajul a fost trimis!";
+        } else {
+            $error_msg[] = "Eroare la trimiterea mesajului";
+        }
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
 ?>

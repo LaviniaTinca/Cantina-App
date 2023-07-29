@@ -53,8 +53,7 @@ if (isset($_POST['update_cart'])) {
 
     $update_qty = $conn->prepare("UPDATE `cart` SET qty = ? WHERE id = ?");
     $update_qty->execute([$qty, $cart_id]);
-
-    // $success_msg[] = 'cart quantity updated successfully';
+    $success_msg[] = 'cantitatea produsului a fost modificata';
 }
 
 //delete menu item
@@ -152,21 +151,25 @@ if (isset($_POST['empty_cart'])) {
                             ?>
                                     <tr>
                                         <td>
-                                            <img src=" image/<?= $fetch_products['image']; ?>" class="img">
+                                            <a href="view_item.php?pid=<?php echo $fetch_products['id']; ?>">
+                                                <img src=" image/<?= $fetch_products['image']; ?>" alt="product image" class="img">
+                                            </a>
                                         </td>
                                         <td>
-                                            <h3 class="name"><?= $fetch_products['name']; ?></h3>
+                                            <a href="view_item.php?pid=<?php echo $fetch_products['id']; ?>">
+                                                <h3 class="name"><?= $fetch_products['name']; ?></h3>
+                                            </a>
                                         </td>
                                         <td><?php echo $fetch_products['measure']; ?></td>
                                         <td>
-                                            <form method="post" action="">
+                                            <form method="post" action="cart.php">
                                                 <input type="hidden" name="cart_id" value="<?= $fetch_cart['id']; ?>">
                                                 <input type="number" name="qty" required min="1" value="<?= $fetch_cart['qty']; ?>" max="99" maxlength="2" class="qty edit">
                                                 <button type="submit" name="update_cart" title="Modifică">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <input type="hidden" name="cart_id" value="<?= $fetch_cart['id']; ?>">
-                                                <a href="cart.php?delete=<?php echo $fetch_cart['id']; ?>" class="delete" onclick="return confirm('You really want to delete <?php echo $fetch_products['name']; ?> from the cart?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
+                                                <a href="cart.php?delete=<?php echo $fetch_cart['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi produsul <?php echo $fetch_products['name']; ?> din coș?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
                                             </form>
                                         </td>
                                         <td><?= $fetch_products['price']; ?> Ron</td>
@@ -182,7 +185,12 @@ if (isset($_POST['empty_cart'])) {
                         </tbody>
                     </table>
                 <?php } else {
-                echo '<p class="empty">Nu au fost adăugate produse!</p>';
+                echo '<p class="empty">Coșul de cumpărături este gol!</p>';
+                echo '
+                <div class="button flex" style="width:30%">
+                <a href="view_menu.php" class="cart-btn">Continuă cumpărăturile</a>
+                </div>
+                ';
                 // echo '<p class="empty">No products added yet!</p>';
             } ?>
 
@@ -192,7 +200,7 @@ if (isset($_POST['empty_cart'])) {
                         <div class="button">
                             <a href="view_menu.php" class="cart-btn">Continuă cumpărăturile</a>
                             <form method="post">
-                                <button type="submit" name="empty_cart" class="cart-btn transparent-button" onclick="return confirm('Confirmi golirea coșului?')"><i class="fas fa-trash-alt" title="Golește"></i> Golește coșul</button>
+                                <button type="submit" name="empty_cart" class="cart-btn transparent-button" onclick="return confirm('Dorești să golești coșul de cumpărături?')"><i class="fas fa-trash-alt" title="Golește"></i> Golește coșul</button>
                             </form>
                             <a href="checkout.php" class="cart-btn">Comandă</a>
 

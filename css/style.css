@@ -5,9 +5,13 @@
     box-sizing: border-box;
   }
   :root{
-    --green : #87a243;
+    /* --green : #87a243; */
+    --sage: #B6C197;
+    --green: #8A9B68;
+    --chamoise : rgb(147, 123, 99);
     /* --olive: teal; */
-    --olive: olivedrab;
+    --olive: #8A9B68;
+    /* --olive: olivedrab; */
     /* --dark-olive: teal; */
     --dark-olive: #556b2f;
     --teal: teal;
@@ -1251,14 +1255,14 @@ float: left;
 
 /*------view CART product section-------*/
 /* Custom style for the icon */
-button i.fas.fa-edit {
-  color: teal;
+ i.fas.fa-edit {
+  color: teal!important;
   font-size: 18px;
 }
 
 /* Custom style for the delete icon */
-button i.fas.fa-trash-alt {
-  color: #c23838;
+ i.fas.fa-trash-alt {
+  color: #c23838!important;
   font-size: 18px;
 }
 .cart .box-container{
@@ -1521,7 +1525,7 @@ button i.fas.fa-trash-alt {
 } */
 
 .sidebar > ul > li:hover > a {
-  color: var(--light-green);
+  color: #fff;
 }
 
 .sidebar > ul > li:hover {
@@ -1533,7 +1537,7 @@ button i.fas.fa-trash-alt {
 }
 
 .sidebar > ul > li.active {
-  background-color: var(--light-green);
+  background-color: #fff;
   color: var(--dark-olive);
 }
 
@@ -1549,7 +1553,7 @@ button i.fas.fa-trash-alt {
 
 .sidebar a i:hover {
   margin-right: 10px;
-  color: var(--light-olive);
+  color: #fff;
 }
 
 /* Make sidebar responsive */
@@ -1595,7 +1599,7 @@ button i.fas.fa-trash-alt {
 }
 
 .admin-container .sidebar > ul > li:hover > a {
-  color: var(--light-green);
+  color: #fff;
 }
 
 .admin-container .sidebar > ul > li:hover {
@@ -1608,11 +1612,11 @@ button i.fas.fa-trash-alt {
 }
 
 .admin-container .sidebar > ul > li.active {
-  background-color: var(--light-green);
+  background-color: #fff;
 }
 
 .admin-container .sidebar a {
-  color: var(--light-green);
+  color: #fff;
   text-decoration: none;
 }
 
@@ -1690,7 +1694,7 @@ height:100%;
 }
 
 .panel-container .content {
-  padding: 2rem;
+  padding: 1.2rem;
   flex-grow: 1;
 }
 .content h2{
@@ -1738,7 +1742,115 @@ height:100%;
   padding: 20px;
 } */
 
+/*-----admin general section----------*/
 
+.widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-gap: 10px;
+}
+
+.widgets .widget {
+  /* background-color: #fff; */
+  border: 2px solid #ccc;
+  padding: 1rem;
+  text-align: center;
+  border-radius: 5px;
+  margin: 0.5rem;
+  width: 200px;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.jump {
+  transition: transform 0.3s ease-in-out; /* Add a transition to the transform property */
+  cursor: pointer;
+}
+
+.jump:hover {
+  transform: translateY(-10px); /* Apply the jump effect on hover by translating the element vertically */
+  opacity: 0.8;
+}
+
+.user-widget {
+  background-color: var(--cart);
+}
+
+.message-widget {
+  background-color: teal;
+}
+
+.subscriber-widget {
+  background-color: var(--chamoise);
+}
+
+.settings-widget {
+  background-color: transparent;
+  color: var(--green);
+}
+
+.product-widget {
+  background-color: #EE964B;
+  /* background-color: #931F1D; */
+}
+
+.order-widget {
+  background-color: #F4D35E;
+}
+
+.widgets .widget h3 {
+  font-size: 22px;
+  margin-bottom: 0.5rem;
+}
+
+.widgets .widget p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.widgets .widget .small-widget {
+  background-color: #f9f9f9;
+  border: 2px solid #ccc;
+  padding: 0.25rem;
+  text-align: center;
+  border-radius: 3px;
+  margin: 0.25rem;
+  width: 40px;
+  height: 30px;
+}
+
+.widgets .widget .small-widget i {
+  font-size: 18px;
+  color: #333;
+}
+
+.show-card {
+  margin: 10px;
+}
+
+.show-card .box-container {
+  display: grid;
+  /* grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); */
+  grid-template-columns: repeat(2, minmax(250px, 1fr));
+
+  gap: 20px;
+}
+
+.show-card .box {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+}
+
+.show-card .box img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
 /* ------------admin table section for products------------ */
 
   .product-table-container {
@@ -1853,4 +1965,22 @@ height:100%;
     width: 200px;
     height: auto;
   }
+
+    /* -------------END admin update product---------- */
+    /* ------------------admin messages/subscribers---------- */
+
+.message-content{
+  margin: .5rem;
+  color: var(--teal);
+}
+
+.subscriber-content{
+  margin: .5rem;
+  color: var(--chamoise);
+}
+
+.announcement-content{
+  margin: .5rem;
+  color: var(--cart);
+}
   

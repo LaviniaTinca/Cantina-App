@@ -36,7 +36,7 @@
             ?>
         </div>
 
-        <button id="read-more-btn" class="menu0-btn">Citește mai MULT.....</button>
+        <button id="read-more-btn" class="menu0-btn">Citește MAI MULT.....</button>
     </section>
 </div>
 

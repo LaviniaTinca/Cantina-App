@@ -139,7 +139,7 @@ if (isset($_POST['add_to_cart'])) {
                         while ($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)) {
 
                     ?>
-                            <form action="view_products.php" method="post" class="box">
+                            <form action="view_menu.php" method="post" class="box">
                                 <!-- <a href="not_found.php?page=checkout?get_id=<?= $fetch_products['id']; ?>" class="add-btn">add</a> -->
                                 <div class="products-img-wrapper">
                                     <img src="image/<?= $fetch_products['image']; ?>" alt="product image" class="img product-image">

@@ -84,7 +84,7 @@ if (in_array($request_uri, $not_found_pages)) {
                     // while ($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)) {
                     $fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)
             ?>
-                    <form action="view_products.php" method="post">
+                    <form action="view_menu.php" method="post">
                         <img src="image/<?php echo $fetch_products['image']; ?>">
                         <div class="detail">
                             <div class="name"><?php echo $fetch_products['name']; ?></div>
@@ -99,9 +99,7 @@ if (in_array($request_uri, $not_found_pages)) {
                             </div>
                             <input type="hidden" name="product_id" value="<?php echo $fetch_products['id']; ?>">
                             <div class="button">
-                                <!-- <button type="submit" name="add_to_wishlist" class="btn">add to wishlist<i class="bx bx-heart"></i></button> -->
                                 <input type="hidden" name="qty" value="1" min="0" class="quantity">
-                                <!-- <button type="submit" name="add_to_cart" class="menu0-btn">Add to cart <i class="bx bx-cart"></i></button> -->
                             </div>
                             <div class="flex">
                                 <p class="price"> <?= $fetch_products['price']; ?> Ron</p>
