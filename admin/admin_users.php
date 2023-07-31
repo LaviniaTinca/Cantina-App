@@ -201,7 +201,7 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css"> -->
 
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -243,8 +243,6 @@ try {
             background-color: var(--green);
         }
     </style>
-
-
 
 </head>
 
@@ -308,7 +306,7 @@ try {
                             </section>
 
                             <!--Add New User Modal box -->
-                            <div class="modal" id="user-modal">
+                            <section class="modal" id="user-modal">
                                 <div class="modal-content">
                                     <span class="close" id="close-modal">&times;</span>
                                     <h2>Utilizator nou</h2>
@@ -332,7 +330,7 @@ try {
                                         <input class="form-button" type="submit" name="add_user" id="add_user" value="ÎNREGISTREAZĂ">
                                     </form>
                                 </div>
-                            </div>
+                            </section>
                             <!-- Add the search input2 field -->
                             <!-- <input type="text" id="search-input2" placeholder="Search the whole table..."> -->
 

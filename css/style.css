@@ -1825,6 +1825,23 @@ height:100%;
   color: #333;
 }
 
+/* Adjust the padding and other styles as needed */
+.form-button {
+  padding: 8px 16px;
+  background-color: #f39c4b;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+/* Replace 'fas fa-utensils' with the desired Font Awesome icon class */
+.meal-icon::before {
+  font-family: "Font Awesome 6 Free";
+  content: "\f2e7"; /* Replace with the Unicode value of your desired icon */
+  margin-right: 5px; /* Optional: Add spacing between the icon and the text */
+}
+
+
 .show-card {
   margin: 10px;
 }
@@ -1859,6 +1876,38 @@ border-color: #800000;
   height: 50px;
   border-radius: 50%;
   margin-right: 10px;
+}
+.pagination {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin-top: 20px;
+  /* Add some margin at the top */
+}
+
+.pagination li {
+  margin: 0 5px;
+}
+
+.pagination li a {
+  text-decoration: none;
+  color: #333;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.pagination li a.active {
+  background-color: var(--light-green);
+  color: #333;
+  border-color: var(--dark-olive);
+}
+
+.pagination li a:hover {
+  background-color: var(--green);
 }
 /* ------------admin table section for products------------ */
 

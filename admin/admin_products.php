@@ -31,11 +31,21 @@ if (isset($_POST['add_product'])) {
     } else {
         $add_name = filter_var($_POST['add_name'], FILTER_SANITIZE_STRING);
     }
-
     if (empty($_POST['add_detail'])) {
         $messages[] = "Product detail is required.";
     } else {
         $add_detail = filter_var($_POST['add_detail'], FILTER_SANITIZE_STRING);
+    }
+
+    if (empty($_POST['category'])) {
+        $messages[] = "Product category is required.";
+    } else {
+        $category = filter_var($_POST['category'], FILTER_SANITIZE_STRING);
+    }
+    if (empty($_POST['measure'])) {
+        $messages[] = "Product measure is required.";
+    } else {
+        $measure = filter_var($_POST['measure'], FILTER_SANITIZE_STRING);
     }
 
     if (empty($_POST['add_price'])) {
@@ -55,13 +65,13 @@ if (isset($_POST['add_product'])) {
             $messages[] = "The uploaded file was only partially uploaded.";
         } elseif ($_FILES['add_image']['error'] == UPLOAD_ERR_NO_TMP_DIR || $_FILES['add_image']['error'] == UPLOAD_ERR_CANT_WRITE || $_FILES['add_image']['error'] == UPLOAD_ERR_EXTENSION) {
             $messages[] = "An error occurred while uploading the file. Please try again later.";
-        } elseif (!in_array($_FILES['add_image']['type'], ['image/jpeg', 'image/png', 'image/gif'])) {
+        } elseif (!in_array($_FILES['add_image']['type'], ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'])) {
             $messages[] = "The uploaded file must be a JPEG, PNG, or GIF image.";
         } else {
             $add_image_name = $_FILES['add_image']['name'];
             $add_image_size = $_FILES['add_image']['size'];
             $add_image_tmp_name = $_FILES['add_image']['tmp_name'];
-            $add_image_folder = 'image/' . $add_image_name;
+            $add_image_folder = '../image/' . $add_image_name;
         }
     }
 
@@ -76,11 +86,13 @@ if (isset($_POST['add_product'])) {
             }
 
             $id = unique_id();
-            $query = "INSERT INTO `products` (`id`,`name`, `price`, `product_detail`, `image`) VALUES (?, ?, ?, ?, ?)";
+            $query = "INSERT INTO `products` (`id`,`name`, `price`, `product_detail`, `image`, `category`, `measure`) VALUES (?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
-            $stmt->execute([$id, $add_name, $add_price, $add_detail, $add_image_name]);
+            $stmt->execute([$id, $add_name, $add_price, $add_detail, $add_image_name, $category, $measure]);
 
             $conn->commit();
+            $success_msg[] = "Produsul a fost adaugat!";
+
             header('location: admin_products.php');
         } catch (PDOException $e) {
             $conn->rollback();
@@ -102,19 +114,20 @@ if (isset($_GET['delete'])) {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($result) {
-            unlink('image/' . $result['image']);
+            unlink('../image/' . $result['image']);
 
             $query = "DELETE FROM `products` WHERE id = ?";
             $stmt = $conn->prepare($query);
             $stmt->execute([$delete_id]);
 
-            $query = "DELETE FROM `wishlist` WHERE user_id = ?";
-            $stmt = $conn->prepare($query);
-            $stmt->execute([$delete_id]);
+            // $query = "DELETE FROM `wishlist` WHERE user_id = ?";
+            // $stmt = $conn->prepare($query);
+            // $stmt->execute([$delete_id]);
 
             $query = "DELETE FROM `cart` WHERE id = ?";
             $stmt = $conn->prepare($query);
             $stmt->execute([$delete_id]);
+            $success_msg[] = "Produsul a fost sters!";
         }
 
         header('location: admin_products.php');
@@ -132,7 +145,7 @@ if (isset($_POST['update_product'])) {
     $update_price = $_POST['update_price'];
     $update_image = $_FILES['update_image']['name'];
     $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
-    $update_image_folder = 'image/' . $update_image;
+    $update_image_folder = '../image/' . $update_image;
 
     try {
         $conn->beginTransaction();
@@ -155,6 +168,8 @@ if (isset($_POST['update_product'])) {
         }
 
         $conn->commit();
+        $success_msg[] = "Produsul a fost adaugat!";
+
         header('location: admin_products.php');
     } catch (PDOException $e) {
         $conn->rollback();
@@ -219,6 +234,21 @@ if (isset($_POST['update_product2'])) {
     }
 }
 
+//for chart
+try {
+    // Assuming your table structure has a `created_at` field for the date
+    $stmt = $conn->prepare("SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, COUNT(*) AS record_count FROM products GROUP BY month");
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Extract xValues and yValues from the result
+    $xValues = array_column($result, 'month');
+    $yValues = array_column($result, 'record_count');
+} catch (PDOException $e) {
+    // Handle any errors that may occur during database query
+    die("Query failed: " . $e->getMessage());
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -232,7 +262,11 @@ if (isset($_POST['update_product2'])) {
 
     <link rel="stylesheet" href="../css/style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
 </head>
 
 <body>
@@ -265,9 +299,35 @@ if (isset($_POST['update_product2'])) {
                                 }
                                 ?>
                             </div>
+                            <!-- WIDGETS -->
+                            <section class="widgets">
+
+                                <div class="widget setting-widget">
+                                    <div class="flex">
+
+                                        <div class="small-widget">
+                                            <i class='bx bx-cog'></i>
+                                        </div>
+                                        <a href="admin_products.php">
+                                            <h3 style="color: #EE964B"> Produse</h3>
+                                        </a>
+                                    </div>
+
+                                    <div class="widget product-widget jump" id="product-widget">
+                                        <div class="flex">
+                                            <div class="small-widget">
+                                                <i class="bx bx-package"></i>
+                                            </div>
+                                            <h4> adaugă </h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <canvas id="myChart" style="max-width:400px"></canvas>
+
+                            </section>
 
                             <!-- Add Product Section (initially hidden) -->
-                            <a href="#" id="add-product-btn" style="text-decoration: none;">
+                            <!-- <a href="#" id="add-product-btn" style="text-decoration: none;">
                                 <h2 style="color: var(--green); margin-left: 30px;"> + Add Product</h2>
                             </a>
                             <section class="add-products" id="add-products" style=" display: none; margin:0px 30px">
@@ -286,9 +346,46 @@ if (isset($_POST['update_product2'])) {
 
                                     <input class="form-button" type="submit" name="add_product" value="Add Product">
                                 </form>
-                            </section>
+                            </section> -->
                             <!-- <input type="text" id="search-input" placeholder="Search by keyword..." style="width:min-content"> -->
 
+                            <!--Add New User Modal box -->
+                            <section class="modal" id="product-modal">
+                                <div class="modal-content">
+                                    <span class="close" id="close-modal">&times;</span>
+                                    <h2>Produs nou</h2>
+
+                                    <form class="Form" action="admin_products.php" method="post" enctype="multipart/form-data">
+                                        <div class="flex">
+                                            <label for="add-name">Product Name:</label>
+                                            <input type="text" name="add_name" id="add-name" required>
+                                            <label for="add-price">Product Price:</label>
+                                            <input type="number" name="add_price" id="add-price" required>
+                                        </div>
+                                        <label for="measure">Unitatea de Masura:</label>
+                                        <input type="text" name="measure" id="measure" required>
+                                        <!-- <label for="add-name">Product Name:</label>
+                                        <input type="text" name="add_name" id="add-name" required> -->
+                                        <select name="category" id="product-category">
+                                            <option value="soup">Supă/Ciorbă</option>
+                                            <option value="principal">Garnitură/Fel principal</option>
+                                            <option value="desert">Desert</option>
+                                            <option value="beverages">Băuturi</option>
+                                            <option value="altele">Altele</option>
+                                        </select>
+                                        <label for="add-detail">Product Detail:</label>
+                                        <textarea name="add_detail" id="add-detail" required></textarea>
+
+                                        <!-- <label for="add-price">Product Price:</label>
+                                        <input type="number" name="add_price" id="add-price" required> -->
+
+                                        <label for="add-image">Product Image:</label>
+                                        <input type="file" name="add_image" id="add-image" required>
+
+                                        <input class="form-button" type="submit" name="add_product" value="INREGISTREAZA">
+                                    </form>
+                                </div>
+                            </section>
                             <!-- SHOW TABLE PRODUCTS WITH SORT AND FILTER-->
                             <section>
                                 <div id="popup-container" style="display: none;">
@@ -299,9 +396,10 @@ if (isset($_POST['update_product2'])) {
                                         <thead>
                                             <tr>
                                                 <th class="sortable" data-column="image">Image</th>
-                                                <th class="sortable" data-column="name">Name</th>
-                                                <th class="sortable" data-column="price">Price</th>
-                                                <th class="sortable" data-column="category">Category</th>
+                                                <th class="sortable" data-sort="string" data-column="name">Name</th>
+                                                <th class="sortable" data-sort="string" data-column="category">Category</th>
+                                                <th class="sortable" data-sort="string" data-column="category">Measure</th>
+                                                <th class="sortable" data-sort="number" data-column="price">Price</th>
                                                 <!-- <th>Image</th> -->
                                                 <th>Actions</th>
                                             </tr>
@@ -316,22 +414,27 @@ if (isset($_POST['update_product2'])) {
                                             if (count($fetch_products) > 0) {
                                                 foreach ($fetch_products as $product) {
                                             ?>
-                                                    <tr>
+                                                    <tr class="filter">
                                                         <td> <img src="../image/<?php echo $product['image']; ?>" alt="product image" class="product-image"></td>
-                                                        <td><?php echo substr($product['name'], 0, 25) . '...'; ?></td>
+                                                        <td title="<?php echo $product['name']; ?>"><?php echo substr($product['name'], 0, 25) . '...'; ?></td>
+                                                        <td title="<?php echo $product['category']; ?>"><?php echo substr($product['category'], 0, 15) . '...'; ?></td>
+                                                        <td title="<?php echo $product['measure']; ?>"><?php echo substr($product['measure'], 0, 15) . '...'; ?></td>
                                                         <td><?php echo $product['price']; ?></td>
-                                                        <td><?php echo substr($product['category'], 0, 15) . '...'; ?></td>
                                                         <td>
-                                                            <!-- <a href="admin_menu.php?edit=<?php echo $product['id']; ?>" class="add-to-menu" id="add">menu</a> -->
                                                             <form action="admin_menu.php" method="post" class="add-to-menu-form">
                                                                 <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                                                                 <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
-                                                                <input class="form-button" type="submit" name="add-to-menu" value="-> menu">
 
-                                                                <!-- <button type="submit" class="add-to-menu">Add to Menu</button> -->
+                                                                <!-- <input class="form-button meal-icon" type="submit" name="add-to-menu" value="menu"> -->
+                                                                <button class="form-button meal-icon" type="submit" name="add-to-menu" title="Adaugă în meniul zilei">
+                                                                    <i class='fas fa-utensil-spoon'></i>
+                                                                </button>
                                                             </form>
-                                                            <a href="admin_edit_product.php?edit=<?php echo $product['id']; ?>" class="edit" id="edit">edit</a>
-                                                            <a href="admin_products.php?delete=<?php echo $product['id']; ?>" class="delete" onclick="return confirm('You really want to delete <?php echo $product['name']; ?>?');">delete</a>
+                                                            <form method="post" action="admin_users.php">
+                                                                <input type="hidden" name="user_id" value="<?= $product['id']; ?>">
+                                                                <a href="admin_edit_product.php?edit=<?php echo $product['id']; ?>" class="edit" id="edit"><i class=" fas fa-edit" title="Editează"></i></a>
+                                                                <a href="admin_products.php?delete=<?php echo $product['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi produsul <?php echo $product['name']; ?> ?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
+                                                            </form>
                                                         </td>
                                                     </tr>
                                             <?php
@@ -413,6 +516,63 @@ if (isset($_POST['update_product2'])) {
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <?php include '../components/alert.php'; ?>
+    <script src="../js/searchCard.js"></script>
+
+    <script>
+        // Function to open the modal
+        $("#product-widget").click(function() {
+            $("#product-modal").show();
+        });
+
+        // Function to close the modal
+        $("#close-modal").click(function() {
+            $("#product-modal").hide();
+        });
+
+        // Function to save the announcement
+        $("#add_product").click(function() {
+
+            $("#product-modal").hide();
+        });
+    </script>
+    <script>
+        // Use PHP's json_encode function to convert PHP arrays to JavaScript arrays
+        const xValues = <?php echo json_encode($xValues); ?>;
+        const yValues = <?php echo json_encode($yValues); ?>;
+
+        new Chart("myChart", {
+            type: "line",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    fill: true,
+                    lineTension: 0,
+                    backgroundColor: "rgba(238, 150, 75, 1.0)",
+                    borderColor: "rgba(238, 150, 75, 0.1)",
+                    data: yValues
+                }]
+            },
+            options: {
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            callback: function(value, index, values) {
+                                return yValues.includes(value) ? value : '';
+                            }
+                            // callback: function(value, index, values) {
+                            //     return [0, 20, 40, 60].includes(value) ? value : '';
+                            // }
+                            // min: Math.min(...yValues), // Set the minimum value based on the minimum of yValues
+                            // max: Math.max(...yValues) // Set the maximum value based on the maximum of yValues
+                        }
+                    }],
+                }
+            }
+        });
+    </script>
 
 </body>
 
