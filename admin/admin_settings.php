@@ -21,55 +21,7 @@ if (isset($_POST['logout'])) {
 }
 $current_page = basename($_SERVER['PHP_SELF']);
 
-// Handle contact us save announcement
-if (isset($_POST['save-announcement'])) {
-    $id = unique_id();
-    $description = $_POST['description'];
-    $category = $_POST['category'];
 
-    try {
-        $stmt = $conn->prepare("INSERT INTO announcements(`id`, `description`, `category`) VALUES (?,?,?)");
-        if ($stmt->execute([$id, $description, $category])) {
-            $success_msg[] = "Anunțul a fost salvat!";
-        } else {
-            $error_msg[] = "Eroare la salvarea anunțului!";
-        }
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
-    }
-}
-
-//delete announcement
-if (isset($_GET['delete'])) {
-    $delete_id = $_GET['delete'];
-    try {
-        $query = "DELETE FROM `announcements` WHERE id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$delete_id]);
-        $success_msg[] = "Anunțul a fost șters!";
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
-    }
-}
-
-//edit announcement
-if (isset($_POST['edit-announcement'])) {
-    $update_id = $_POST['announcement_id'];
-    $update_category = $_POST['category'];
-    $update_description = $_POST['description'];
-
-    try {
-        $conn->beginTransaction();
-        $query = "UPDATE `announcements` SET `category`=?, `description`=? WHERE id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$update_category, $update_description, $update_id]);
-
-        $conn->commit();
-    } catch (PDOException $e) {
-        $conn->rollback();
-        echo "Error updating announcement: " . $e->getMessage();
-    }
-}
 
 ?>
 

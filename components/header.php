@@ -1,5 +1,20 @@
-<header class="header" <?php if (basename($_SERVER['PHP_SELF']) == 'home.php') echo 'style="height:120px"'; ?>>
-	<?php if (basename($_SERVER['PHP_SELF']) == 'home.php') include 'components/announcement.php'; ?>
+<?php
+// Fetch the latest announcement from the database
+// $query = "SELECT * FROM `announcements` ORDER BY created_at DESC LIMIT 1";
+$query = "SELECT * FROM `announcements` WHERE is_set = 1";
+$stmt = $conn->prepare($query);
+$stmt->execute();
+$announcement = $stmt->fetch(PDO::FETCH_ASSOC);
+?>
+<header class="header" <?php if ($announcement) {
+							if (basename($_SERVER['PHP_SELF']) == 'home.php') {
+								echo 'style="height:120px"';
+							}
+						} ?>>
+	<?php if ($announcement && basename($_SERVER['PHP_SELF']) == 'home.php') {
+		include 'components/announcement.php';
+	} ?>
+
 
 	<div class="flex">
 		<div class="logo-container">

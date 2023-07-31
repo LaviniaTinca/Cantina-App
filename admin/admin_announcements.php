@@ -86,39 +86,7 @@ if (isset($_POST['edit-announcement'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        /* Add styles for the modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
 
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding: 20px;
-            width: 80%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .close {
-            float: right;
-            cursor: pointer;
-        }
-
-        /* Add styles for the widget element */
-        .widget {
-            /* Your existing styles for the widget */
-            /* ... */
-            cursor: pointer;
-        }
-    </style>
 </head>
 
 <body>
@@ -140,16 +108,15 @@ if (isset($_POST['edit-announcement'])) {
                     <div class=" content">
                         <!-- WIDGETS -->
                         <section class="widgets">
-                            <!-- <canvas id="myChart" style="max-width:400px"></canvas> -->
-
-
                             <div class="widget settings-widget">
-                                <!--  -->
                                 <div class="flex">
+
                                     <div class="small-widget">
                                         <i class='bx bx-cog'></i>
                                     </div>
-                                    <h3 style="color: var(--cart);"> Anunțuri</h3>
+                                    <a href="admin_announcements.php">
+                                        <h3 style="color: var(--cart);"> Anunțuri</h3>
+                                    </a>
                                 </div>
 
                                 <div class="widget user-widget jump" id="announcement-widget">
@@ -161,7 +128,41 @@ if (isset($_POST['edit-announcement'])) {
                                     </div>
                                 </div>
                             </div>
+                            <div id="success-message"></div>
+
+                            <div class="show-card box-container">
+                                <?php
+                                try {
+                                    $query = "SELECT * FROM `announcements` WHERE is_set = 1";
+                                    $stmt = $conn->prepare($query);
+                                    $stmt->execute();
+                                    $record = $stmt->fetch(PDO::FETCH_ASSOC);
+                                } catch (PDOException $e) {
+                                    echo "Error: " . $e->getMessage();
+                                }
+                                if (!empty($record)) {
+                                ?>
+                                    <div class="box featured-card" style="border: 1px solid var(--cart)">
+                                        <h6>Anunț setat din categoria: <?php echo $record['category']; ?></h6>
+                                        <div class="flex">
+                                            <h4 class="announcement-content filter"><?php echo $record['description']; ?></h4>
+                                            <div>
+                                                <form method="post" action="admin_announcements.php">
+                                                    <input type="hidden" name="record_id" value="<?= $record['id']; ?>">
+                                                    <input type="checkbox" class="announcement-checkbox" title="Setează anunț" data-announcement-id="<?php echo $record['id']; ?>" <?php echo ($record['is_set'] == 1) ? 'checked' : ''; ?>>
+                                                    <a href="#" class="edit edit-link" data-announcement-id="<?php echo $record['id']; ?>" data-category=" <?php echo $record['category']; ?>" data-description="<?php echo $record['description']; ?>">
+                                                        <i class=" fas fa-edit" title="Editează"></i>
+                                                    </a>
+                                                    <a href="admin_announcements.php?delete=<?php echo $record['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi anuntul <?php echo $record['description']; ?> ?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+
                         </section>
+
                         <!--Add New Announcement Modal box -->
                         <div class="modal" id="announcement-modal">
                             <div class="modal-content">
@@ -210,10 +211,14 @@ if (isset($_POST['edit-announcement'])) {
                         <section class="show-card">
                             <div class="box-container">
                                 <?php
-                                $query = "SELECT * FROM `announcements` ORDER BY created_at DESC";
-                                $stmt = $conn->prepare($query);
-                                $stmt->execute();
-                                $fetch_records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                try {
+                                    $query = "SELECT * FROM `announcements` WHERE is_set = 0 ORDER BY created_at DESC";
+                                    $stmt = $conn->prepare($query);
+                                    $stmt->execute();
+                                    $fetch_records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                } catch (PDOException $e) {
+                                    echo "Error: " . $e->getMessage();
+                                }
 
                                 if (!empty($fetch_records)) {
                                     foreach ($fetch_records as $record) {
@@ -225,11 +230,10 @@ if (isset($_POST['edit-announcement'])) {
                                                 <div>
                                                     <form method="post" action="admin_announcements.php">
                                                         <input type="hidden" name="record_id" value="<?= $record['id']; ?>">
+                                                        <input type="checkbox" class="announcement-checkbox" title="Setează anunț" data-announcement-id="<?php echo $record['id']; ?>" <?php echo ($record['is_set'] == 1) ? 'checked' : ''; ?>>
                                                         <a href="#" class="edit edit-link" data-announcement-id="<?php echo $record['id']; ?>" data-category=" <?php echo $record['category']; ?>" data-description="<?php echo $record['description']; ?>">
                                                             <i class=" fas fa-edit" title="Editează"></i>
                                                         </a>
-
-                                                        <!-- <a href="admin_settings.php?edit=<?php echo $record['id']; ?>" class="edit" id="edit"><i class="fas fa-edit" title="Editează"></i></a> -->
                                                         <a href="admin_announcements.php?delete=<?php echo $record['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi anuntul <?php echo $record['description']; ?> ?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
                                                     </form>
                                                 </div>
@@ -326,6 +330,40 @@ if (isset($_POST['edit-announcement'])) {
             });
         });
     </script>
+    <script>
+        //for setting announcement through checkbox
+        $(document).ready(function() {
+            // Function to handle checkbox click event
+            $(".announcement-checkbox").click(function() {
+                const announcementId = $(this).data("announcement-id");
+                const isSet = $(this).prop("checked") ? 1 : 0;
+
+                // Send the AJAX request to update the is_set value in the database
+                $.ajax({
+                    type: "POST",
+                    url: "set_announcement.php", // Replace with the PHP script that updates the database
+                    data: {
+                        id: announcementId,
+                        is_set: isSet
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        // Handle the response if needed
+                        if (response.success) {
+                            $("#success-message").text("Anunțul a fost actualizat!"); // Set the success message
+                            setTimeout(function() {
+                                $("#success-message").empty();
+                            }, 3000);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+
 </body>
 
 </html>

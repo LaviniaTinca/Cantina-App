@@ -6,34 +6,54 @@ $messages = array();
 //add user //!!!!! good for register but without IMAGE
 // Add user to the database
 if (isset($_POST['add_user'])) {
-  // Validate input
-  if (empty($_POST['add_name'])) {
-    $messages[] = "Name is required.";
-  } else {
-    $add_name = htmlspecialchars($_POST['add_name'], ENT_QUOTES, 'UTF-8');
-  }
+  try {
+    //code...
 
-  if (empty($_POST['add_email'])) {
-    $messages[] = "Email is required.";
-  } else {
-    $add_email = filter_var($_POST['add_email'], FILTER_SANITIZE_EMAIL);
-    if (!filter_var($add_email, FILTER_VALIDATE_EMAIL)) {
-      $messages[] = "Invalid email format.";
+    // Validate input
+    if (empty($_POST['add_name'])) {
+      $messages[] = "Name is required.";
+    } else {
+      $add_name = htmlspecialchars($_POST['add_name'], ENT_QUOTES, 'UTF-8');
     }
-  }
 
-  if (empty($_POST['add_password'])) {
-    $messages[] = "Password is required.";
-  } elseif (strlen($_POST['add_password']) < 6) {
-    $messages[] = "Password must be at least 6 characters long.";
-  } else {
-    $add_password = password_hash($_POST['add_password'], PASSWORD_DEFAULT);
-  }
+    if (empty($_POST['add_email'])) {
+      $messages[] = "Email is required.";
+    } else {
+      $add_email = filter_var($_POST['add_email'], FILTER_SANITIZE_EMAIL);
+      if (!filter_var($add_email, FILTER_VALIDATE_EMAIL)) {
+        $messages[] = "Invalid email format.";
+      }
+    }
 
-  if (empty($_POST['add_confirm_password'])) {
-    $messages[] = "Confirm password is required.";
-  } elseif ($_POST['add_confirm_password'] != $_POST['add_password']) {
-    $messages[] = "Passwords do not match.";
+    if (empty($_POST['add_password'])) {
+      $messages[] = "Password is required.";
+    } elseif (strlen($_POST['add_password']) < 6) {
+      $messages[] = "Password must be at least 6 characters long.";
+    } else {
+      $add_password = password_hash($_POST['add_password'], PASSWORD_DEFAULT);
+    }
+
+    if (empty($_POST['add_confirm_password'])) {
+      $messages[] = "Confirm password is required.";
+    } elseif ($_POST['add_confirm_password'] != $_POST['add_password']) {
+      $messages[] = "Passwords do not match.";
+    }
+
+    // Check if the email already exists in the database
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email = :email");
+    $stmt->execute(['email' => $add_email]);
+    if ($stmt->rowCount() > 0) {
+      // $messages[] = "Email-ul exista deja";
+
+      throw new Exception("Email is already taken.");
+    }
+  } catch (PDOException $e) {
+    echo $e;
+  } catch (Exception $e) {
+
+    // Display the error message
+    echo "Error at register: " . $e->getMessage();
+    $messages[] = "Error at register: " . $e->getMessage();
   }
 
   // Insert user into database
@@ -47,7 +67,7 @@ if (isset($_POST['add_user'])) {
       $stmt->execute([$id, $add_name, $add_email, $add_password]);
 
       $conn->commit();
-      header('location: admin_users.php');
+      header('location: admin/admin_users.php');
     } catch (PDOException $e) {
       $conn->rollback();
       echo "Error adding user: " . $e->getMessage();
@@ -108,7 +128,6 @@ if (isset($_POST['add_user'])) {
 
           <label for="add-confirm-password">Confirm Password:</label>
           <input type="password" name="add_confirm_password" id="add-confirm-password" value="" required><span id="confirmPasswordError" class="error"></span>
-          <!-- <input type="submit" name="add_user" value="register now" class="auth-button"> -->
 
           <button type="submit" name="add_user" class="auth-button">REGISTER</button>
           <a href="login.php">

@@ -37,7 +37,6 @@
             z-index: 2;
         }
 
-
         .news span {
             float: left;
             color: #fff;
@@ -71,12 +70,21 @@
 </head>
 
 <body>
+
     <div class="news color">
-        <span class="scrolling-text">
-            Marti 1 august 2023 cantina va fi deschisa in intervalul 12-14! -- Tuesday 1 august 2023 the canteen will be open between 12-14 p.m.!
-        </span>
+        <?php if ($announcement) { ?>
+            <span class="scrolling-text">
+                <?php echo $announcement['description']; ?>
+            </span>
+        <?php } else { ?>
+            <span class="scrolling-text">
+                Nu sunt anunturi disponibile.
+            </span>
+        <?php } ?>
     </div>
+
+
+
 </body>
-</head>
 
 </html>
