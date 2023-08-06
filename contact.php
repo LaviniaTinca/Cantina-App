@@ -57,6 +57,7 @@ if (isset($_POST['contact'])) {
     <link rel="stylesheet" href="css/style.css">
 
     <title>Cantina - contact</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -73,11 +74,11 @@ if (isset($_POST['contact'])) {
             <a href="home.php">acasă </a><span>/ contact</span>
         </div>
 
-        <div class="form-container flex">
+        <div class="form-container flex " style="width: 70vw;">
             <form method="post" action="contact.php">
 
                 <div class="title">
-                    <img src="images/download.png" alt="contact" class="logo-image">
+                    <!-- <img src="images/download.png" alt="contact" class="logo-image"> -->
                     <ul>
                         <li> <box-icon name='phone'></box-icon>
                             0742 222 222</li>
@@ -111,7 +112,6 @@ if (isset($_POST['contact'])) {
     <?php include 'components/footer.php'; ?>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
 
     <script src="script.js"></script>
     <?php include 'components/alert.php'; ?>

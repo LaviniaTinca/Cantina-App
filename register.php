@@ -86,6 +86,8 @@ if (isset($_POST['add_user'])) {
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
 
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -115,21 +117,22 @@ if (isset($_POST['add_user'])) {
         }
         ?>
         <form class="Form" onsubmit="return validateForm()" action="register.php" method="post" enctype="multipart/form-data">
-          <label for="add-name">Name:</label>
+          <label for="add-name"><b>Name:</b></label>
           <input type="text" name="add_name" id="add-name" required>
           <span id="nameError"></span>
-
-          <label for="add-email">Email:</label>
+          <br>
+          <label for="add-email"><b>Email:</b></label>
           <input type="email" name="add_email" id="add-email" required><span id="emailError" class="error"></span>
           <span id="emailError"></span>
-
-          <label for="add-password">Password:</label>
-          <input type="password" name="add_password" id="add-password" value="" required><span id="passwordError" class="error"></span>
-
-          <label for="add-confirm-password">Confirm Password:</label>
-          <input type="password" name="add_confirm_password" id="add-confirm-password" value="" required><span id="confirmPasswordError" class="error"></span>
+          <br>
+          <label for="add-password"><b>Password:</b></label>
+          <input type="password" name="add_password" id="add-password" required><span id="passwordError" class="error"></span>
+          <br>
+          <label for="add-confirm-password"><b>Confirm Password:</b></label>
+          <input type="password" name="add_confirm_password" id="add-confirm-password" required><span id="confirmPasswordError" class="error"></span>
 
           <button type="submit" name="add_user" class="auth-button">REGISTER</button>
+
           <a href="login.php">
             <h3>Already have an account? Sign In here</h3>
           </a>
@@ -143,20 +146,7 @@ if (isset($_POST['add_user'])) {
   <section id="menu">
     <?php include 'components/footer.php'; ?>
   </section>
-  <!-- //toggle faculty list
-  <script>
-    function toggleFacultyList() {
-      var facultyList = document.getElementById("facultyList");
-      var userType = document.getElementById("userType").value;
-      if (userType == "student") {
-        facultyList.style.display = "block";
-        departmentList.style.display = "none";
-      } else {
-        facultyList.style.display = "none";
-        departmentList.style.display = "block";
-      }
-    }
-  </script> -->
+
   <script src="formValidation.js"></script>
 
 </body>

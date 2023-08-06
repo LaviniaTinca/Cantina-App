@@ -68,6 +68,8 @@ if (isset($_GET['delete'])) {
         // header('location: admin_view_products.php');
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
+        $error_msg[] = $e->getMessage();
+
         // echo "Error deleting product: " . $e->getMessage();
     }
 }
@@ -80,10 +82,73 @@ if (isset($_POST['empty_cart'])) {
     if ($verify_empty_item->rowCount() > 0) {
         $delete_cart_id = $conn->prepare("DELETE FROM `cart` WHERE user_id = ?");
         $delete_cart_id->execute([$user_id]);
-        // $success_msg[] = "The cart is empty now! ";
         $success_msg[] = "Coșul este gol! ";
     } else {
-        $warning_msg[] = 'produsul nu există în coș';
+        $warning_msg[] = 'coșul nu s-a putut goli!';
+    }
+}
+
+if (isset($_POST['order'])) {
+    $user_id = $_SESSION['user_id'];
+    $id = unique_id();
+
+    try {
+        $conn->beginTransaction();
+
+        // Step 1: Retrieve Cart Data
+        $stmt_cart = $conn->prepare("SELECT product_id, qty, price FROM cart WHERE user_id = ?");
+        $stmt_cart->execute([$user_id]);
+        $cart_data = $stmt_cart->fetchAll(PDO::FETCH_ASSOC);
+
+        // Step 2: Create Order
+        $order_date = date('Y-m-d H:i:s'); // Current date and time
+        $total_amount = 0;
+
+        foreach ($cart_data as $cart_item) {
+            $total_amount += ($cart_item['qty'] * $cart_item['price']);
+        }
+
+        $payment_status = 'pending';
+        $shipping_address = '';
+        $order_status = 'processing';
+
+        $stmt_order = $conn->prepare("INSERT INTO orders (id, user_id, order_date, total_amount, payment_status, shipping_address, order_status) 
+                                     VALUES (?, ?, ?, ?, ?, ?, ?)");
+
+        $stmt_order->execute([$id, $user_id, $order_date, $total_amount, $payment_status, $shipping_address, $order_status]);
+
+        // $order_id = $conn->lastInsertId(); // Get the last inserted order_id IF is AUTO-INCREMENTED
+        $order_id = $id;
+        // Step 3: Store Order Items
+        foreach ($cart_data as $cart_item) {
+            $product_id = $cart_item['product_id'];
+            $quantity = $cart_item['qty'];
+            $price = $cart_item['price'];
+            $subtotal = $quantity * $price;
+
+            $stmt_order_items = $conn->prepare("INSERT INTO order_items (order_id, product_id, quantity, price, subtotal) 
+                                               VALUES (?, ?, ?, ?, ?)");
+
+            $stmt_order_items->execute([$order_id, $product_id, $quantity, $price, $subtotal]);
+        }
+
+        // Step 4: Empty Cart
+        $stmt_empty_cart = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
+        $stmt_empty_cart->execute([$user_id]);
+
+        $conn->commit(); // Commit the transaction
+        $success_msg[] = "Comanda a fost plasată! ";
+
+        // echo "Order placed successfully!";
+    } catch (PDOException $e) {
+        $conn->rollBack(); // Rollback the transaction in case of any error
+        $error_msg[] = "Eroare la plasarea comenzii: " . $e->getMessage();
+
+        // echo "Error placing the order: " . $e->getMessage();
+    } catch (Exception $e) {
+        $conn->rollBack(); // Rollback the transaction in case of any error
+        // echo "Error: " . $e->getMessage();
+        $error_msg[] = "Eroare la plasarea comenzii: " . $e->getMessage();
     }
 }
 ?>
@@ -202,8 +267,9 @@ if (isset($_POST['empty_cart'])) {
                             <form method="post">
                                 <button type="submit" name="empty_cart" class="cart-btn transparent-button" onclick="return confirm('Dorești să golești coșul de cumpărături?')"><i class="fas fa-trash-alt" title="Golește"></i> Golește coșul</button>
                             </form>
-                            <a href="checkout.php" class="cart-btn">Comandă</a>
-
+                            <form action="cart.php" method="post">
+                                <button type="submit" name="order" style="margin: .5rem;" class="cart-btn transparent-button">Comandă</button>
+                            </form>
                         </div>
 
                     </div>

@@ -36,116 +36,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
     </script>
-    <!-- <style>
-        /* .widgets {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr));
-            column-gap: 10px;
-        }
-
-        .widgets .widget {
-            box-shadow: .5px .5px .5px rgb(6, 122, 101, 0.4);
-            padding: .1rem;
-            text-align: center;
-            border-radius: 5px;
-            margin: .5rem;
-            width: 180px;
-            color: white;
-        }
-
-        .user-widget {
-            background: var(--teal);
-        }
-
-        .message-widget {
-            background: var(--cart);
-        }
-
-        .product-widget {
-            background: var(--olive);
-        }
-
-        .order-widget {
-            background: orange;
-        }
-
-        .widgets .widget .small-widget {
-            background: white;
-            border: 2px solid #045d4c;
-            box-shadow: 2px 2px 5px rgb(6, 122, 101, 0.4);
-            padding: .1rem;
-            text-align: center;
-            border-radius: 3px;
-            margin: .1rem;
-            width: 50px;
-            height: 30px;
-        }
-
-        .widgets .widget .small-widget i {
-            color: var(--cart);
-        } */
-        /* Add custom styles for the widgets */
-        .widgets {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            grid-gap: 10px;
-        }
-
-        .widgets .widget {
-            /* background-color: #fff; */
-            border: 2px solid #ccc;
-            padding: 1rem;
-            text-align: center;
-            border-radius: 5px;
-            margin: 0.5rem;
-            width: 180px;
-            color: #fff;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .user-widget {
-            background-color: var(--cart);
-        }
-
-        .message-widget {
-            background-color: olivedrab;
-        }
-
-        .product-widget {
-            background-color: #EE964B;
-            /* background-color: #931F1D; */
-        }
-
-        .order-widget {
-            background-color: #F4D35E;
-        }
-
-        .widgets .widget h3 {
-            font-size: 28px;
-            margin-bottom: 0.5rem;
-        }
-
-        .widgets .widget p {
-            font-size: 16px;
-            margin: 0;
-        }
-
-        .widgets .widget .small-widget {
-            background-color: #f9f9f9;
-            border: 2px solid #ccc;
-            padding: 0.25rem;
-            text-align: center;
-            border-radius: 3px;
-            margin: 0.25rem;
-            width: 40px;
-            height: 30px;
-        }
-
-        .widgets .widget .small-widget i {
-            font-size: 18px;
-            color: #333;
-        }
-    </style> -->
 
 </head>
 
@@ -164,12 +54,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <?php include('../components/admin/sidebar.php'); ?>
 
                 <div class="panel-container">
-                    <!-- <div class="banner" style=" height: 100px; background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
-                        <h1 style="color:var(--green)">dashboard</h1>
-                    </div>
-                    <div class="title2">
-                        <a href="admin.php">admin </a><span>/ dashboard</span>
-                    </div> -->
                     <div class=" content">
                         <!-- WIDGETS -->
                         <section class="widgets">
@@ -255,8 +139,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             </a>
                         </section>
                     </div>
-                    <div class="banner">
-                        <canvas id="myChart" style="width:70%;max-width:700px"></canvas>
+                    <div class="banner" style="margin: 2rem;">
+                        <canvas id="myChart" style="width:70%;max-width:600px"></canvas>
                     </div>
 
 

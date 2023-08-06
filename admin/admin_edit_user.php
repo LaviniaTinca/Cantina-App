@@ -170,6 +170,8 @@ if (isset($_POST['update_user'])) {
 
                             <!-- EDIT USER SECTION -->
                             <section class="update-container">
+                                <h3 class="update">MODIFICĂ UTILIZATORUL</h3>
+
                                 <?php
                                 if (isset($_GET['edit'])) {
                                     $edit_id = $_GET['edit'];

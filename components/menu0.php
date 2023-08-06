@@ -1,6 +1,6 @@
 <div class="menu0">
     <div class="banner">
-        <h1 class="main-page-title" style="color: var(--olive)">Meniu</h1>
+        <h1 class="main-page-title" style="color: var(--olive)">Meniul zilei</h1>
 
     </div>
 
@@ -10,7 +10,9 @@
         </div>
         <div class="box-container">
             <?php
-            $query = "SELECT * FROM `products` LIMIT 5";
+            $query = "SELECT products.*, menu.qty AS qty, menu.id AS menu_id
+            FROM menu
+            JOIN products ON menu.product_id = products.id LIMIT 3";
             $stmt = $conn->prepare($query);
             $stmt->execute();
             $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -22,7 +24,7 @@
                         <img src="image/<?php echo $product['image']; ?>" alt="product image" class="product-image">
                         <p>preț : <?php echo $product['price']; ?> lei</p>
                         <h4><?php echo $product['name']; ?></h4>
-                        <details><?php echo $product['product_detail']; ?></details>
+                        <!-- <details><?php echo $product['product_detail']; ?></details> -->
                     </div>
             <?php
                 }

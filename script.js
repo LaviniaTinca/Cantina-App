@@ -49,11 +49,11 @@ userBtn.addEventListener('click', function(){
 
 // --visibility of add element button--JQuery  
 
-$(document).ready(function() {
-    $("#add-product-btn").click(function() {
-        $(".add-products").toggle();
-    });
-});
+// $(document).ready(function() {
+//     $("#add-product-btn").click(function() {
+//         $(".add-products").toggle();
+//     });
+// });
 
 
 //toggle review button ONLY WHEN THE PAGE LOADS
@@ -65,17 +65,17 @@ $(document).ready(function() {
 // });
 
 //toggle review button when actions are performed, page loads + search (dynamically created toggle buttons
-  $(document).ready(function() {
-    // Hide reviews table rows
-    $('.review-row').hide();
+  // $(document).ready(function() {
+  //   // Hide reviews table rows
+  //   $('.review-row').hide();
   
-    // Bind the event listener to a parent element
-    // and specify the child selector for the dynamically created toggle buttons
-    $('.product-table').on('click', '.toggle-reviews-btn', function() {
-      var reviewsRow = $(this).closest('tr').next('.review-row');
-      reviewsRow.toggle();
-    });
-  });
+  //   // Bind the event listener to a parent element
+  //   // and specify the child selector for the dynamically created toggle buttons
+  //   $('.product-table').on('click', '.toggle-reviews-btn', function() {
+  //     var reviewsRow = $(this).closest('tr').next('.review-row');
+  //     reviewsRow.toggle();
+  //   });
+  // });
   
   
 

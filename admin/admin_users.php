@@ -288,11 +288,11 @@ try {
                                             <i class='bx bx-cog'></i>
                                         </div>
                                         <a href="admin_users.php">
-                                            <h3 style="color: #618B4A"> Utilizatori</h3>
+                                            <h3 style="color: var(--cart)"> Utilizatori</h3>
                                         </a>
                                     </div>
 
-                                    <div class="widget user-widget jump" id="user-widget" style="background-color: #618B4A;">
+                                    <div class="widget user-widget jump" id="user-widget">
                                         <div class="flex">
                                             <div class="small-widget">
                                                 <i class='bx bx-user'></i>
@@ -309,26 +309,29 @@ try {
                             <section class="modal" id="user-modal">
                                 <div class="modal-content">
                                     <span class="close" id="close-modal">&times;</span>
-                                    <h2>Utilizator nou</h2>
+                                    <div class="form-container">
+                                        <h2>Utilizator nou</h2>
 
-                                    <form class="Form" onsubmit="return validateForm()" action="admin_users.php" method="post" enctype="multipart/form-data">
-                                        <label for="add-name">Name:</label>
-                                        <input type="text" name="add_name" id="add-name" required>
-                                        <span id="nameError"></span>
+                                        <form class="Form" onsubmit="return validateForm()" action="admin_users.php" method="post" enctype="multipart/form-data">
+                                            <label for="add-name">Name:</label>
+                                            <input type="text" name="add_name" id="add-name" required>
+                                            <span id="nameError"></span>
 
-                                        <label for="add-email">Email:</label>
-                                        <input type="email" name="add_email" id="add-email" required><span id="emailError" class="error"></span>
-                                        <span id="emailError"></span>
+                                            <label for="add-email">Email:</label>
+                                            <input type="email" name="add_email" id="add-email" required><span id="emailError" class="error"></span>
+                                            <span id="emailError"></span>
 
-                                        <label for="add-password">Password:</label>
-                                        <input type="password" name="add_password" id="add-password" required><span id="passwordError" class="error"></span>
-                                        <span id="passwordError"></span>
+                                            <label for="add-password">Password:</label>
+                                            <input type="password" name="add_password" id="add-password" required><span id="passwordError" class="error"></span>
+                                            <span id="passwordError"></span>
 
-                                        <label for="add-confirm-password">Confirm Password:</label>
-                                        <input type="password" name="add_confirm_password" id="add-confirm-password" required><span id="confirmPasswordError" class="error"></span>
-                                        <span id="confirmPasswordError"></span>
-                                        <input class="form-button" type="submit" name="add_user" id="add_user" value="ÎNREGISTREAZĂ">
-                                    </form>
+                                            <label for="add-confirm-password">Confirm Password:</label>
+                                            <input type="password" name="add_confirm_password" id="add-confirm-password" required><span id="confirmPasswordError" class="error"></span>
+                                            <span id="confirmPasswordError"></span>
+                                            <input class="form-button" type="submit" name="add_user" id="add_user" value="ÎNREGISTREAZĂ">
+                                        </form>
+                                    </div>
+
                                 </div>
                             </section>
                             <!-- Add the search input2 field -->
@@ -482,10 +485,10 @@ try {
             data: {
                 labels: xValues,
                 datasets: [{
-                    fill: false,
+                    fill: true,
                     lineTension: 0,
-                    backgroundColor: "rgba(147, 123, 99, 1.0)",
-                    borderColor: "rgba(147, 123, 99,0.1)",
+                    backgroundColor: "rgba(194, 56, 56, 1.0)",
+                    borderColor: "rgba(194, 56, 56,0.1)",
                     data: yValues
                 }]
             },

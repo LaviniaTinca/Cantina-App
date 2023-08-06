@@ -21,11 +21,11 @@ if (isset($_POST['logout'])) {
 }
 $current_page = basename($_SERVER['PHP_SELF']);
 
-// Handle contact us save announcement
+// Handle save announcement
 if (isset($_POST['save-announcement'])) {
     $id = unique_id();
-    $description = $_POST['description'];
-    $category = $_POST['category'];
+    $description = htmlspecialchars($_POST['description'], ENT_QUOTES, 'UTF-8');
+    $category = htmlspecialchars($_POST['category'], ENT_QUOTES, 'UTF-8');
 
     try {
         $stmt = $conn->prepare("INSERT INTO announcements(`id`, `description`, `category`) VALUES (?,?,?)");
@@ -55,19 +55,26 @@ if (isset($_GET['delete'])) {
 //edit announcement
 if (isset($_POST['edit-announcement'])) {
     $update_id = $_POST['announcement_id'];
-    $update_category = $_POST['category'];
-    $update_description = $_POST['description'];
+    $update_description = htmlspecialchars($_POST['description'], ENT_QUOTES, 'UTF-8');
+    $update_category = htmlspecialchars($_POST['category'], ENT_QUOTES, 'UTF-8');
 
     try {
         $conn->beginTransaction();
         $query = "UPDATE `announcements` SET `category`=?, `description`=? WHERE id = ?";
         $stmt = $conn->prepare($query);
         $stmt->execute([$update_category, $update_description, $update_id]);
+        $success_msg[] = "Anuntul a fost modificat cu succes!";
 
         $conn->commit();
     } catch (PDOException $e) {
+        // Handle specific PDO exceptions (if needed)
         $conn->rollback();
-        echo "Error updating announcement: " . $e->getMessage();
+        $error_msg[] = "Eroare la modificare!";
+        echo "Eroare la modificarea anuntului: " . $e->getMessage();
+    } catch (Exception $e) {
+        // General catch block for any uncaught exceptions
+        $conn->rollback();
+        echo "Error: " . $e->getMessage();
     }
 }
 
@@ -167,19 +174,22 @@ if (isset($_POST['edit-announcement'])) {
                         <div class="modal" id="announcement-modal">
                             <div class="modal-content">
                                 <span class="close" id="close-modal">&times;</span>
-                                <h2>Anunț nou</h2>
-                                <form action="admin_announcements.php" method="post">
-                                    <select name="category" id="announcement-category">
-                                        <option value="liber">Zile libere</option>
-                                        <option value="orar">Schimbare program</option>
-                                        <option value="vacanta">Vacanță</option>
-                                        <option value="tehnic">Tehnic</option>
-                                        <option value="altele">Altele</option>
-                                    </select>
+                                <div class="form-container">
+                                    <h2>Anunț nou</h2>
+                                    <form action="admin_announcements.php" method="post">
+                                        <select name="category" id="announcement-category">
+                                            <option value="liber">Zile libere</option>
+                                            <option value="orar">Schimbare program</option>
+                                            <option value="vacanta">Vacanță</option>
+                                            <option value="tehnic">Tehnic</option>
+                                            <option value="altele">Altele</option>
+                                        </select>
 
-                                    <textarea name="description" id="announcement-text" required></textarea>
-                                    <button type="submit" name="save-announcement" id="save-announcement" class="menu0-btn">Salvează</button>
-                                </form>
+                                        <textarea name="description" id="announcement-text" required></textarea>
+                                        <button type="submit" name="save-announcement" id="save-announcement" class="menu0-btn">Salvează</button>
+                                    </form>
+                                </div>
+
                             </div>
                         </div>
 

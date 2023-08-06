@@ -44,6 +44,7 @@ if (isset($_POST['submit'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -74,7 +75,8 @@ if (isset($_POST['submit'])) {
           <label for="email"><b>Email:</b></label><br>
           <input type="email" id="email" name="email"><span id="emailError" class="error"></span><br><br>
           <label for="password"><b>Password:</b></label><br>
-          <input type="password" id="password" name="password"><span id="passwordError" class="error"></span><br><br>
+          <input type="password" id="password" name="password">
+          <span id="passwordError" class="error"></span><br><br>
 
           <button type="submit" name="submit" class="auth-button">LOGIN</button>
 
@@ -163,25 +165,6 @@ if (isset($_POST['submit'])) {
     }
   </script>
 
-  <script>
-    var citiesByCounty = {
-      Cluj: ['Cluj-Napoca', 'Turda', 'Dej', 'Gherla'],
-      Salaj: ['Zalau', 'Simleu Silvaniei', 'Jibou', 'Cehu Silvaniei'],
-      Maramures: ['Baia Mare', 'Sighetu Marmatiei', 'Baia Sprie', 'Viseu de Sus'],
-    };
-
-    function populateCities(county) {
-      var cities = citiesByCounty[county];
-      var citySelect = document.getElementById('city');
-      citySelect.innerHTML = '';
-      for (var i = 0; i < cities.length; i++) {
-        var cityOption = document.createElement('option');
-        cityOption.value = cities[i];
-        cityOption.text = cities[i];
-        citySelect.appendChild(cityOption);
-      }
-    }
-  </script>
 </body>
 
 </html>

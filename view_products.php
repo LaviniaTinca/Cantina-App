@@ -43,6 +43,27 @@ if (in_array($request_uri, $not_found_pages)) {
 	exit;
 }
 
+$valid_pages = array(
+	'/home.php',
+	'/about.php',
+	'/contact.php',
+	// Add more valid pages here
+);
+
+// Get the requested page from the URL
+$request_uri = $_SERVER['REQUEST_URI'];
+
+// Check if the requested page is in the list of valid pages
+if (in_array($request_uri, $valid_pages)) {
+	// Include the requested page
+	include substr($request_uri, 1); // Remove leading slash
+
+} else {
+	// Redirect to the custom "not found" page
+	header('Location: not_found.php');
+	exit;
+}
+
 
 
 //add /remove item from wishlist

@@ -18,15 +18,13 @@ $announcement = $stmt->fetch(PDO::FETCH_ASSOC);
 
 	<div class="flex">
 		<div class="logo-container">
-			<a href="home.php"><img src="images/logo1.png" class="logo-image" alt="logo"></a>
-			<a href="home.php">
-				<h3 class="h3">CANTINA TEOLOGICĂ</h3>
-			</a>
+			<a href="home.php"><img src="images/logo-cantina1.png" class="logo-image" alt="logo"></a>
 		</div>
 
 		<nav class="navbar">
 			<a href="home.php" <?php if (basename($_SERVER['PHP_SELF']) == 'home.php') echo 'class="active"'; ?>>acasa</a>
 			<a href="view_menu.php" <?php if (basename($_SERVER['PHP_SELF']) == 'view_menu.php') echo 'class="active"'; ?>>meniu</a>
+			<a href="view_orders.php" <?php if (basename($_SERVER['PHP_SELF']) == 'view_orders.php') echo 'class="active"'; ?>>comenzi</a>
 			<a href="contact.php" <?php if (basename($_SERVER['PHP_SELF']) == 'contact.php') echo 'class="active"'; ?>>contact</a>
 			<?php
 			if ($_SESSION['user_type'] == 'admin') { ?>

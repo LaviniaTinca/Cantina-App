@@ -104,7 +104,7 @@ if (isset($_POST['add_product'])) {
 }
 
 
-//delete product without image in the table
+//delete product 
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
     try {
@@ -174,6 +174,48 @@ if (isset($_POST['update_product'])) {
     } catch (PDOException $e) {
         $conn->rollback();
         echo "Error updating product: " . $e->getMessage();
+    }
+}
+
+//add product to menu
+if (isset($_POST['add-to-menu'])) {
+    // Validate input
+    if (empty($_POST['product_id'])) {
+        $messages[] = "Product id is required.";
+    } else {
+        $product_id = htmlspecialchars($_POST['product_id'], ENT_QUOTES, 'UTF-8');
+    }
+    if (empty($_POST['qty'])) {
+        $messages[] = "Quantity id is required.";
+    } else {
+        $qty = htmlspecialchars($_POST['qty'], ENT_QUOTES, 'UTF-8');
+    }
+
+    // Insert product into menu table 
+    if (empty($messages)) {
+        try {
+            $conn->beginTransaction();
+
+            $id = unique_id();
+            $verify_menu = $conn->prepare("SELECT * FROM `menu` WHERE product_id = ?");
+            $verify_menu->execute([$product_id]);
+
+            if ($verify_menu->rowCount() > 0) {
+                $warning_msg[] = 'produsul exista deja in meniu';
+            } else {
+
+                $query = "INSERT INTO `menu` (`id`,`product_id`, `qty`) VALUES (?, ?, ?)";
+                $stmt = $conn->prepare($query);
+                $stmt->execute([$id, $product_id, $qty]);
+
+                $conn->commit();
+                $success_msg[] = 'produs adaugat in meniu';
+                header('location: admin_products.php');
+            }
+        } catch (PDOException $e) {
+            $conn->rollback();
+            echo "Error adding product: " . $e->getMessage();
+        }
     }
 }
 
@@ -264,8 +306,11 @@ try {
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
 
 </head>
 
@@ -304,7 +349,6 @@ try {
 
                                 <div class="widget setting-widget">
                                     <div class="flex">
-
                                         <div class="small-widget">
                                             <i class='bx bx-cog'></i>
                                         </div>
@@ -326,64 +370,39 @@ try {
 
                             </section>
 
-                            <!-- Add Product Section (initially hidden) -->
-                            <!-- <a href="#" id="add-product-btn" style="text-decoration: none;">
-                                <h2 style="color: var(--green); margin-left: 30px;"> + Add Product</h2>
-                            </a>
-                            <section class="add-products" id="add-products" style=" display: none; margin:0px 30px">
-                                <form class="Form" action="admin_products.php" method="post" enctype="multipart/form-data">
-                                    <label for="add-name">Product Name:</label>
-                                    <input type="text" name="add_name" id="add-name" required>
-
-                                    <label for="add-detail">Product Detail:</label>
-                                    <textarea name="add_detail" id="add-detail" required></textarea>
-
-                                    <label for="add-price">Product Price:</label>
-                                    <input type="number" name="add_price" id="add-price" required>
-
-                                    <label for="add-image">Product Image:</label>
-                                    <input type="file" name="add_image" id="add-image" required>
-
-                                    <input class="form-button" type="submit" name="add_product" value="Add Product">
-                                </form>
-                            </section> -->
-                            <!-- <input type="text" id="search-input" placeholder="Search by keyword..." style="width:min-content"> -->
-
                             <!--Add New User Modal box -->
                             <section class="modal" id="product-modal">
                                 <div class="modal-content">
                                     <span class="close" id="close-modal">&times;</span>
-                                    <h2>Produs nou</h2>
+                                    <div class="form-container">
+                                        <h2>Produs nou</h2>
 
-                                    <form class="Form" action="admin_products.php" method="post" enctype="multipart/form-data">
-                                        <div class="flex">
+                                        <form class="Form" action="admin_products.php" method="post" enctype="multipart/form-data">
+
                                             <label for="add-name">Product Name:</label>
                                             <input type="text" name="add_name" id="add-name" required>
+                                            <label for="product-category">Catgoria:</label>
+                                            <select name="category" id="product-category">
+                                                <option value="soup">Supă/Ciorbă</option>
+                                                <option value="principal">Garnitură/Fel principal</option>
+                                                <option value="desert">Desert</option>
+                                                <option value="beverages">Băuturi</option>
+                                                <option value="altele">Altele</option>
+                                            </select>
+                                            <label for="add-detail">Product Detail:</label>
+                                            <textarea name="add_detail" id="add-detail" required></textarea>
                                             <label for="add-price">Product Price:</label>
                                             <input type="number" name="add_price" id="add-price" required>
-                                        </div>
-                                        <label for="measure">Unitatea de Masura:</label>
-                                        <input type="text" name="measure" id="measure" required>
-                                        <!-- <label for="add-name">Product Name:</label>
-                                        <input type="text" name="add_name" id="add-name" required> -->
-                                        <select name="category" id="product-category">
-                                            <option value="soup">Supă/Ciorbă</option>
-                                            <option value="principal">Garnitură/Fel principal</option>
-                                            <option value="desert">Desert</option>
-                                            <option value="beverages">Băuturi</option>
-                                            <option value="altele">Altele</option>
-                                        </select>
-                                        <label for="add-detail">Product Detail:</label>
-                                        <textarea name="add_detail" id="add-detail" required></textarea>
+                                            <label for="measure">Unitatea de Masura:</label>
+                                            <input type="text" name="measure" id="measure" required>
 
-                                        <!-- <label for="add-price">Product Price:</label>
-                                        <input type="number" name="add_price" id="add-price" required> -->
+                                            <label for="add-image">Product Image:</label>
+                                            <input type="file" name="add_image" id="add-image" required>
 
-                                        <label for="add-image">Product Image:</label>
-                                        <input type="file" name="add_image" id="add-image" required>
+                                            <input class="form-button" type="submit" name="add_product" value="INREGISTREAZA">
+                                        </form>
+                                    </div>
 
-                                        <input class="form-button" type="submit" name="add_product" value="INREGISTREAZA">
-                                    </form>
                                 </div>
                             </section>
                             <!-- SHOW TABLE PRODUCTS WITH SORT AND FILTER-->
@@ -406,47 +425,57 @@ try {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $query = "SELECT * FROM `products`";
-                                            $stmt = $conn->prepare($query);
-                                            $stmt->execute();
-                                            $fetch_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                            try {
 
-                                            if (count($fetch_products) > 0) {
-                                                foreach ($fetch_products as $product) {
+                                                $query = "SELECT * FROM `products`";
+                                                $stmt = $conn->prepare($query);
+                                                $stmt->execute();
+                                                $fetch_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                                // if (!$stmt->execute()) {
+                                                //     throw new Exception('Query execution failed.');
+                                                // }
+
+                                                if (count($fetch_products) > 0) {
+                                                    foreach ($fetch_products as $product) {
                                             ?>
-                                                    <tr class="filter">
-                                                        <td> <img src="../image/<?php echo $product['image']; ?>" alt="product image" class="product-image"></td>
-                                                        <td title="<?php echo $product['name']; ?>"><?php echo substr($product['name'], 0, 25) . '...'; ?></td>
-                                                        <td title="<?php echo $product['category']; ?>"><?php echo substr($product['category'], 0, 15) . '...'; ?></td>
-                                                        <td title="<?php echo $product['measure']; ?>"><?php echo substr($product['measure'], 0, 15) . '...'; ?></td>
-                                                        <td><?php echo $product['price']; ?></td>
-                                                        <td>
-                                                            <form action="admin_menu.php" method="post" class="add-to-menu-form">
-                                                                <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                                                                <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
+                                                        <tr class="filter">
+                                                            <td> <img src="../image/<?php echo $product['image']; ?>" alt="img" class="product-image"></td>
+                                                            <td title="<?php echo $product['name']; ?>"><a href="admin_view_product.php?pid=<?php echo $product['id']; ?>"><?php echo substr($product['name'], 0, 25) . '...'; ?></a></td>
+                                                            <td title="<?php echo $product['category']; ?>"><?php echo substr($product['category'], 0, 15) . '...'; ?></td>
+                                                            <td title="<?php echo $product['measure']; ?>"><?php echo substr($product['measure'], 0, 15) . '...'; ?></td>
+                                                            <td><?php echo $product['price']; ?></td>
+                                                            <td>
+                                                                <form action="admin_products.php" method="post" class="add-to-menu-form">
+                                                                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                                                                    <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
 
-                                                                <!-- <input class="form-button meal-icon" type="submit" name="add-to-menu" value="menu"> -->
-                                                                <button class="form-button meal-icon" type="submit" name="add-to-menu" title="Adaugă în meniul zilei">
-                                                                    <i class='fas fa-utensil-spoon'></i>
-                                                                </button>
-                                                            </form>
-                                                            <form method="post" action="admin_users.php">
-                                                                <input type="hidden" name="user_id" value="<?= $product['id']; ?>">
-                                                                <a href="admin_edit_product.php?edit=<?php echo $product['id']; ?>" class="edit" id="edit"><i class=" fas fa-edit" title="Editează"></i></a>
-                                                                <a href="admin_products.php?delete=<?php echo $product['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi produsul <?php echo $product['name']; ?> ?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
-                                                            </form>
-                                                        </td>
-                                                    </tr>
+                                                                    <!-- <input class="form-button meal-icon" type="submit" name="add-to-menu" value="menu"> -->
+                                                                    <button class="form-button" type="submit" name="add-to-menu" title="Adaugă cantitatea specificată în meniul zilei">
+
+                                                                        <i class="fas fa-utensils"></i>
+                                                                        <i class="fas fa-pizza-slice"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <form method="post" action="admin_products.php">
+                                                                    <input type="hidden" name="user_id" value="<?= $product['id']; ?>">
+                                                                    <a href="admin_edit_product.php?edit=<?php echo $product['id']; ?>" class="edit" id="edit"><i class=" fas fa-edit" title="Editează"></i></a>
+                                                                    <a href="admin_products.php?delete=<?php echo $product['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi produsul <?php echo $product['name']; ?> ?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
                                             <?php
-                                                }
-                                            } else {
-                                                echo '
+                                                    }
+                                                } else {
+                                                    echo '
                                                         <tr>
                                                             <td colspan="5" rowspan="2" class="empty">
                                                                 <p>No products added yet</p>
                                                             </td>
                                                         </tr>
                                                     ';
+                                                }
+                                            } catch (Exception $e) {
+                                                $error_msg[] = 'Error: ' . $e->getMessage();
                                             }
                                             ?>
                                         </tbody>
@@ -460,45 +489,8 @@ try {
         </section>
         <!-- END MAIN -->
     </div>
-
-
-
-    <!-- SHOW PRODUCT CARD SECTION -->
-    <!-- <section class="show-products">
-        <div class="box-container">
-            <?php
-            $query = "SELECT * FROM `products`";
-            $stmt = $conn->prepare($query);
-            $stmt->execute();
-            $fetch_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (!empty($products)) {
-                foreach ($fetch_products as $product) {
-            ?>
-                    <div class="box">
-                        <img src="image/<?php echo $product['image']; ?>" alt="product image">
-                        <p>price : <?php echo $product['price']; ?> lei</p>
-                        <h4><?php echo $product['name']; ?></h4>
-                        <details> <?php echo $product['product_detail']; ?> </details>
-                        <a href="admin_product.php?edit=<?php echo $product['id']; ?>" class="edit">edit</a>
-                        <a href="admin_product.php?delete=<?php echo $product['id']; ?>" class="delete" onclick="
-                        return confirm('You really want to delete this product?'); ">delete</a>
-                    </div>
-            <?php
-                }
-            } else {
-                echo '
-                            <div class="empty">
-                                <p>no products added yet</p>
-                            </div>
-                        ';
-            }
-            ?>
-        </div>
-    </section> -->
-    </div>
-
-    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <?php include '../components/alert.php'; ?>
+    <script src="../js/searchCard.js"></script>
     <script src="../script.js"></script>
     <script>
         // popup 
@@ -514,10 +506,6 @@ try {
             });
         });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-    <?php include '../components/alert.php'; ?>
-    <script src="../js/searchCard.js"></script>
-
     <script>
         // Function to open the modal
         $("#product-widget").click(function() {

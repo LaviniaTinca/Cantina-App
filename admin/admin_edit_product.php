@@ -48,11 +48,11 @@ if (isset($_POST['update_product'])) {
 
             $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=?, `image`=?, `category`=?, `measure`=? WHERE id = ?";
             $stmt = $conn->prepare($query);
-            $stmt->execute([$update_name, $update_price, $update_detail, $update_image, $category, $measure, $update_id]);
+            $stmt->execute([$update_name, $update_price, $update_detail, $update_image, $update_category, $update_measure, $update_id]);
         } else {
             $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=? , `category`=?, `measure`=? WHERE id = ?";
             $stmt = $conn->prepare($query);
-            $stmt->execute([$update_name, $update_price, $update_detail, $category, $measure, $update_id]);
+            $stmt->execute([$update_name, $update_price, $update_detail, $update_category, $update_measure, $update_id]);
         }
 
         $conn->commit();
@@ -172,6 +172,7 @@ if (isset($_POST['update_product2'])) {
 
                             <!-- EDIT PRODUCT SECTION -->
                             <section class="update-container">
+                                <h3 class="update">MODIFICĂ PRODUSUL</h3>
                                 <?php
                                 if (isset($_GET['edit'])) {
                                     $edit_id = $_GET['edit'];
@@ -189,8 +190,11 @@ if (isset($_POST['update_product2'])) {
                                                         <img src="../image/<?php echo $fetch_edit['image']; ?>" alt="product to be edited">
                                                     </div>
                                                     <input type="hidden" name="update_id" value="<?php echo $fetch_edit['id']; ?>"><br>
-                                                    <label for="name">Name:</label>
+                                                    <label for="name">Nume:</label>
                                                     <input type="text" name="update_name" value="<?php echo $fetch_edit['name']; ?>" required>
+                                                    <label for="product_detail">Descriere produs:</label>
+                                                    <textarea name="update_detail" required><?php echo $fetch_edit['product_detail']; ?></textarea>
+                                                    <label for="product-category">Categoria:</label>
                                                     <select name="update_category" id="product-category">
                                                         <option value="soup">Supă/Ciorbă</option>
                                                         <option value="principal">Garnitură/Fel principal</option>
@@ -198,16 +202,20 @@ if (isset($_POST['update_product2'])) {
                                                         <option value="beverages">Băuturi</option>
                                                         <option value="altele">Altele</option>
                                                     </select>
-                                                    <label for="update_measure">Unitatea de Masura:</label>
-                                                    <input type="text" name="update_measure" id="measure" value="<?php echo $fetch_edit['measure']; ?>" required>
-                                                    <label for="price">Price:</label>
-                                                    <input type="number" name="update_price" min="0" value="<?php echo $fetch_edit['price']; ?>" required>
-                                                    <label for="product_detail">Product Detail:</label>
-                                                    <textarea name="update_detail" required><?php echo $fetch_edit['product_detail']; ?></textarea>
-                                                    <input type="file" name="update_image" accept="image/jpg, image/jpeg, image/png, image/webp">
-                                                    <div class="button-container">
-                                                        <input class="form-button" type="submit" name="update_product" value="Update" class="edit" onclick="closeForm()">
+                                                    <div class="flex" style="align-items: center; margin: .5rem ; width: 68%">
+                                                        <div class="flex" style="margin: .5rem;">
+                                                            <label style="margin-right: .5rem" for="measure">Măsură: </label>
+                                                            <input type="text" name="update_measure" placeholder="unitatea de masura" id="measure" value="<?php echo $fetch_edit['measure']; ?>" required>
+                                                        </div>
+                                                        <div class="flex" style="margin: .5rem;">
+                                                            <label style="margin-right: .5rem" for="price">Preț: </label>
+                                                            <input type="number" placeholder="pret" name="update_price" min="0" value="<?php echo $fetch_edit['price']; ?>" required>
+                                                        </div>
+
                                                     </div>
+                                                    <input type="file" style="align-items: center; width: 68%" name="update_image" accept="image/jpg, image/jpeg, image/png, image/webp">
+                                                    <input class="form-button" type="submit" name="update_product" value="Update" onclick="closeForm()">
+
                                                 </form>
                                             </div>
                                 <?php

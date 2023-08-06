@@ -1,5 +1,5 @@
 <?php
-include 'php/connection.php';
+include '../php/connection.php';
 session_start();
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
@@ -8,12 +8,12 @@ if (isset($_SESSION['user_id'])) {
 }
 
 if (!isset($_SESSION['user_id'])) {
-    header('location:login.php');
+    header('location:../login.php');
 }
 
 if (isset($_POST['logout'])) {
     session_destroy();
-    header("location: login.php");
+    header("location: ../login.php");
 }
 $current_page = basename($_SERVER['PHP_SELF']);
 
@@ -27,14 +27,16 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cantina -admin</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 
 <body>
     <!-- HEADER SECTION -->
     <section>
-        <?php include 'components/admin/header.php'; ?>
+        <?php include '../components/admin/header.php'; ?>
     </section>
 
     <main class="main" style="margin-top: 50px">
@@ -42,7 +44,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <!-- SIDEBAR AND PANEL-CONTAINER -->
         <section>
             <div class="admin-container">
-                <?php include('components/admin/sidebar.php'); ?>
+                <?php include('../components/admin/sidebar.php'); ?>
 
                 <div class="panel-container">
                     <div class="banner" style=" height: 100px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
@@ -81,6 +83,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <div class="todo-list" style="color: red; margin-left: 1rem">
                                 <p>HASH PASSWORD -> la edit trebuie sa schimb si parola + confirmare ca sa editez</p>
                             </div>
+                            <p>link catre nutrition dar nu se vede</p>
+                            <a href="https://www.verywellfit.com/recipe-nutrition-analyzer-4157076" target="_blank"><img width="320" height="656" alt="food nutrition" src="https://www.verywellfit.com/thmb/Hjx_Y0nSOh33G58i6t7WIHanalo=/1000x0/Nutrition-Label-Embed--1436565376-33f46ca82cdf445cb129e2a8e0e16db4.png" /></a>
+                            <p>mai e de facut pdf si trimitere mail + updatare cod scadereaa cantitatii disponibile din produs la comanda si afisare mesaj cand nu mai e</p>
                         </div>
                     </div>
                 </div>
@@ -90,7 +95,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </main>
     <!-- SCRIPT SECTION -->
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
-    <script src="script.js"></script>
+    <script src="../script.js"></script>
 </body>
 
 </html>

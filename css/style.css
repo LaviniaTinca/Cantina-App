@@ -6,9 +6,11 @@
   }
   :root{
     /* --green : #87a243; */
-    --sage: #B6C197;
+    /* --sage: #B6C197; */
     --green: #8A9B68;
     --chamoise : rgb(147, 123, 99);
+    --metallic-gold: #D4AF37;
+    --terracotta: #C66E4E;
     /* --olive: teal; */
     --olive: #8A9B68;
     /* --olive: olivedrab; */
@@ -18,10 +20,10 @@
     --light-green: #e0ffcd;
     --cart: rgb(194, 56, 56);
     --box-shadow: 0 0 10px rgb(0 0 0/15%);
-  }
+      }
   html{
     font-size: 16px;
-    font-family: sans-serif;
+    font-family:  sans-serif;
     -ms-overflow-style: scrollbar;
     -webkit-tap-highlight-color: transparent;
     --ms-text-size-adjust: 100%;
@@ -115,6 +117,7 @@
       font-size: 24px;
       font-weight:700;
       color: var(--teal);
+      color: var(--dark-olive);
       margin-bottom: 20px;
   }
   
@@ -135,10 +138,12 @@
       width: 40%;
       border: none;
       padding: 15px 20px;
-      background-color: #008080;
+      background-color: var(--green);
+      /* background-color: #008080; */
       color: white;
       cursor: pointer;
       margin-bottom: 10px;
+      text-align: center;
   }
   
   .Container  a {
@@ -185,14 +190,14 @@
   /* ------------END AUTH------------- */
 /* ------------HEADER WITH NAVBAR---------- */
 .logo-image {
-  width: 100px;
-  height: 80px;
+  width: 180px;
+  height: auto;
   /* background: url("images/logo1.png"); */
-  background-size: contain;
+  background-size: cover;
   background-repeat: no-repeat;
-  transform: rotate(185deg) scale(1.2);
-  border-radius: 50%;
+  border-radius: 20%;
   display: inline-block;
+  margin-left: 1.3rem;
 }
 .logo-image:hover {
   background-color: transparent;
@@ -277,7 +282,8 @@ display: none;
   position: absolute;
   top: 120%;
   right: 0rem;
-  background: rgb(255 255 255 / 80%);
+  /* background: rgb(255 255 255 / 80%); */
+  background: rgb(255 255 255 );
   box-shadow: var(--box-shadow);
   border-radius: .5rem;
   padding: 1rem;
@@ -640,6 +646,11 @@ color: white;
   color: white;
 }
 
+a .fa-eye {
+  color: var(--cart);
+  text-decoration: none;
+}
+
 .menu0{
   margin: 80px, auto;
 }
@@ -880,8 +891,8 @@ ul{
 /* ---------other general end---------- */
 /* ----------form------------- */
 .form-container{
-	width: 80vw;
-	margin: 0 auto;
+	width: 50vw;
+	margin: .5rem auto;
 }
 .contact{
   width: 600px;
@@ -924,7 +935,7 @@ select:focus{
 
 .form-button {
   background-color: var(--green);
-  color: var(--light-green);
+  color: white;
   border: none;
   border-radius: 4px;
   padding: 10px;
@@ -938,7 +949,7 @@ select:focus{
   background-color: var(--dark-olive);
 }
 .form-img {
-  width: 30%;
+  width: 20%;
   margin: auto;
 float: left;
 }
@@ -1102,6 +1113,7 @@ float: left;
   text-decoration: none;
   transform: translate(-50%, -50%);
   color: rgb(61, 17, 17);
+  /* color: var(--chamoise); */
   font-size: 40px;
   opacity: 0; /* Start with the icon hidden */
   transition: opacity 0.3s ease-in-out; /* Add a smooth transition */
@@ -1497,6 +1509,7 @@ float: left;
 
 .sidebar {
   background-color: var(--green);
+  
   width: 200px;
   height: 100%;
   overflow-y: auto;
@@ -1542,7 +1555,7 @@ float: left;
 }
 
 .sidebar a {
-  /* color: var(--light-green); */
+  color: var(--dark-olive);
   text-decoration: none;
 }
 
@@ -1571,6 +1584,8 @@ float: left;
 /* Increase specificity to override default styles */
 .admin-container .sidebar {
   background-color: var(--green);
+  /* background-image: 
+ url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg'); */
   width: 200px;
   height: 100%;
   overflow-y: auto;
@@ -1603,6 +1618,7 @@ float: left;
 }
 
 .admin-container .sidebar > ul > li:hover {
+  /* background-color: var(--green); */
   background-color: var(--dark-olive);
 }
 
@@ -1616,13 +1632,16 @@ float: left;
 }
 
 .admin-container .sidebar a {
-  color: #fff;
+  color: white;
+  /* color: var(--dark-olive); */
   text-decoration: none;
+  font-weight: bold;
 }
 
 .admin-container .sidebar a i {
   margin-right: 10px;
   color: var(--dark-olive);
+  font-weight: bold;
 }
 
 /*-------------------------------------------------------------------*/
@@ -1791,12 +1810,15 @@ height:100%;
 }
 
 .product-widget {
-  background-color: #EE964B;
+  /* background-color: #EE964B; */
+  /* background-color: #f99245; */
+  background-color: var(--terracotta);
   /* background-color: #931F1D; */
 }
 
 .order-widget {
-  background-color: #F4D35E;
+  /* background-color: #F4D35E; */
+  background-color: var(--metallic-gold);
 }
 
 .widgets .widget h3 {
@@ -1825,14 +1847,14 @@ height:100%;
   color: #333;
 }
 
-/* Adjust the padding and other styles as needed */
+/* Adjust the padding and other styles as needed
 .form-button {
   padding: 8px 16px;
   background-color: #f39c4b;
   color: white;
   border: none;
   cursor: pointer;
-}
+} */
 
 /* Replace 'fas fa-utensils' with the desired Font Awesome icon class */
 .meal-icon::before {
@@ -2061,7 +2083,7 @@ border-color: #800000;
 
 .modal-content {
   background-color: white;
-  margin: 15% auto;
+  margin: 10% auto;
   padding: 20px;
   width: 80%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -2070,5 +2092,12 @@ border-color: #800000;
 .close {
   float: right;
   cursor: pointer;
+  font-size: 40px;
+}
+
+.update{
+  display: flex;
+  justify-content: center;
+  color: var(--green);
 }
   

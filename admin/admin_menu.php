@@ -73,7 +73,7 @@ if (isset($_POST['update_menu'])) {
         $update_qty = $conn->prepare("UPDATE `menu` SET qty = ? WHERE id = ?");
         $update_qty->execute([$qty, $menu_id]);
 
-        $success_msg[] = 'menu item quantity updated successfully';
+        $success_msg[] = 'cantitatea produsului din meniu a fost modificata!';
     } catch (PDOException $e) {
         echo "Error updating menu product: " . $e->getMessage();
     }
@@ -86,12 +86,30 @@ if (isset($_GET['delete'])) {
         $query = "DELETE FROM `menu` WHERE id = ?";
         $stmt = $conn->prepare($query);
         $stmt->execute([$delete_id]);
+
+        $success_msg[] = 'produsul a fost sters din meniu';
+
         header('location: admin_menu.php');
     } catch (PDOException $e) {
         echo "Error deleting product: " . $e->getMessage();
     }
 }
 
+//empty menu
+if (isset($_POST['empty_menu'])) {
+    try {
+        $query = "DELETE FROM `menu`";
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+
+        $success_msg[] = 'datele din meniu au fost sterse';
+        header('location: admin_menu.php');
+    } catch (PDOException $e) {
+        echo "Error deleting product: " . $e->getMessage();
+    } catch (Exception $e) {
+        $error_msg[] = $e;
+    }
+}
 
 ?>
 
@@ -170,21 +188,13 @@ if (isset($_GET['delete'])) {
             background-size: cover;
         }
 
-        /* Custom style for the icon */
-        button i.fas.fa-edit {
-            color: teal;
-            font-size: 18px;
-        }
-
-        /* Custom style for the delete icon */
-        button i.fas.fa-trash-alt {
-            color: red;
-            font-size: 18px;
-        }
-
         .menu-date-picker {
             width: 220px;
             border: none;
+        }
+
+        .cart-btn:hover i.fas.fa-trash-alt {
+            color: white;
         }
     </style>
 </head>
@@ -202,16 +212,6 @@ if (isset($_GET['delete'])) {
                 <div class="admin-container">
                     <?php include('../components/admin/sidebar.php'); ?>
                     <div class="panel-container">
-                        <!-- <div class="banner" style=" height: 100px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
-                            <h1 style="color:var(--green)" id="menu-heading">today's menu</h1>
-                        </div> -->
-                        <!-- <div class="title2">
-                            <a href="admin.php">admin </a><span>/ set menu</span>
-                            <input type="date" class="menu-date-picker" id="datePicker" onchange="updateMenuHeading()">
-                            <input type="text" id="search-input" placeholder="Search by keyword..." style="width:min-content">
-
-                        </div> -->
-
                         <div class="content">
                             <!-- //MESSAGES -->
                             <div class="detail">
@@ -229,31 +229,18 @@ if (isset($_GET['delete'])) {
                                 ?>
                             </div>
 
-                            <!-- Add Product Section (initially hidden) -->
-                            <!-- <a href="#" id="add-product-btn" style="text-decoration: none;">
-                                <h2 style="color: var(--green); margin-left: 30px;"> * Add Product</h2>
-                            </a>
-                            <section class="add-products" id="add-products" style=" display: none; margin:0px 30px">
-                                <form class="Form" action="admin_view_products.php" method="post" enctype="multipart/form-data">
-                                    <label for="add-name">Product Name:</label>
-                                    <input type="text" name="add_name" id="add-name" required>
+                            <!-- Banner Section - with image card -->
 
-                                    <label for="add-detail">Product Detail:</label>
-                                    <textarea name="add_detail" id="add-detail" required></textarea>
-
-                                    <label for="add-price">Product Price:</label>
-                                    <input type="number" name="add_price" id="add-price" required>
-
-                                    <label for="add-image">Product Image:</label>
-                                    <input type="file" name="add_image" id="add-image" required>
-
-                                    <input class="form-button" type="submit" name="add_product" value="Add Product">
-                                </form>
-                            </section> -->
                             <section>
                                 <div class="flex">
-                                    <a href="admin_products.php" style="margin-left: 20px;"> Add / Edit a Product</a>
+                                    <a href="admin_products.php">
+                                        <h4> + Adaugă produs nou / Modifică produs</h4>
+                                    </a>
                                     <input type="date" class="menu-date-picker" id="datePicker" onchange="updateMenuHeading()">
+
+                                    <form method="post">
+                                        <button type="submit" name="empty_menu" class="cart-btn transparent-button" onclick="return confirm('Dorești să golești meniul zilei?')"><i class="fas fa-trash-alt" title="Sterge datele din meniu"></i> Șterge meniul</button>
+                                    </form>
                                 </div>
 
                                 <div class="category-box">
@@ -330,7 +317,7 @@ if (isset($_GET['delete'])) {
                                                 echo '
                                                         <tr>
                                                             <td colspan="5" rowspan="2" class="empty">
-                                                                <p>No products added yet</p>
+                                                                <p>Nu au fost adăugate produse în meniul zilei!</p>
                                                             </td>
                                                         </tr>
                                                     ';
@@ -348,43 +335,9 @@ if (isset($_GET['delete'])) {
         </section>
         <!-- END MAIN -->
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
-
-
-    <!-- SHOW PRODUCT CARD SECTION -->
-    <!-- <section class="show-products">
-        <div class="box-container">
-            <?php
-            $query = "SELECT * FROM `products`";
-            $stmt = $conn->prepare($query);
-            $stmt->execute();
-            $fetch_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (!empty($fetch_products)) {
-                foreach ($fetch_products as $product) {
-            ?>
-                    <div class="box">
-                        <img src="image/<?php echo $product['image']; ?>" alt="product image">
-                        <p>price : <?php echo $product['price']; ?> lei</p>
-                        <h4><?php echo $product['name']; ?></h4>
-                        <details> <?php echo $product['product_detail']; ?> </details>
-                        <a href="admin_product.php?edit=<?php echo $product['id']; ?>" class="edit">edit</a>
-                        <a href="admin_product.php?delete=<?php echo $product['id']; ?>" class="delete" onclick="
-                        return confirm('You really want to delete this product?'); ">delete</a>
-                    </div>
-            <?php
-                }
-            } else {
-                echo '
-                            <div class="empty">
-                                <p>no products added yet</p>
-                            </div>
-                        ';
-            }
-            ?>
-        </div>
-    </section> -->
-    </div>
+    <?php include '../components/alert.php'; ?>
 
     <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <script src="../script.js"></script>
@@ -402,26 +355,6 @@ if (isset($_GET['delete'])) {
             });
         });
     </script>
-    <!-- <script>
-        // Function to format the date as "Month Day, Year"
-        function formatDate(date) {
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            };
-            return date.toLocaleDateString('en-US', options);
-        }
-
-        // Function to update the heading with the selected date
-        function updateMenuHeading() {
-            const menuHeading = document.getElementById('menu-heading');
-            const datePicker = document.getElementById('datePicker');
-            const selectedDate = new Date(datePicker.value); // Get the selected date from the date picker
-            menuHeading.textContent = "Today's menu - " + formatDate(selectedDate);
-        }
-    </script> -->
     <script>
         // const menuHeading = document.getElementById('menu-heading');
 
@@ -459,8 +392,6 @@ if (isset($_GET['delete'])) {
         // Call the function to set the date picker value from local storage
         setDatePickerValue();
     </script>
-
-    <?php include '../components/alert.php'; ?>
 </body>
 
 </html>
