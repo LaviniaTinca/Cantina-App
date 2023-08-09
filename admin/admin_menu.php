@@ -402,14 +402,14 @@ if (isset($_POST['send_notifications'])) {
                                     <a href="admin_products.php">
                                         <h4> + Adaugă produs nou / Modifică produs</h4>
                                     </a>
-                                    <input type="date" class="menu-date-picker" id="datePicker" onchange="updateMenuHeading()">
+                                    <!-- <input type="date" class="menu-date-picker" id="datePicker" onchange="updateMenuHeading()">
                                     <form action="admin_menu.php" method="post">
                                         <button type="submit" name="send_notifications">Trimite notificare pe email!</button>
-                                    </form>
+                                    </form> -->
 
-                                    <form method="post">
+                                    <!-- <form method="post">
                                         <button type="submit" name="empty_menu" class="cart-btn transparent-button" onclick="return confirm('Dorești să golești meniul zilei?')"><i class="fas fa-trash-alt" title="Sterge datele din meniu"></i> Șterge meniul</button>
-                                    </form>
+                                    </form> -->
                                 </div>
 
                                 <div class="category-box">

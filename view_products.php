@@ -301,7 +301,7 @@ if (isset($_POST['add_to_cart'])) {
 	</section>
 
 	<main class="main">
-		<div class="banner" style=" height: 200px; ">
+		<div class="banner">
 			<h1 style="color: var(--green)">all products in the db shop</h1>
 		</div>
 		<div class="title2">

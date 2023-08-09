@@ -1,4 +1,4 @@
-const header = document.querySelector('header');
+//const header = document.querySelector('header');
 // function fixedNavbar() {
 //     header.classList.toggle('scrolled', window.pageYOffset > 0)
 // }
@@ -7,11 +7,37 @@ const header = document.querySelector('header');
 
 let menu = document.querySelector('#menu-btn');
 let userBtn = document.querySelector('#user-btn');
+//let collapseBtn = document.querySelector('#collapse-btn');
 
 userBtn.addEventListener('click', function(){
     let userBox = document.querySelector('.user-box');
     userBox.classList.toggle('active')
 })
+
+document.cookie = "myCookie=myValue; SameSite=Strict";
+    // if (window.innerWidth <= 768) {
+    //     let navLinks = document.querySelector('#nav-links'); // Select the nav-links div
+
+    //     collapseBtn.addEventListener('click', function() {
+    //         if (window.innerWidth <= 768) {
+    //             navLinks.classList.toggle('header-box'); // Toggle the 'header-box' class on the nav-links div
+    //         }})
+    //         }
+
+
+        $(document).ready(function() {
+            $("#collapse-btn").click(function() {
+                $(".sidebar").toggleClass("sidebar-collapsed");
+                $(".panel-container").toggleClass("sidebar-collapsed");
+            });
+        });
+
+
+
+
+
+
+    
 
 //newsletter
 // const emailNewsletterInput = document.querySelector(".subscribe-input");

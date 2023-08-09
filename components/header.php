@@ -5,6 +5,7 @@ $query = "SELECT * FROM `announcements` WHERE is_set = 1";
 $stmt = $conn->prepare($query);
 $stmt->execute();
 $announcement = $stmt->fetch(PDO::FETCH_ASSOC);
+
 ?>
 <header class="header" <?php if ($announcement) {
 							if (basename($_SERVER['PHP_SELF']) == 'home.php') {
@@ -18,10 +19,10 @@ $announcement = $stmt->fetch(PDO::FETCH_ASSOC);
 
 	<div class="flex">
 		<div class="logo-container">
-			<a href="home.php"><img src="images/logo-cantina1.png" class="logo-image" alt="logo"></a>
+			<a href="home.php"><img src="images/logo-cantina2.png" class="logo-image" alt="logo"></a>
 		</div>
 
-		<nav class="navbar">
+		<!-- <nav class="navbar">
 			<a href="home.php" <?php if (basename($_SERVER['PHP_SELF']) == 'home.php') echo 'class="active"'; ?>>acasa</a>
 			<a href="view_menu.php" <?php if (basename($_SERVER['PHP_SELF']) == 'view_menu.php') echo 'class="active"'; ?>>meniu</a>
 			<a href="view_orders.php" <?php if (basename($_SERVER['PHP_SELF']) == 'view_orders.php') echo 'class="active"'; ?>>comenzi</a>
@@ -30,15 +31,32 @@ $announcement = $stmt->fetch(PDO::FETCH_ASSOC);
 			if ($_SESSION['user_type'] == 'admin') { ?>
 				<a href="admin/admin.php" <?php if (basename($_SERVER['PHP_SELF']) == 'admin.php') echo 'class="active"'; ?>>Admin</a>
 			<?php } ?>
+		</nav> -->
+		<nav class="navbar">
+
+			<div class="nav-links" id="nav-links">
+				<div>
+					<a href="home.php" <?php if (basename($_SERVER['PHP_SELF']) == 'home.php') echo 'class="active"'; ?>>acasa</a>
+					<a href="view_menu.php" <?php if (basename($_SERVER['PHP_SELF']) == 'view_menu.php') echo 'class="active"'; ?>>meniu</a>
+					<a href="view_orders.php" <?php if (basename($_SERVER['PHP_SELF']) == 'view_orders.php') echo 'class="active"'; ?>>comenzi</a>
+					<a href="contact.php" <?php if (basename($_SERVER['PHP_SELF']) == 'contact.php') echo 'class="active"'; ?>>contact</a>
+					<?php if ($_SESSION['user_type'] == 'admin') { ?>
+						<a href="admin/admin.php" <?php if (basename($_SERVER['PHP_SELF']) == 'admin.php') echo 'class="active"'; ?>>Admin</a>
+					<?php } ?>
+				</div>
+
+			</div>
 		</nav>
+
 		<div class="icons">
 			<?php
 			$count_cart_items = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ?");
 			$count_cart_items->execute([$user_id]);
 			$total_cart_items = $count_cart_items->rowCount();
 			?>
-			<a href="cart.php?page=cart"><i class="far fa-heart" title="Wishlist"></i></a>
-			<a href="cart.php?page=cart"><i class="far fa-bell" title="Notificări"></i></a>
+			<!-- <a href="#"><i class="far fa-heart" title="Wishlist"></i></a>
+			<a href="#"><i class="far fa-bell" title="Notificări"></i></a> -->
+			<!-- <i class="fas fa-bars" id="collapse-btn"></i> -->
 			<a href="cart.php?page=cart"><i class="bx bx-cart-download" title="Coș de cumpărături"></i><sup><?= $total_cart_items ?></sup></a>
 
 			<!-- <i class='bx bx-list-plus' id="menu-btn" style="font-size: 2rem;"></i> -->
@@ -51,3 +69,14 @@ $announcement = $stmt->fetch(PDO::FETCH_ASSOC);
 
 	</div>
 </header>
+<!-- <script>
+	$(document).ready(function() {
+		var collapseActive = false;
+		$('#collapse-btn').click(function() {
+			if ($(window).width() <= 768) {
+				collapseActive = !collapseActive;
+				$('#nav-links').toggleClass('user-box', collapseActive);
+			}
+		});
+	});
+</script> -->

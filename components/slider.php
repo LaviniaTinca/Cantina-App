@@ -36,17 +36,16 @@
   </div>
   <br><br>
   <!-- POINTS -->
-  <div style="text-align:center">
+  <!-- <div style="text-align:center">
     <span class="dot" onclick="currentSlide(1)"></span>
     <span class="dot" onclick="currentSlide(2)"></span>
     <span class="dot" onclick="currentSlide(3)"></span>
-    <span class="dot" onclick="currentSlide(4)"></span>
-    <span class="dot" onclick="currentSlide(5)"></span>
-    <!-- <span class="dot" onclick="currentSlide(6)"></span>
+
+    <span class="dot" onclick="currentSlide(6)"></span>
     <span class="dot" onclick="currentSlide(7)"></span>
     <span class="dot" onclick="currentSlide(8)"></span>
-    <span class="dot" onclick="currentSlide(9)"></span> -->
-  </div>
+    <span class="dot" onclick="currentSlide(9)"></span>
+  </div> -->
 </div>
 <script>
   var slideIndex = 1;
@@ -69,7 +68,7 @@
   function showSlides(n) {
     var i;
     var slides = document.getElementsByClassName("mySlides");
-    var dots = document.getElementsByClassName("dot");
+    // var dots = document.getElementsByClassName("dot");
     if (n > slides.length) {
       slideIndex = 1;
     }
@@ -79,10 +78,10 @@
     for (i = 0; i < slides.length; i++) {
       slides[i].style.display = "none";
     }
-    for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-    }
+    // for (i = 0; i < dots.length; i++) {
+    //   dots[i].className = dots[i].className.replace(" active", "");
+    // }
     slides[slideIndex - 1].style.display = "block";
-    dots[slideIndex - 1].className += " active";
+    // dots[slideIndex - 1].className += " active";
   }
 </script>

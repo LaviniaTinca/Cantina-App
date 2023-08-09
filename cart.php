@@ -196,7 +196,7 @@ if (isset($_POST['order'])) {
     </section>
 
     <main class="main">
-        <div class="banner" style=" height: 200px; ">
+        <div class="banner">
             <h1 style="color: var(--green)">Coșul de cumpărături</h1>
         </div>
         <div class="title2">

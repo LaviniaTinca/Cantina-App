@@ -66,7 +66,7 @@ if (in_array($request_uri, $not_found_pages)) {
     </section>
 
     <main class="main">
-        <div class="banner" style=" height: 200px; ">
+        <div class="banner">
             <h1 style="color: var(--green)">Detalii </h1>
         </div>
         <div class="title2">

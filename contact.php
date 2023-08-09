@@ -67,7 +67,7 @@ if (isset($_POST['contact'])) {
     </section>
 
     <main class="main">
-        <div class="banner" style="height:200px; ">
+        <div class="banner">
             <h1 style="color: var(--green)">contact</h1>
         </div>
         <div class="title2">
@@ -114,6 +114,9 @@ if (isset($_POST['contact'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
     <script src="script.js"></script>
+    <script>
+        document.cookie = "myCookie=myValue; SameSite=Strict";
+    </script>
     <?php include 'components/alert.php'; ?>
 </body>
 

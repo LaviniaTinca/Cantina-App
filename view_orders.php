@@ -40,7 +40,7 @@ if (isset($_POST['logout'])) {
     </section>
 
     <main class="main">
-        <div class="banner" style="height:200px; ">
+        <div class="banner">
             <h1 style="color: var(--green)">Comenzi</h1>
         </div>
         <div class="title2">
@@ -68,7 +68,7 @@ if (isset($_POST['logout'])) {
                             <thead>
                                 <tr>
                                     <th>ID Comandă</th>
-                                    <th>Nume client</th>
+                                    <!-- <th>Nume client</th> -->
                                     <th class="sortable" data-sort="number" data-column="num_items">Nr. de produse</th>
                                     <th class="sortable" data-sort="enum" data-column="order_status">Status livrare</th>
                                     <th class="sortable" data-sort="enum" data-column="payment_status">Status plată</th>
@@ -83,7 +83,7 @@ if (isset($_POST['logout'])) {
                                 ?>
                                     <tr>
                                         <td><a style="color: var(--green)" href="view_order.php?oid=<?php echo $order['id']; ?>&total_amount=<?php echo $order['total_amount']; ?>" title="Vezi comanda"><?php echo $order['id']; ?></a></td>
-                                        <td><?php echo $order['name']; ?></td>
+                                        <!-- <td><?php echo $order['name']; ?></td> -->
                                         <td><?php echo $order['num_items']; ?></td>
                                         <td><?php echo $order['order_status']; ?></td>
                                         <td><?php echo $order['payment_status']; ?></td>

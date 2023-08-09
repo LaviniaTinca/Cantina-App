@@ -19,59 +19,12 @@
    <p class="about-us-contact">
      Vino și savurează <a href="view_menu.php"><strong> un prânz delicios!</strong></a>.
    </p>
-   <div class="gallery">
-     <div class="small-slider">
-       <!-- <div><img src="public/cantina/IMG-20230808-WA0032.jpg" alt="Image 1"></div>
-       <div><img src="public/cantina/IMG-20230808-WA0059.jpg" alt="Image 2"></div>
-       <div><img src="public/cantina/IMG-20230808-WA0073.jpg" alt="Image 2"></div> -->
-       <!-- <div><img src="public/cantina/IMG-20230808-WA0008.jpg" alt="Image 2"></div>
-       <div><img src="public/cantina/IMG-20230808-WA0045.jpg" alt="Image 2"></div> -->
-       <!-- Adaugă mai multe imagini aici -->
-     </div>
 
-   </div>
    <div class="lightbox"></div>
  </div>
 
  </div>
 
-
- <script>
-   $(document).ready(function() {
-     $('.small-slider').slick({
-       dots: false,
-       infinite: true,
-       speed: 1000,
-       slidesToShow: 5,
-       slidesToScroll: 1,
-       autoplay: true,
-       autoplaySpeed: 3000,
-       //  asNavFor: '.scrollbar-slider' // Link to the scrollbar slider
-     });
-
-   });
- </script>
-
-
- <script>
-   $(document).ready(function() {
-     $('.about-us-img').on('click', function() {
-       var imgSrc = $(this).attr('src');
-       $('.lightbox').html('<img src="' + imgSrc + '">').fadeIn();
-
-       // Center the lightbox vertically
-       var windowHeight = $(window).height();
-       var lightboxHeight = $('.lightbox img').height();
-       var topMargin = (windowHeight - lightboxHeight) / 2;
-       $('.lightbox img').css('margin-top', topMargin + 'px');
-     });
-
-     $('.lightbox').on('click', function() {
-       $(this).fadeOut();
-
-     });
-   });
- </script>
  <script>
    $(document).ready(function() {
      $('.about-us-img').on('click', function() {

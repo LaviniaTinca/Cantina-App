@@ -199,6 +199,7 @@
   display: inline-block;
   margin-left: 1.3rem;
 }
+
 .logo-image:hover {
   background-color: transparent;
 }
@@ -211,10 +212,7 @@
   text-decoration: none;
   color:var(--olive);
 }
-.logo-container .h3{
-  font-family: 'Lucida Handwriting';
-  text-decoration: underline;
-}
+
 /*--------header------------------*/
 header{
 position: fixed;
@@ -293,6 +291,21 @@ display: none;
   transform-origin: top right;
   line-height: 2;
 }
+.header .header-box {
+  position: absolute;
+  top: 120%;
+  right: 0rem;
+  /* background: rgb(255 255 255 / 80%); */
+  background: rgb(255 255 255 );
+  box-shadow: var(--box-shadow);
+  border-radius: .5rem;
+  padding: 1rem;
+  text-align: center;
+  width: 20rem;
+  transform: scale(0);
+  transform-origin: top right;
+  line-height: 2;
+}
 .header .user-box .btn{
 border-radius: .5rem;
 padding: 0 1.5rem;
@@ -311,6 +324,11 @@ padding: .5rem .5rem;
 transform: scale(1.0);
 transition: .2s linear;
 }
+.header .header-box.active{
+  transform: scale(1.0);
+  transition: .2s linear;
+  }
+
 /* ------------END HEADER ----------------- */
 
 
@@ -462,16 +480,7 @@ transition: .2s linear;
     text-align: justify;
   }
 
-  /* .about-us-img {
-    float: left;
-    margin-right: 1rem;
-    margin-bottom: 1rem;
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    border: 3px solid teal;
-  } */
-  .about-us-img {
+   .about-us-img {
     float: left;
     margin-right: 1rem;
     margin-bottom: 1rem;
@@ -479,9 +488,7 @@ transition: .2s linear;
     height: auto;
     border-radius: 20%;
     border: 1px solid var(--olive);
-    /* background: url('images/staff.webp') no-repeat center center; */
     background-size: cover;
-
   }
 
   .about-us-contact {
@@ -508,6 +515,29 @@ transition: .2s linear;
     margin: 1rem auto;
     background-size: 4px 1px; 
     background: var(--dark-olive);
+  }
+  /* Stilizare fundal lumină de fundal pentru mărire */
+  .lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+
+  /* Stilizare imagine mărită */
+  .lightbox img {
+    max-width: 60%;
+    max-height: auto;
+    display: block;
+    border: 2px solid #fff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+    margin: 4rem auto;
   }
 
 
@@ -774,7 +804,7 @@ ul{
 .icons sup{
 	position: absolute;
 	top: 15%;
-margin: 0;
+  margin: 0;
 	/* background: #000; */
 	background: #c23838;
 	color: #fff;
@@ -840,11 +870,12 @@ margin: 0;
 	background-position: center;
 	background-color: var(--green);
 	width: 100%;
-	height: auto;
+	height: 200px;
 	text-align: center;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+  padding: 2rem 1rem;
 }
 .banner-container {
   display: flex;
@@ -852,6 +883,7 @@ margin: 0;
   justify-content: center;
   align-items: center;
   column-gap: 10px;
+
 }
 
 .banner-img {
@@ -1402,121 +1434,6 @@ float: left;
 
 /* /-------------admin dashboard sidebar and panel container---------- */
 
-/* VAR 3 RESPONSIVE FIXED NAVBAR INSIDE PANEL */
-/* .admin-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: stretch;
-}
-
-.sidebar {
-  background-color: var(--green);
-  width: 250px;
-  min-width: 250px;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2rem;
-  }
-  
-  .sidebar ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  }
-  
-  .sidebar li {
-  margin: 1rem 0;
-  }
-  
-  .sidebar a {
-  text-decoration: none;
-  color: var(--light-green);
-  font-weight: bold;
-  font-size: 1.2rem;
-  transition: color 0.2s ease-in-out;
-  }
-  
-  .sidebar a:hover {
-  color: var(--green);
-  }
-
-  .admin-container .wrapper{
-      position: relative;
-      width: 100%;
-      height: 100vh;
-  }
-  
-  .panel-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  margin-top: 80px;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  }
-  
- .admin-container .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 999;
-  background-color: var(--green);
-  width: 100%;
-  height: 80px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 2rem;
-  }
-  
-  .admin-container .navbar h2 {
-  color: #fff;
-  text-transform: uppercase;
-  font-weight: bold;
-  margin: 0;
-  }
-  
-  @media screen and (max-width: 768px) {
-  .sidebar {
-  width: 100%;
-  min-width: unset;
-  height: auto;
-  position: relative;
-  padding: 1rem 0;
-  }
-  
-  .panel-container {
-  margin-top: 120px;
-  padding: 1rem;
-  }
-  
-  .admin-container .navbar {
-  height: 120px;
-  padding: 0 1rem;
-  }
-  
-  .admin-container .navbar h2 {
-  font-size: 1.5rem;
-  }
-  } */
-  
-  
-  
-  
-  
-
 
 /* VAR1 GOOD */
 
@@ -1554,10 +1471,6 @@ float: left;
   margin: 10px;
 }
 
-/* .sidebar li ul {
-  margin-left: 20px;
-} */
-
 .sidebar > ul > li:hover > a {
   color: #fff;
 }
@@ -1590,23 +1503,11 @@ float: left;
   color: #fff;
 }
 
-/* Make sidebar responsive */
-@media (max-width: 768px) {
-  .admin-container {
-    flex-direction: column;
-  }
 
-  .sidebar {
-    position: static;
-    width: 100%;
-  }
-}
 
 /* Increase specificity to override default styles */
 .admin-container .sidebar {
   background-color: var(--green);
-  /* background-image: 
- url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg'); */
   width: 200px;
   height: 100%;
   overflow-y: auto;
@@ -1639,7 +1540,6 @@ float: left;
 }
 
 .admin-container .sidebar > ul > li:hover {
-  /* background-color: var(--green); */
   background-color: var(--dark-olive);
 }
 
@@ -1654,7 +1554,6 @@ float: left;
 
 .admin-container .sidebar a {
   color: white;
-  /* color: var(--dark-olive); */
   text-decoration: none;
   font-weight: bold;
 }
@@ -1666,52 +1565,7 @@ float: left;
 }
 
 /*-------------------------------------------------------------------*/
-/* .admin-container {
-  display: flex;
-  flex-direction: row;
-  height: max-content;
-  z-index: 0;
-}
 
-.sidebar {
-  background-color: var(--green);
-  width: 200px;
-height:100%;
-  overflow-y: auto;
-
-  position: fixed;
-}
-
- .title-dashboard{
-  margin: 20px;
-  font-size: large;
-  text-align: center;
-}
-
-.sidebar ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.sidebar li {
-  padding: 10px;
-}
-
-.sidebar li ul {
-  margin-left: 20px;
-}
-
-
-.sidebar a {
-  color: var(--light-green);
-  text-decoration: none;
-}
-
-.sidebar a i {
-  margin-right: 10px;
-  color: var(--dark-olive);
-} */
 
 /* VAR 1 GOOD */
 /* main panel styles */
@@ -1740,47 +1594,18 @@ height:100%;
 .content h2{
   color: var(--green);
 }
+  /* Additional styles for collapsed sidebar */
+.sidebar.sidebar-collapsed {
+    width: 0px;
+    /* Adjust the width as needed */
+}
+
+.panel-container.sidebar-collapsed {
+    width: 100%;
+    margin: 0;
+}
 
 /*---------------------------------------------------------------------*/
-
-
-/* .admin-container {
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
-}
-
-.sidebar {
-  background-color: #f1f1f1;
-  width: 200px;
-  padding: 20px;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar li {
-  margin-bottom: 10px;
-}
-
-.sidebar a {
-  text-decoration: none;
-  color: #333;
-  font-weight: bold;
-}
-
-.sidebar a:hover {
-  color: #555;
-}
-
-.panel-container {
-  background-color: #fff;
-  flex-grow: 1;
-  padding: 20px;
-} */
 
 /*-----admin general section----------*/
 
@@ -1961,6 +1786,8 @@ border-color: #800000;
     /* margin: .5rem; */
     padding: 1rem;
     box-shadow: 0 0 1rem var(--olive);
+        overflow-x: auto; /* Enable horizontal scrolling if needed */
+
   }
   
   .product-table {
@@ -2121,4 +1948,193 @@ border-color: #800000;
   justify-content: center;
   color: var(--green);
 }
+/* Make sidebar responsive */
+/* @media (max-width: 768px) {
+  .admin-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+  }
+} */
+
+@media (max-width: 768px) {
+  .logo-image{
+    width: 120px;
+    margin-left: 0;
+  }
+  .banner{
+    height: 50%;
+  }
+
+  .menu0 .box {
+    width: calc(50% - 2rem);
+    flex-basis: calc((100% / 2) - 2rem);
+}
+.show-card .box-container {
+  grid-template-columns: repeat(1, 1fr); /* Display one card per row */
+}
   
+  .about-us-img {
+    width: 50%;
+  }
+  footer .wrapper {
+    padding: 50px 20px; /* Adjust padding for smaller screens */
+    flex-direction: column; /* Change to column layout for smaller screens */
+  }
+  .footer-column {
+    width: 100%; /* Adjust width to full width on smaller screens */
+    margin: 0; /* Remove margins to use full width */
+  }
+
+
+  footer ul {
+    flex-direction: row; /* Switch to row layout for list items */
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  footer ul li {
+    margin: 0 10px; /*
+    .product-table {
+      border-collapse: collapse;
+      white-space: nowrap; /* Prevent text from wrapping */
+      width: auto; /* Allow table to expand as needed */
+  }
+  footer h3{
+    margin: 20px;
+  }
+  .product-table {
+    border-collapse: collapse;
+    white-space: nowrap; /* Prevent text from wrapping */
+    width: auto; /* Allow table to expand as needed */
+}
+  .product-table th,
+    .product-table td {
+        padding: 0.3rem;
+        font-size: 14px; /* Adjust font size as needed */
+        white-space: nowrap; /* Prevent text from wrapping */
+
+    }
+
+    .product-table td img {
+        max-width: 80px;
+    }
+  
+    .form-container {
+      display: flex;
+      flex-direction: column; /* Change to vertical layout */
+      align-items: center;
+      padding: .5rem;
+      box-shadow: var(--box-shadow);
+      border: 1px solid var(--green);
+      border-radius: 5px;
+      width: 80%;
+      max-width: 400px;
+      margin: 0 auto;
+      overflow-x: auto;
+  }
+
+  .form-button {
+      max-width: 100%;
+      margin: 0.5rem 0;
+  }
+  .input-field input,
+    .input-field textarea {
+        padding: 0.4rem; 
+        margin: 0;
+    }
+    .input-field {
+      width: 100%;
+      margin: 0.5rem 0;
+  }
+
+  .banner{
+    height: 100px;
+  }
+  
+  .banner-container{
+    flex-direction: column; /* Adjust to stack content vertically on smaller screens */
+  }
+  .banner-img {
+    max-width: 100%; /* Adjusted to allow image to shrink on smaller screens */
+ }
+
+.banner h1 {
+    margin: 0; /* Reset margin to remove extra space */
+}
+    
+}
+
+@media (max-width: 480px) {
+  .menu0 .box {
+      width: calc(100% - 2rem);
+      flex-basis: calc(100% - 2rem);
+  }
+  .show-card .box-container {
+    grid-template-columns: repeat(1, 1fr); /* Display one card per row */
+  }
+  .product-table {
+    border-collapse: collapse;
+    white-space: nowrap; /* Prevent text from wrapping */
+    width: auto; /* Allow table to expand as needed */
+}
+  .product-table th,
+  .product-table td {
+      padding: 0.2rem;
+      font-size: 12px; /* Adjust font size as needed */
+      white-space: nowrap; /* Prevent text from wrapping */
+
+  }
+
+  .product-table td img {
+      max-width: 60px;
+  }
+
+}
+
+/* @media (min-width: 769px) {
+  #collapse-btn {
+    display: none;
+  }
+} */
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+  .sidebar {
+      display: none;
+  }
+  .panel-container{
+    margin: 0;
+    z-index: -1;
+    display: flex;
+    flex-direction: column;
+  }
+  .content{
+    padding: 1.2rem;
+
+  }
+
+  .sidebar.sidebar-collapsed {
+      width: 100%;
+      display: block;
+      /* Make sidebar full width when collapsed on smaller screens */
+  }
+  .category-box{
+    display: none!important;
+  }
+  #search-input {
+    width: 60px; /* Adjust the width as desired */
+    padding: 6px; /* Adjust padding for a shorter appearance */
+    font-size: 10px; /* Adjust font size for a smaller text */
+  }
+  .main{
+    width: 100vw;
+  }
+  header{
+    width: 100vw;
+    height: 70px;
+    left: 0;
+  }
+}

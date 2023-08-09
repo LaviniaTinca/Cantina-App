@@ -52,61 +52,13 @@ if (isset($_POST['subscribe-button'])) {
   <title>Cantina</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/slider.css">
+  <link rel="stylesheet" href="css/header.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
-  <style>
-    /* Stilizare generală a containerului galeriei */
-    .gallery {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 20px;
-    }
 
-    /* Stilizare slider mic */
-    .small-slider {
-      width: 100%;
-      max-width: 800px;
-      /* Ajustează dimensiunea maximă */
-      margin: 0 auto;
-    }
-
-    /* Stilizare imagini din slider */
-    .small-slider img {
-      width: 100%;
-      height: auto;
-      cursor: pointer;
-    }
-
-    /* Stilizare fundal lumină de fundal pentru mărire */
-    .lightbox {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-
-    /* Stilizare imagine mărită */
-    .lightbox img {
-      max-width: 60%;
-      max-height: auto;
-      display: block;
-      border: 2px solid #fff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
-      margin: 4rem auto;
-      /* Center the image horizontally */
-
-    }
-  </style>
 </head>
 
 <body>

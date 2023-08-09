@@ -91,49 +91,7 @@ try {
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-    <!-- <style>
-        .show-messages {
-            margin: 20px;
-        }
 
-        .box-container {
-            display: grid;
-            /* grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); */
-            grid-template-columns: repeat(2, minmax(250px, 1fr));
-
-            gap: 20px;
-        }
-
-        .box {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            max-width: 100%;
-        }
-
-        .box img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .box h4 {
-            margin: 0;
-            font-size: 18px;
-        }
-
-        .details {
-            margin-top: 10px;
-        }
-
-        .details p {
-            margin: 0;
-            font-size: 14px;
-        }
-    </style> -->
 </head>
 
 <body>
