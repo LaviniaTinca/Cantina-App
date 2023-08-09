@@ -184,7 +184,7 @@ try {
                             <section class="widgets">
                                 <canvas id="myChart" style="max-width:400px"></canvas>
                                 <a href="admin_orders.php">
-                                    <div class="widget order-widget">
+                                    <div class="widget order-widget" style="width: max-content;">
                                         <?php
                                         try {
                                             // Get the total number of orders
@@ -215,7 +215,7 @@ try {
                                             <div class="small-widget">
                                                 <i class="bx bx-receipt"></i>
                                             </div>
-                                            <h3><?php echo $todayOrders; ?> Comenzi</h3>
+                                            <h3><?php echo $todayOrders; ?> Comenzi active</h3>
                                         </div>
                                         <h5>din <?php echo $totalOrders; ?> înregistrate</h5>
 
@@ -266,10 +266,10 @@ try {
                            FROM orders o
                            INNER JOIN order_items oi ON o.id = oi.order_id
                            INNER JOIN users u ON o.user_id = u.id
-                           WHERE o.user_id = ?
+                        --    WHERE o.user_id = ?
                            GROUP BY o.id, u.name, o.payment_status, o.order_status, o.total_amount, o.order_date
-                           ORDER BY o.order_date");
-                                    $stmt->execute([$user_id]);
+                           ORDER BY o.order_date DESC");
+                                    $stmt->execute();
 
                                     if ($stmt->rowCount() > 0) {
                                 ?>
@@ -470,7 +470,7 @@ try {
                 datasets: [{
                     fill: true,
                     lineTension: 0,
-                    backgroundColor: "rgba(244, 211, 94, 1.0)",
+                    backgroundColor: "rgba(212, 175, 55, 1.0)",
                     borderColor: "rgba(244, 211, 94, 0.1)",
                     data: yValues
                 }]

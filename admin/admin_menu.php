@@ -27,12 +27,14 @@ $messages = array();
 if (isset($_POST['add-to-menu'])) {
     // Validate input
     if (empty($_POST['product_id'])) {
+        $warning_msg[] = "Product id is required.";
         $messages[] = "Product id is required.";
     } else {
         $product_id = htmlspecialchars($_POST['product_id'], ENT_QUOTES, 'UTF-8');
     }
     if (empty($_POST['qty'])) {
         $messages[] = "Quantity id is required.";
+        $warning_msg[] = "Quantity id is required.";
     } else {
         $qty = htmlspecialchars($_POST['qty'], ENT_QUOTES, 'UTF-8');
     }
@@ -42,25 +44,70 @@ if (isset($_POST['add-to-menu'])) {
         try {
             $conn->beginTransaction();
 
-            $id = unique_id();
-            $verify_menu = $conn->prepare("SELECT * FROM `menu` WHERE product_id = ?");
-            $verify_menu->execute([$product_id]);
+            $check_menu = $conn->prepare("
+            SELECT * 
+            FROM `daily_menu` 
+            WHERE date = CURDATE()
+            FOR UPDATE
+        ");
+            $check_menu->execute();
 
-            if ($verify_menu->rowCount() > 0) {
-                $warning_msg[] = 'product already exist in your menu';
+            if ($check_menu->rowCount() > 0) {
+                // There is already a daily menu for today
+
+                // Retrieve the daily_menu_id for today
+                $daily_menu_id = $check_menu->fetch(PDO::FETCH_ASSOC)['id'];
+
+                $verify_menu = $conn->prepare("
+                                        SELECT dmi.* 
+                                        FROM `daily_menu_items` dmi
+                                        INNER JOIN `daily_menu` dm ON dmi.daily_menu_id = dm.id
+                                        WHERE dmi.product_id = ? AND dm.date > CURDATE()
+                                    ");
+                $verify_menu->execute([$product_id]);
+
+                if ($verify_menu->rowCount() > 0) {
+                    $update_qty = $conn->prepare("UPDATE `daily_menu_items` SET qty = ? WHERE product_id = ? and daily_menu_id =?");
+                    $update_qty->execute([$qty, $product_id, $daily_menu_id]);
+
+                    $success_msg[] = 'cantitatea produsului din meniu a fost modificata!';
+                    // $warning_msg[] = 'product already exist in your menu';
+                } else {
+                    $query = "INSERT INTO `daily_menu_items` (`daily_menu_id`, `product_id`, `qty`) VALUES (?, ?, ?)";
+                    $stmt = $conn->prepare($query);
+                    $stmt->execute([$daily_menu_id, $product_id, $qty]);
+
+                    // Commit the transaction
+                    $conn->commit();
+
+                    $success_msg[] = 'product added to menu successfully';
+                    header('location: admin_products.php');
+                }
             } else {
+                // There is no daily menu for today, so create one and add the product
 
-                $query = "INSERT INTO `menu` (`id`,`product_id`, `qty`) VALUES (?, ?, ?)";
+                // Create a new daily menu entry for today
+                $create_menu = $conn->prepare("INSERT INTO `daily_menu` (`date`) VALUES (CURDATE()) ");
+                $create_menu->execute();
+
+                // Retrieve the newly created daily_menu_id
+                $daily_menu_id = $conn->lastInsertId();
+
+                // Perform your insertion into the daily_menu_items table
+                $query = "INSERT INTO `daily_menu_items` (`daily_menu_id`, `product_id`, `qty`) VALUES (?, ?, ?)";
                 $stmt = $conn->prepare($query);
-                $stmt->execute([$id, $product_id, $qty]);
+                $stmt->execute([$daily_menu_id, $product_id, $qty]);
 
+                // Commit the transaction
                 $conn->commit();
+
+                // Display a success message or perform other actions
                 $success_msg[] = 'product added to menu successfully';
                 header('location: admin_products.php');
             }
         } catch (PDOException $e) {
             $conn->rollback();
-            echo "Error adding product: " . $e->getMessage();
+            $error_msg[] = "Error adding product: " . $e->getMessage();
         }
     }
 }
@@ -70,20 +117,24 @@ if (isset($_POST['update_menu'])) {
     $menu_id = htmlspecialchars($_POST['menu_id'], ENT_QUOTES, 'UTF-8');
     $qty = htmlspecialchars($_POST['qty'], ENT_QUOTES, 'UTF-8');
     try {
-        $update_qty = $conn->prepare("UPDATE `menu` SET qty = ? WHERE id = ?");
-        $update_qty->execute([$qty, $menu_id]);
+        $stmt = $conn->prepare("SELECT id FROM daily_menu WHERE `date` = CURDATE()");
+        $stmt->execute();
+        $daily_menu_id = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
+        $update_qty = $conn->prepare("UPDATE `daily_menu_items` SET qty = ? WHERE id = ? and daily_menu_id = ?");
+        $update_qty->execute([$qty, $menu_id, $daily_menu_id]);
 
         $success_msg[] = 'cantitatea produsului din meniu a fost modificata!';
     } catch (PDOException $e) {
-        echo "Error updating menu product: " . $e->getMessage();
+        $error_msg[] = "Error updating menu product: " . $e->getMessage();
     }
 }
 
 //delete menu item
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
+    var_dump($delete_id);
     try {
-        $query = "DELETE FROM `menu` WHERE id = ?";
+        $query = "DELETE FROM `daily_menu_items` WHERE id = ?";
         $stmt = $conn->prepare($query);
         $stmt->execute([$delete_id]);
 
@@ -91,27 +142,141 @@ if (isset($_GET['delete'])) {
 
         header('location: admin_menu.php');
     } catch (PDOException $e) {
-        echo "Error deleting product: " . $e->getMessage();
+        $error_msg[] = "Error deleting product: " . $e->getMessage();
     }
 }
 
 //empty menu
 if (isset($_POST['empty_menu'])) {
     try {
-        $query = "DELETE FROM `menu`";
+        $query = "DELETE FROM `daily_menu_items` WHERE daily_menu_id = CURDATE()";
         $stmt = $conn->prepare($query);
         $stmt->execute();
 
         $success_msg[] = 'datele din meniu au fost sterse';
         header('location: admin_menu.php');
     } catch (PDOException $e) {
-        echo "Error deleting product: " . $e->getMessage();
+        $error_msg[] =  "Error deleting products: " . $e->getMessage();
     } catch (Exception $e) {
         $error_msg[] = $e;
     }
 }
 
+//email notification
+// Include database connection and email sending code
+
+if (isset($_POST['send_notifications'])) {
+    // require '../PHPMailer-master/src/Exception.php';
+    // require '../PHPMailer-master/src/PHPMailer.php';
+    // require '../PHPMailer-master/src/SMTP.php';
+
+    // $mail = new PHPMailer\PHPMailer\PHPMailer();
+    // // $mail = new PHPMailer(true);
+    // // Configure PHPMailer using your php.ini settings
+    // $mail->isSMTP();
+    // $mail->Host = 'localhost';
+    // $mail->SMTPAuth = false;
+    // $mail->SMTPSecure = false;
+    // $mail->Port = 25;
+
+    // try {
+    //     $mail = new PHPMailer();
+    //     $mail->SMTPDebug = SMTP::DEBUG_OFF;  // Set to `SMTP::DEBUG_SERVER` for debugging
+    //     $mail->isSMTP();
+    //     $mail->Host = 'smtp.example.com';  // Your SMTP server
+    //     $mail->SMTPAuth = true;
+    //     $mail->Username = 'your-email@example.com';  // SMTP username
+    //     $mail->Password = 'your-password';  // SMTP password
+    //     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;  // Use SSL or TLS
+    //     $mail->Port = 587;  // SMTP port
+
+
+    //     // Set the sender and recipient
+    //     $mail->setFrom('your-email@example.com', 'Your Name');
+    //     // Loop through subscribers and send personalized emails
+    //     foreach ($subscribers as $subscriber) {
+    //         $mail->addAddress($subscriber['email'], $subscriber['name']);
+    //         // ...
+    //     }
+
+    //     // $mail->addAddress('recipient@example.com', 'Recipient Name');
+
+    //     // Set email content
+    //     $mail->isHTML(true);
+    //     $mail->Subject = 'Subject of the email';
+    //     $mail->Body = 'HTML message here';
+    //     $mail->AltBody = 'Plain text version of the email';
+
+    //     // Send the email
+    //     $mail->send();
+    //     echo 'Email sent successfully.';
+    // } catch (Exception $e) {
+    //     echo "Error sending email: {$mail->ErrorInfo}";
+    // }
+    try {
+
+        $query = "SELECT * FROM `subscribers`";
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+        $subscribers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $success_messages = array();
+        $error_messages = array();
+        // Loop through subscribers and send personalized emails
+        if (count($subscribers) > 0) {
+            foreach ($subscribers as $subscriber) {
+                $to = $subscriber['email'];
+                $subject = 'New Menu Update';
+                $headers = "From: cantinateologica@example.com\r\n";
+                $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+                // Customize the message for each subscriber
+                $message = "Dear,<br>";
+                // $message = "Dear {$subscriber['name']},<br>";
+                $message .= "We're thrilled to introduce our latest menu items. Click below to explore the delicious options:<br>";
+                $message .= "<a href='http://localhost/licenta/view_menu.php' target='_blank'>Meniul zilei</a><br>";
+                $message .= "Thank you for being a valued customer!<br>";
+                $message .= "Sincerely,<br>Your Restaurant Team";
+
+                $success = mail($to, $subject, $message, $headers);
+
+                if ($success) {
+                    $success_messages[] = "Email trimis catre {$subscriber['email']} cu succes.<br>";
+                    $success_msg[] = "Email trimis catre {$subscriber['email']} cu succes.<br>";
+                } else {
+                    $error_messages[] =  "eroare la trimitere catre {$subscriber['email']}<br>";
+                    $error_msg[] =  "eroare la trimitere catre {$subscriber['email']}<br>";
+                }
+            }
+        }
+        // if (!empty($success_messages)) {
+        //     $success_msg[] .= '<div>'; // Start a div for the success messages
+
+        //     foreach ($success_messages as $message) {
+        //         $success_msg[] .= '<span>' . $message . '</span>';
+        //     }
+
+        //     $success_msg[] .= '</div>'; // Close the div for the success messages
+
+
+        // } else {
+        //     if (!empty($error_messages)) {
+        //         $error_msg[] .= '<div>'; // Start a div for the success messages
+
+        //         foreach ($error_messages as $message) {
+        //             $error_msg[] .= '<span>' . $message . '</span>';
+        //         }
+
+        //         $error_msg[] .= '</div>'; // Close the div for the success messages       
+        //     }
+        // }
+    } catch (PDOException $e) {
+        $error_msg[] = "Error " . $e->getMessage();
+    } catch (Exception $e) {
+        $error_msg[] = "Error " . $e->getMessage();
+    }
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -197,6 +362,7 @@ if (isset($_POST['empty_menu'])) {
             color: white;
         }
     </style>
+
 </head>
 
 <body>
@@ -237,6 +403,9 @@ if (isset($_POST['empty_menu'])) {
                                         <h4> + Adaugă produs nou / Modifică produs</h4>
                                     </a>
                                     <input type="date" class="menu-date-picker" id="datePicker" onchange="updateMenuHeading()">
+                                    <form action="admin_menu.php" method="post">
+                                        <button type="submit" name="send_notifications">Trimite notificare pe email!</button>
+                                    </form>
 
                                     <form method="post">
                                         <button type="submit" name="empty_menu" class="cart-btn transparent-button" onclick="return confirm('Dorești să golești meniul zilei?')"><i class="fas fa-trash-alt" title="Sterge datele din meniu"></i> Șterge meniul</button>
@@ -282,45 +451,54 @@ if (isset($_POST['empty_menu'])) {
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $query = "SELECT products.*, menu.qty AS qty, menu.id AS menu_id
-                                            FROM menu
-                                            JOIN products ON menu.product_id = products.id";
-                                            $stmt = $conn->prepare($query);
-                                            $stmt->execute();
-                                            $fetch_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                            try {
+                                                $query = "SELECT products.*, dmi.id AS menu_id, dmi.qty AS qty
+                                                FROM daily_menu
+                                                JOIN daily_menu_items AS dmi ON dmi.daily_menu_id = daily_menu.id
+                                                JOIN products ON dmi.product_id = products.id
+                                                WHERE daily_menu.date = CURDATE()";
 
-                                            if (count($fetch_products) > 0) {
-                                                foreach ($fetch_products as $product) {
+                                                $stmt = $conn->prepare($query);
+                                                $stmt->execute();
+                                                $fetch_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                                                if (count($fetch_products) > 0) {
+                                                    foreach ($fetch_products as $product) {
                                             ?>
-                                                    <tr>
-                                                        <td> <img src="../image/<?php echo $product['image']; ?>" alt="product image" class="product-image"></td>
-                                                        <td><?php echo $product['name']; ?></td>
-                                                        <td><?php echo $product['price']; ?></td>
-                                                        <td><?php echo substr($product['category'], 0, 15) . '...'; ?></td>
-                                                        <td><?php echo $product['qty']; ?></td>
-                                                        <td><?php echo $product['measure']; ?></td>
-                                                        <td>
-                                                            <form action="admin_menu.php" method="post">
-                                                                <input type="hidden" name="menu_id" value="<?php echo $product['menu_id']; ?>">
-                                                                <input type="number" name="qty" class="qty edit" min="1" max="99" onkeypress="if(this.value.length == 2) return false;" value="<?= $product['qty']; ?>">
-                                                                <button type="submit" name="update_menu" title="Update quantity">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </button>
-                                                                <a href="admin_menu.php?delete=<?php echo $product['menu_id']; ?>" class="delete" onclick="return confirm('You really want to delete <?php echo $product['name']; ?> from the menu?');"><i class="fas fa-trash-alt" title="Delete"></i></a>
-                                                            </form>
-                                                        </td>
-                                                    </tr>
-                                            <?php
-
-                                                }
-                                            } else {
-                                                echo '
                                                         <tr>
-                                                            <td colspan="5" rowspan="2" class="empty">
-                                                                <p>Nu au fost adăugate produse în meniul zilei!</p>
+                                                            <td> <img src="../image/<?php echo $product['image']; ?>" alt="product image" class="product-image"></td>
+                                                            <td><?php echo $product['name']; ?></td>
+                                                            <td><?php echo $product['price']; ?></td>
+                                                            <td><?php echo substr($product['category'], 0, 15) . '...'; ?></td>
+                                                            <td><?php echo $product['qty']; ?></td>
+                                                            <td><?php echo $product['measure']; ?></td>
+                                                            <td>
+                                                                <form action="admin_menu.php" method="post">
+                                                                    <input type="hidden" name="menu_id" value="<?php echo $product['menu_id']; ?>">
+                                                                    <input type="number" name="qty" class="qty edit" min="1" max="99" onkeypress="if(this.value.length == 2) return false;" value="<?= $product['qty']; ?>">
+                                                                    <button type="submit" name="update_menu" title="Update quantity">
+                                                                        <i class="fas fa-edit"></i>
+                                                                    </button>
+                                                                    <a href="admin_menu.php?delete=<?php echo $product['menu_id']; ?>" class="delete" onclick="return confirm('You really want to delete <?php echo $product['name']; ?> from the menu?');"><i class="fas fa-trash-alt" title="Delete"></i></a>
+                                                                </form>
                                                             </td>
                                                         </tr>
-                                                    ';
+                                            <?php
+
+                                                    }
+                                                } else {
+                                                    echo '
+                                                <tr>
+                                                    <td colspan="5" rowspan="2" class="empty">
+                                                        <p>Nu au fost adăugate produse în meniul zilei!</p>
+                                                    </td>
+                                                </tr>
+                                            ';
+                                                }
+                                            } catch (PDOException $th) {
+                                                $error_message[] = 'Error ' . $th->getMessage();
+                                            } catch (Exception $th) {
+                                                $error_message[] = 'Error ' . $th->getMessage();
                                             }
                                             ?>
 

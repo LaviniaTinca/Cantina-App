@@ -177,16 +177,59 @@ if (isset($_POST['update_product'])) {
     }
 }
 
+// //add product to menu
+// if (isset($_POST['add-to-menu'])) {
+//     // Validate input
+//     if (empty($_POST['product_id'])) {
+//         $messages[] = "Product id is required.";
+//     } else {
+//         $product_id = htmlspecialchars($_POST['product_id'], ENT_QUOTES, 'UTF-8');
+//     }
+//     if (empty($_POST['qty'])) {
+//         $messages[] = "Quantity id is required.";
+//     } else {
+//         $qty = htmlspecialchars($_POST['qty'], ENT_QUOTES, 'UTF-8');
+//     }
+
+//     // Insert product into menu table 
+//     if (empty($messages)) {
+//         try {
+//             $conn->beginTransaction();
+
+//             $id = unique_id();
+//             $verify_menu = $conn->prepare("SELECT * FROM `menu` WHERE product_id = ?");
+//             $verify_menu->execute([$product_id]);
+
+//             if ($verify_menu->rowCount() > 0) {
+//                 $warning_msg[] = 'produsul exista deja in meniu';
+//             } else {
+
+//                 $query = "INSERT INTO `menu` (`id`,`product_id`, `qty`) VALUES (?, ?, ?)";
+//                 $stmt = $conn->prepare($query);
+//                 $stmt->execute([$id, $product_id, $qty]);
+
+//                 $conn->commit();
+//                 $success_msg[] = 'produs adaugat in meniu';
+//                 header('location: admin_products.php');
+//             }
+//         } catch (PDOException $e) {
+//             $conn->rollback();
+//             echo "Error adding product: " . $e->getMessage();
+//         }
+//     }
+// }
 //add product to menu
 if (isset($_POST['add-to-menu'])) {
     // Validate input
     if (empty($_POST['product_id'])) {
+        $warning_msg[] = "Product id is required.";
         $messages[] = "Product id is required.";
     } else {
         $product_id = htmlspecialchars($_POST['product_id'], ENT_QUOTES, 'UTF-8');
     }
     if (empty($_POST['qty'])) {
         $messages[] = "Quantity id is required.";
+        $warning_msg[] = "Quantity id is required.";
     } else {
         $qty = htmlspecialchars($_POST['qty'], ENT_QUOTES, 'UTF-8');
     }
@@ -196,25 +239,70 @@ if (isset($_POST['add-to-menu'])) {
         try {
             $conn->beginTransaction();
 
-            $id = unique_id();
-            $verify_menu = $conn->prepare("SELECT * FROM `menu` WHERE product_id = ?");
-            $verify_menu->execute([$product_id]);
+            $check_menu = $conn->prepare("
+            SELECT * 
+            FROM `daily_menu` 
+            WHERE date = CURDATE()
+            FOR UPDATE
+        ");
+            $check_menu->execute();
 
-            if ($verify_menu->rowCount() > 0) {
-                $warning_msg[] = 'produsul exista deja in meniu';
+            if ($check_menu->rowCount() > 0) {
+                // There is already a daily menu for today
+
+                // Retrieve the daily_menu_id for today
+                $daily_menu_id = $check_menu->fetch(PDO::FETCH_ASSOC)['id'];
+
+                $verify_menu = $conn->prepare("
+                                        SELECT dmi.* 
+                                        FROM `daily_menu_items` dmi
+                                        INNER JOIN `daily_menu` dm ON dmi.daily_menu_id = dm.id
+                                        WHERE dmi.product_id = ? AND dm.date > CURDATE()
+                                    ");
+                $verify_menu->execute([$product_id]);
+
+                if ($verify_menu->rowCount() > 0) {
+                    $update_qty = $conn->prepare("UPDATE `daily_menu_items` SET qty = ? WHERE product_id = ? and daily_menu_id =?");
+                    $update_qty->execute([$qty, $product_id, $daily_menu_id]);
+
+                    $success_msg[] = 'cantitatea produsului din meniu a fost modificata!';
+                    // $warning_msg[] = 'product already exist in your menu';
+                } else {
+                    $query = "INSERT INTO `daily_menu_items` (`daily_menu_id`, `product_id`, `qty`) VALUES (?, ?, ?)";
+                    $stmt = $conn->prepare($query);
+                    $stmt->execute([$daily_menu_id, $product_id, $qty]);
+
+                    // Commit the transaction
+                    $conn->commit();
+
+                    $success_msg[] = 'product added to menu successfully';
+                    header('location: admin_products.php');
+                }
             } else {
+                // There is no daily menu for today, so create one and add the product
 
-                $query = "INSERT INTO `menu` (`id`,`product_id`, `qty`) VALUES (?, ?, ?)";
+                // Create a new daily menu entry for today
+                $create_menu = $conn->prepare("INSERT INTO `daily_menu` (`date`) VALUES (CURDATE()) ");
+                $create_menu->execute();
+
+                // Retrieve the newly created daily_menu_id
+                $daily_menu_id = $conn->lastInsertId();
+
+                // Perform your insertion into the daily_menu_items table
+                $query = "INSERT INTO `daily_menu_items` (`daily_menu_id`, `product_id`, `qty`) VALUES (?, ?, ?)";
                 $stmt = $conn->prepare($query);
-                $stmt->execute([$id, $product_id, $qty]);
+                $stmt->execute([$daily_menu_id, $product_id, $qty]);
 
+                // Commit the transaction
                 $conn->commit();
-                $success_msg[] = 'produs adaugat in meniu';
+
+                // Display a success message or perform other actions
+                $success_msg[] = 'product added to menu successfully';
                 header('location: admin_products.php');
             }
         } catch (PDOException $e) {
             $conn->rollback();
-            echo "Error adding product: " . $e->getMessage();
+            $error_msg[] = "Error adding product: " . $e->getMessage();
         }
     }
 }

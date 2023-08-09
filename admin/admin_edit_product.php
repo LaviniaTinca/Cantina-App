@@ -196,11 +196,12 @@ if (isset($_POST['update_product2'])) {
                                                     <textarea name="update_detail" required><?php echo $fetch_edit['product_detail']; ?></textarea>
                                                     <label for="product-category">Categoria:</label>
                                                     <select name="update_category" id="product-category">
-                                                        <option value="soup">Supă/Ciorbă</option>
-                                                        <option value="principal">Garnitură/Fel principal</option>
-                                                        <option value="desert">Desert</option>
-                                                        <option value="beverages">Băuturi</option>
-                                                        <option value="altele">Altele</option>
+                                                        <option value="soup" <?php if ($fetch_edit['category'] === 'soup') echo 'selected'; ?>>Supă/Ciorbă</option>
+                                                        <option value="principal" <?php if ($fetch_edit['category'] === 'principal') echo 'selected'; ?>>Garnitură/Fel principal</option>
+                                                        <option value="desert" <?php if ($fetch_edit['category'] === 'desert') echo 'selected'; ?>>Desert</option>
+                                                        <option value="beverages" <?php if ($fetch_edit['category'] === 'beverages') echo 'selected'; ?>>Băuturi</option>
+                                                        <option value="altele" <?php if ($fetch_edit['category'] === 'altele') echo 'selected'; ?>>Altele</option>
+                                                    </select>
                                                     </select>
                                                     <div class="flex" style="align-items: center; margin: .5rem ; width: 68%">
                                                         <div class="flex" style="margin: .5rem;">
@@ -238,6 +239,54 @@ if (isset($_POST['update_product2'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../script.js"></script>
+    <script>
+        //script to set the old data to the edit announcement modal
+        $(document).ready(function() {
+            // Function to open the modal
+            $(".edit-link").click(function() {
+                // Get the announcement ID from the data attribute
+                const announcementId = $(this).data("announcement-id");
+                $("#edit-announcement-id").val(announcementId);
+
+
+                // Fetch the announcement details from the server using AJAX
+                $.ajax({
+                    type: "POST",
+                    url: "get_announcement_details.php", // Replace with the PHP script that fetches the announcement details
+                    data: {
+                        id: announcementId
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        // Populate the modal form with the fetched details
+                        $("#edit-announcement-modal").attr("data-announcement-id", response.id).show();
+                        // Set the announcement ID value in the hidden input field
+                        $("#edit-announcement-category option").each(function() {
+                            if ($(this).val() === response.category) {
+                                $(this).prop("selected", true);
+                            } else {
+                                $(this).prop("selected", false);
+                            }
+                        });
+                        $("#edit-announcement-text").val(response.description);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+
+            // Function to close the modal
+            $(".edit-close-modal").click(function() {
+                $(this).closest(".modal").hide();
+            });
+
+            // Function to save the announcement (submit the form)
+            $("#edit-announcement").click(function() {
+                $(this).closest(".modal").hide();
+            });
+        });
+    </script>
 
 </body>
 

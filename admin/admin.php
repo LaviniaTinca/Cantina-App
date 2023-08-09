@@ -21,6 +21,23 @@ if (isset($_POST['logout'])) {
 }
 $current_page = basename($_SERVER['PHP_SELF']);
 
+//for chart
+try {
+    // Assuming your table structure has a `created_at` field for the date
+    // $stmt = $conn->prepare("SELECT DATE_FORMAT(order_date, '%Y-%m') AS month, COUNT(*) AS record_count FROM orders GROUP BY month");
+    $stmt = $conn->prepare("SELECT category, COUNT(*) AS product_count FROM products GROUP BY category");
+
+    $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Extract xValues and yValues from the result
+    $xValues = array_column($result, 'category');
+    $yValues = array_column($result, 'product_count');
+} catch (PDOException $e) {
+    // Handle any errors that may occur during database query
+    die("Query failed: " . $e->getMessage());
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -142,42 +159,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     <div class="banner" style="margin: 2rem;">
                         <canvas id="myChart" style="width:70%;max-width:600px"></canvas>
                     </div>
-
-
-                    <!-- SEARCH USER -->
-                    <!-- <section>
-                            <label for="search-input3">Search user:</label>
-                            <input type="text" id="search-input3">
-                            <select id="user-select3">
-                                <option value="">Select a user</option>
-                                <?php
-                                try {
-                                    $query = "SELECT * FROM `users`";
-                                    $stmt = $conn->prepare($query);
-                                    $stmt->execute();
-                                    $fetch_users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                                    if (count($fetch_users) > 0) {
-                                        foreach ($fetch_users as $user) {
-                                ?>
-                                            <option value="<?php echo $user['name']; ?>"><?php echo $user['name']; ?></option>
-                                <?php
-                                        }
-                                    } else {
-                                        echo '<p>No users</p>';
-                                    }
-                                } catch (PDOException $e) {
-                                    echo 'Error: ' . $e->getMessage();
-                                }
-                                ?>
-
-                            </select>
-                            <br><br><br><br>
-                            <div id="filtered-options"></div>
-
-
-                        </section> -->
-
                 </div>
             </div>
             </div>
@@ -189,7 +170,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     <script src="../script.js"></script>
 
-    <script>
+    <!-- <script>
         $(document).ready(function() {
             $('#search-input3').on('input', function() {
                 var filter = $(this).val().toLowerCase();
@@ -207,11 +188,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 }
             });
         });
-    </script>
+    </script> -->
 
     <script>
-        var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
-        var yValues = [55, 49, 44, 24, 15];
+        const xValues = <?php echo json_encode($xValues); ?>;
+        const yValues = <?php echo json_encode($yValues); ?>;
         var barColors = [
             "#b91d47",
             "#00aba9",

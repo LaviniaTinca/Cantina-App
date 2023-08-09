@@ -198,8 +198,9 @@ if (isset($_POST['update_user'])) {
 
                                                     <label for="user-type">User Type:</label>
                                                     <select name="user_type" id="user-type">
-                                                        <option value="user">User</option>
-                                                        <option value="admin">Admin</option>
+
+                                                        <option value="user" <?php if ($fetch_edit['user_type'] === 'user') echo 'selected'; ?>>User</option>
+                                                        <option value="admin" <?php if ($fetch_edit['user_type'] === 'admin') echo 'selected'; ?>>Admin</option>
                                                     </select>
 
 

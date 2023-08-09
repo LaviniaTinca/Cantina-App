@@ -13,7 +13,7 @@
     <li <?php if ($current_page == 'admin_orders.php') echo 'class="active"'; ?>><a href="admin_orders.php"><i class="bx bx-receipt"></i>Orders</a></li>
     <!-- <li class="not-ready"><a href="not_found.php?page=admin_orders.php"><i class="bx bx-receipt"></i><i class="bx bxs-cart-alt"></i>Orders</a></li> -->
 
-    <li class="not-ready" <?php if ($current_page == 'admin_analytics.php') echo 'class="active"'; ?>><a href="admin_analytics.php"><i class="bx bx-line-chart"></i>Analytics</a></li>
+    <!-- <li class="not-ready" <?php if ($current_page == 'admin_analytics.php') echo 'class="active"'; ?>><a href="admin_analytics.php"><i class="bx bx-line-chart"></i>Analytics</a></li> -->
 
     <li <?php if ($current_page == 'admin_messages.php') echo 'class="active"'; ?>><a href="admin_messages.php"><i class="bx bx-envelope"></i>Mail</a></li>
     <li <?php if ($current_page == 'admin_subscribers.php') echo 'class="active"'; ?>><a href="admin_subscribers.php"><i class="bx bx-group"></i>Subscribers</a></li>

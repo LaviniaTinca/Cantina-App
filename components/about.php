@@ -5,7 +5,8 @@
    </div> -->
    <h1 class=" main-page-title">Despre noi</h1>
 
-   <img src="images/staff.webp" alt="Our Team" class="about-us-img">
+   <!-- <img src="images/staff.webp" alt="Our Team" class="about-us-img"> -->
+   <img src="public/cantina/IMG-20230808-WA0045.jpg" alt="Our Team" class="about-us-img">
 
    <p class="about-us-content">
      Suntem o echipă unită de bucătari pasionați, dedicați să aducem experiențe culinare de neuitat pentru fiecare client. Cu o bogată experiență în arta culinară și o dragoste profundă pentru ingrediente proaspete și autentice, ne străduim să punem în valoare aromele și gusturile autentice ale fiecărui preparat. Fiecare membru al echipei noastre aduce un talent unic și creativitate în bucătărie, asigurându-ne că fiecare masă servită este o operă de artă culinară. Ne mândrim cu profesionalismul și atenția noastră la detalii, creând astfel experiențe gastronomice inedite, care să încânte toate simțurile clienților noștri.
@@ -18,4 +19,71 @@
    <p class="about-us-contact">
      Vino și savurează <a href="view_menu.php"><strong> un prânz delicios!</strong></a>.
    </p>
+   <div class="gallery">
+     <div class="small-slider">
+       <!-- <div><img src="public/cantina/IMG-20230808-WA0032.jpg" alt="Image 1"></div>
+       <div><img src="public/cantina/IMG-20230808-WA0059.jpg" alt="Image 2"></div>
+       <div><img src="public/cantina/IMG-20230808-WA0073.jpg" alt="Image 2"></div> -->
+       <!-- <div><img src="public/cantina/IMG-20230808-WA0008.jpg" alt="Image 2"></div>
+       <div><img src="public/cantina/IMG-20230808-WA0045.jpg" alt="Image 2"></div> -->
+       <!-- Adaugă mai multe imagini aici -->
+     </div>
+
+   </div>
+   <div class="lightbox"></div>
  </div>
+
+ </div>
+
+
+ <script>
+   $(document).ready(function() {
+     $('.small-slider').slick({
+       dots: false,
+       infinite: true,
+       speed: 1000,
+       slidesToShow: 5,
+       slidesToScroll: 1,
+       autoplay: true,
+       autoplaySpeed: 3000,
+       //  asNavFor: '.scrollbar-slider' // Link to the scrollbar slider
+     });
+
+   });
+ </script>
+
+
+ <script>
+   $(document).ready(function() {
+     $('.about-us-img').on('click', function() {
+       var imgSrc = $(this).attr('src');
+       $('.lightbox').html('<img src="' + imgSrc + '">').fadeIn();
+
+       // Center the lightbox vertically
+       var windowHeight = $(window).height();
+       var lightboxHeight = $('.lightbox img').height();
+       var topMargin = (windowHeight - lightboxHeight) / 2;
+       $('.lightbox img').css('margin-top', topMargin + 'px');
+     });
+
+     $('.lightbox').on('click', function() {
+       $(this).fadeOut();
+
+     });
+   });
+ </script>
+ <script>
+   $(document).ready(function() {
+     $('.about-us-img').on('click', function() {
+       var imgSrc = $(this).attr('src');
+       //  $('.lightbox img').attr('src', imgSrc); // Set the source of the lightbox image
+       //  $('.lightbox').fadeIn(); // Show the lightbox
+       $('.lightbox').html('<img src="' + imgSrc + '">').fadeIn();
+
+     });
+
+     $('.lightbox').on('click', function() {
+       $(this).fadeOut(); // Hide the lightbox on click
+     });
+   });
+ </script>

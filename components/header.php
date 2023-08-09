@@ -37,9 +37,12 @@ $announcement = $stmt->fetch(PDO::FETCH_ASSOC);
 			$count_cart_items->execute([$user_id]);
 			$total_cart_items = $count_cart_items->rowCount();
 			?>
-			<a href="cart.php?page=cart"><i class="bx bx-cart-download"></i><sup><?= $total_cart_items ?></sup></a>
-			<i class='bx bx-list-plus' id="menu-btn" style="font-size: 2rem;"></i>
-			<i class="bx bxs-user" id="user-btn"></i>
+			<a href="cart.php?page=cart"><i class="far fa-heart" title="Wishlist"></i></a>
+			<a href="cart.php?page=cart"><i class="far fa-bell" title="Notificări"></i></a>
+			<a href="cart.php?page=cart"><i class="bx bx-cart-download" title="Coș de cumpărături"></i><sup><?= $total_cart_items ?></sup></a>
+
+			<!-- <i class='bx bx-list-plus' id="menu-btn" style="font-size: 2rem;"></i> -->
+			<i class="bx bxs-user" id="user-btn" title="Utilizator"></i>
 		</div>
 		<div class="user-box">
 			<p><span><?php echo $_SESSION['user_name']; ?></span></p>

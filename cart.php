@@ -97,6 +97,13 @@ if (isset($_POST['order'])) {
 
         // Step 1: Retrieve Cart Data
         $stmt_cart = $conn->prepare("SELECT product_id, qty, price FROM cart WHERE user_id = ?");
+        $query = "SELECT c.*, dmi.qty AS dmi_qty, dmi.id AS dmi_id
+        FROM cart c
+        LEFT JOIN daily_menu dm ON dm.date = CURDATE()
+        LEFT JOIN daily_menu_items dmi ON dmi.daily_menu_id = dm.id AND dmi.product_id = c.product_id
+        -- JOIN products p ON p.id = c.product_id
+        WHERE c.user_id = ?";
+        $stmt_cart = $conn->prepare($query);
         $stmt_cart->execute([$user_id]);
         $cart_data = $stmt_cart->fetchAll(PDO::FETCH_ASSOC);
 
@@ -105,6 +112,14 @@ if (isset($_POST['order'])) {
         $total_amount = 0;
 
         foreach ($cart_data as $cart_item) {
+            if ($cart_item['dmi_qty'] < $cart_item['qty']) {
+                // Fetch product name based on product_id
+                $product_query = $conn->prepare("SELECT name FROM products WHERE id = ?");
+                $product_query->execute([$cart_item['product_id']]);
+                $product_name = $product_query->fetchColumn();
+                $warning_msg[] = 'Pe stoc mai sunt ' . $cart_item['dmi_qty'] . ' portii din produsul ' . $product_name;
+                $cart_item['qty'] = $cart_item['dmi_qty'];
+            }
             $total_amount += ($cart_item['qty'] * $cart_item['price']);
         }
 
@@ -121,15 +136,22 @@ if (isset($_POST['order'])) {
         $order_id = $id;
         // Step 3: Store Order Items
         foreach ($cart_data as $cart_item) {
+            if ($cart_item['dmi_qty'] < $cart_item['qty']) {
+                $quantity = $cart_item['dmi_qty'];
+            } else {
+                $quantity = $cart_item['qty'];
+            }
             $product_id = $cart_item['product_id'];
-            $quantity = $cart_item['qty'];
             $price = $cart_item['price'];
             $subtotal = $quantity * $price;
 
             $stmt_order_items = $conn->prepare("INSERT INTO order_items (order_id, product_id, quantity, price, subtotal) 
                                                VALUES (?, ?, ?, ?, ?)");
-
             $stmt_order_items->execute([$order_id, $product_id, $quantity, $price, $subtotal]);
+            var_dump($cart_item['dmi_id']);
+            //upfate the qty in the menu
+            $stmt_update_menu_qty = $conn->prepare("UPDATE `daily_menu_items` SET qty = ? WHERE id = ?");
+            $stmt_update_menu_qty->execute([$cart_item['dmi_qty'] - $quantity, $cart_item['dmi_id']]);
         }
 
         // Step 4: Empty Cart
