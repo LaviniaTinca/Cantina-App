@@ -1,13 +1,6 @@
  <div class="about-us-container" id="about-us">
-   <!-- <div class="banner">
-     <h1 class=" main-page-title">About Us</h1>
-
-   </div> -->
    <h1 class=" main-page-title">Despre noi</h1>
-
-   <!-- <img src="images/staff.webp" alt="Our Team" class="about-us-img"> -->
    <img src="public/cantina/IMG-20230808-WA0045.jpg" alt="Our Team" class="about-us-img">
-
    <p class="about-us-content">
      Suntem o echipă unită de bucătari pasionați, dedicați să aducem experiențe culinare de neuitat pentru fiecare client. Cu o bogată experiență în arta culinară și o dragoste profundă pentru ingrediente proaspete și autentice, ne străduim să punem în valoare aromele și gusturile autentice ale fiecărui preparat. Fiecare membru al echipei noastre aduce un talent unic și creativitate în bucătărie, asigurându-ne că fiecare masă servită este o operă de artă culinară. Ne mândrim cu profesionalismul și atenția noastră la detalii, creând astfel experiențe gastronomice inedite, care să încânte toate simțurile clienților noștri.
    </p>
@@ -23,14 +16,11 @@
    <div class="lightbox"></div>
  </div>
 
- </div>
 
  <script>
    $(document).ready(function() {
      $('.about-us-img').on('click', function() {
        var imgSrc = $(this).attr('src');
-       //  $('.lightbox img').attr('src', imgSrc); // Set the source of the lightbox image
-       //  $('.lightbox').fadeIn(); // Show the lightbox
        $('.lightbox').html('<img src="' + imgSrc + '">').fadeIn();
 
      });

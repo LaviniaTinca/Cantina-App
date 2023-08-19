@@ -70,7 +70,6 @@
 </head>
 
 <body>
-
     <div class="news color">
         <?php if ($announcement) { ?>
             <span class="scrolling-text">
@@ -78,13 +77,10 @@
             </span>
         <?php } else { ?>
             <span class="scrolling-text">
-                Nu sunt anunturi disponibile.
+                Nu sunt anunțuri disponibile.
             </span>
         <?php } ?>
     </div>
-
-
-
 </body>
 
 </html>

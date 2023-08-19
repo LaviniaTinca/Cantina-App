@@ -51,14 +51,14 @@ if (isset($_POST['logout'])) {
         <section>
             <?php
             try {
-                $stmt = $conn->prepare("SELECT o.id, u.name, COUNT(oi.id) AS num_items, o.payment_status, o.order_status, o.total_amount, o.order_date
-                           FROM orders o
-                           INNER JOIN order_items oi ON o.id = oi.order_id
-                           INNER JOIN users u ON o.user_id = u.id
-                           WHERE o.user_id = ?
-                           GROUP BY o.id, u.name, o.payment_status, o.order_status, o.total_amount, o.order_date
-                           ORDER BY o.order_date DESC");
-
+                $query = "SELECT o.id, u.name, COUNT(oi.id) AS num_items, o.payment_status, o.order_status, o.total_amount, o.order_date
+                            FROM orders o
+                            INNER JOIN order_items oi ON o.id = oi.order_id
+                            INNER JOIN users u ON o.user_id = u.id
+                            WHERE o.user_id = ?
+                            GROUP BY o.id, u.name, o.payment_status, o.order_status, o.total_amount, o.order_date
+                            ORDER BY o.order_date DESC";
+                $stmt = $conn->prepare($query);
                 $stmt->execute([$user_id]);
 
                 if ($stmt->rowCount() > 0) {
@@ -83,7 +83,6 @@ if (isset($_POST['logout'])) {
                                 ?>
                                     <tr>
                                         <td><a style="color: var(--green)" href="view_order.php?oid=<?php echo $order['id']; ?>&total_amount=<?php echo $order['total_amount']; ?>" title="Vezi comanda"><?php echo $order['id']; ?></a></td>
-                                        <!-- <td><?php echo $order['name']; ?></td> -->
                                         <td><?php echo $order['num_items']; ?></td>
                                         <td><?php echo $order['order_status']; ?></td>
                                         <td><?php echo $order['payment_status']; ?></td>

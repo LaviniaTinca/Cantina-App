@@ -1,27 +1,6 @@
 <?php
 include '../php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
-
-if (!isset($_SESSION['user_id'])) {
-    header('location:../login.php');
-}
-if ($_SESSION['user_type'] === 'user') {
-    header('location:../home.php');
-}
-
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: ../login.php");
-}
-
-$current_page = basename($_SERVER['PHP_SELF']);
-$messages = array();
-
+include '../php/session_handler.php';
 
 //add product to menu
 if (isset($_POST['add-to-menu'])) {
@@ -43,35 +22,26 @@ if (isset($_POST['add-to-menu'])) {
     if (empty($messages)) {
         try {
             $conn->beginTransaction();
-
-            $check_menu = $conn->prepare("
-            SELECT * 
-            FROM `daily_menu` 
-            WHERE date = CURDATE()
-            FOR UPDATE
-        ");
+            $query = "SELECT * FROM `daily_menu` WHERE date = CURDATE() FOR UPDATE";
+            $check_menu = $conn->prepare($query);
             $check_menu->execute();
 
             if ($check_menu->rowCount() > 0) {
-                // There is already a daily menu for today
-
                 // Retrieve the daily_menu_id for today
                 $daily_menu_id = $check_menu->fetch(PDO::FETCH_ASSOC)['id'];
-
-                $verify_menu = $conn->prepare("
-                                        SELECT dmi.* 
-                                        FROM `daily_menu_items` dmi
-                                        INNER JOIN `daily_menu` dm ON dmi.daily_menu_id = dm.id
-                                        WHERE dmi.product_id = ? AND dm.date > CURDATE()
-                                    ");
+                $verify_menu = $conn->prepare("SELECT dmi.* 
+                                                FROM `daily_menu_items` dmi
+                                                INNER JOIN `daily_menu` dm ON dmi.daily_menu_id = dm.id
+                                                WHERE dmi.product_id = ? AND dm.date > CURDATE()
+                                            ");
                 $verify_menu->execute([$product_id]);
 
                 if ($verify_menu->rowCount() > 0) {
-                    $update_qty = $conn->prepare("UPDATE `daily_menu_items` SET qty = ? WHERE product_id = ? and daily_menu_id =?");
+                    $query = "UPDATE `daily_menu_items` SET qty = ? WHERE product_id = ? and daily_menu_id =?";
+                    $update_qty = $conn->prepare($query);
                     $update_qty->execute([$qty, $product_id, $daily_menu_id]);
 
                     $success_msg[] = 'cantitatea produsului din meniu a fost modificata!';
-                    // $warning_msg[] = 'product already exist in your menu';
                 } else {
                     $query = "INSERT INTO `daily_menu_items` (`daily_menu_id`, `product_id`, `qty`) VALUES (?, ?, ?)";
                     $stmt = $conn->prepare($query);
@@ -79,13 +49,10 @@ if (isset($_POST['add-to-menu'])) {
 
                     // Commit the transaction
                     $conn->commit();
-
                     $success_msg[] = 'product added to menu successfully';
                     header('location: admin_products.php');
                 }
             } else {
-                // There is no daily menu for today, so create one and add the product
-
                 // Create a new daily menu entry for today
                 $create_menu = $conn->prepare("INSERT INTO `daily_menu` (`date`) VALUES (CURDATE()) ");
                 $create_menu->execute();
@@ -98,16 +65,16 @@ if (isset($_POST['add-to-menu'])) {
                 $stmt = $conn->prepare($query);
                 $stmt->execute([$daily_menu_id, $product_id, $qty]);
 
-                // Commit the transaction
                 $conn->commit();
-
-                // Display a success message or perform other actions
                 $success_msg[] = 'product added to menu successfully';
                 header('location: admin_products.php');
             }
         } catch (PDOException $e) {
             $conn->rollback();
-            $error_msg[] = "Error adding product: " . $e->getMessage();
+            $error_msg[] = "Eroare la adăugarea produsului: " . $e->getMessage();
+        } catch (Exception $e) {
+            $conn->rollback();
+            $error_msg[] = "Eroare la adăugarea produsului: " . $e->getMessage();
         }
     }
 }
@@ -125,24 +92,27 @@ if (isset($_POST['update_menu'])) {
 
         $success_msg[] = 'cantitatea produsului din meniu a fost modificata!';
     } catch (PDOException $e) {
-        $error_msg[] = "Error updating menu product: " . $e->getMessage();
+        $error_msg[] = "Eroare la actualizarea produsului: " . $e->getMessage();
+    } catch (Exception $e) {
+        $conn->rollback();
+        $error_msg[] = "Eroare la actualizarea produsului: " . $e->getMessage();
     }
 }
 
 //delete menu item
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
-    var_dump($delete_id);
     try {
         $query = "DELETE FROM `daily_menu_items` WHERE id = ?";
         $stmt = $conn->prepare($query);
         $stmt->execute([$delete_id]);
 
         $success_msg[] = 'produsul a fost sters din meniu';
-
         header('location: admin_menu.php');
     } catch (PDOException $e) {
-        $error_msg[] = "Error deleting product: " . $e->getMessage();
+        $error_msg[] = "Eroare la ștergerea produsului: " . $e->getMessage();
+    } catch (Exception $e) {
+        $error_msg[] = "Eroare la ștergerea produsului: " . $e->getMessage();
     }
 }
 
@@ -156,125 +126,12 @@ if (isset($_POST['empty_menu'])) {
         $success_msg[] = 'datele din meniu au fost sterse';
         header('location: admin_menu.php');
     } catch (PDOException $e) {
-        $error_msg[] =  "Error deleting products: " . $e->getMessage();
+        $error_msg[] = "Eroare: " . $e->getMessage();
     } catch (Exception $e) {
-        $error_msg[] = $e;
+        $error_msg[] = "Eroare: " . $e->getMessage();
     }
 }
 
-//email notification
-// Include database connection and email sending code
-
-if (isset($_POST['send_notifications'])) {
-    // require '../PHPMailer-master/src/Exception.php';
-    // require '../PHPMailer-master/src/PHPMailer.php';
-    // require '../PHPMailer-master/src/SMTP.php';
-
-    // $mail = new PHPMailer\PHPMailer\PHPMailer();
-    // // $mail = new PHPMailer(true);
-    // // Configure PHPMailer using your php.ini settings
-    // $mail->isSMTP();
-    // $mail->Host = 'localhost';
-    // $mail->SMTPAuth = false;
-    // $mail->SMTPSecure = false;
-    // $mail->Port = 25;
-
-    // try {
-    //     $mail = new PHPMailer();
-    //     $mail->SMTPDebug = SMTP::DEBUG_OFF;  // Set to `SMTP::DEBUG_SERVER` for debugging
-    //     $mail->isSMTP();
-    //     $mail->Host = 'smtp.example.com';  // Your SMTP server
-    //     $mail->SMTPAuth = true;
-    //     $mail->Username = 'your-email@example.com';  // SMTP username
-    //     $mail->Password = 'your-password';  // SMTP password
-    //     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;  // Use SSL or TLS
-    //     $mail->Port = 587;  // SMTP port
-
-
-    //     // Set the sender and recipient
-    //     $mail->setFrom('your-email@example.com', 'Your Name');
-    //     // Loop through subscribers and send personalized emails
-    //     foreach ($subscribers as $subscriber) {
-    //         $mail->addAddress($subscriber['email'], $subscriber['name']);
-    //         // ...
-    //     }
-
-    //     // $mail->addAddress('recipient@example.com', 'Recipient Name');
-
-    //     // Set email content
-    //     $mail->isHTML(true);
-    //     $mail->Subject = 'Subject of the email';
-    //     $mail->Body = 'HTML message here';
-    //     $mail->AltBody = 'Plain text version of the email';
-
-    //     // Send the email
-    //     $mail->send();
-    //     echo 'Email sent successfully.';
-    // } catch (Exception $e) {
-    //     echo "Error sending email: {$mail->ErrorInfo}";
-    // }
-    try {
-
-        $query = "SELECT * FROM `subscribers`";
-        $stmt = $conn->prepare($query);
-        $stmt->execute();
-        $subscribers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $success_messages = array();
-        $error_messages = array();
-        // Loop through subscribers and send personalized emails
-        if (count($subscribers) > 0) {
-            foreach ($subscribers as $subscriber) {
-                $to = $subscriber['email'];
-                $subject = 'New Menu Update';
-                $headers = "From: cantinateologica@example.com\r\n";
-                $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-
-                // Customize the message for each subscriber
-                $message = "Dear,<br>";
-                // $message = "Dear {$subscriber['name']},<br>";
-                $message .= "We're thrilled to introduce our latest menu items. Click below to explore the delicious options:<br>";
-                $message .= "<a href='http://localhost/licenta/view_menu.php' target='_blank'>Meniul zilei</a><br>";
-                $message .= "Thank you for being a valued customer!<br>";
-                $message .= "Sincerely,<br>Your Restaurant Team";
-
-                $success = mail($to, $subject, $message, $headers);
-
-                if ($success) {
-                    $success_messages[] = "Email trimis catre {$subscriber['email']} cu succes.<br>";
-                    $success_msg[] = "Email trimis catre {$subscriber['email']} cu succes.<br>";
-                } else {
-                    $error_messages[] =  "eroare la trimitere catre {$subscriber['email']}<br>";
-                    $error_msg[] =  "eroare la trimitere catre {$subscriber['email']}<br>";
-                }
-            }
-        }
-        // if (!empty($success_messages)) {
-        //     $success_msg[] .= '<div>'; // Start a div for the success messages
-
-        //     foreach ($success_messages as $message) {
-        //         $success_msg[] .= '<span>' . $message . '</span>';
-        //     }
-
-        //     $success_msg[] .= '</div>'; // Close the div for the success messages
-
-
-        // } else {
-        //     if (!empty($error_messages)) {
-        //         $error_msg[] .= '<div>'; // Start a div for the success messages
-
-        //         foreach ($error_messages as $message) {
-        //             $error_msg[] .= '<span>' . $message . '</span>';
-        //         }
-
-        //         $error_msg[] .= '</div>'; // Close the div for the success messages       
-        //     }
-        // }
-    } catch (PDOException $e) {
-        $error_msg[] = "Error " . $e->getMessage();
-    } catch (Exception $e) {
-        $error_msg[] = "Error " . $e->getMessage();
-    }
-}
 ?>
 
 
@@ -290,7 +147,10 @@ if (isset($_POST['send_notifications'])) {
     <link rel="stylesheet" href="../css/style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <style>
         /* General styles for the admin page */
         .category-box {
@@ -362,7 +222,6 @@ if (isset($_POST['send_notifications'])) {
             color: white;
         }
     </style>
-
 </head>
 
 <body>
@@ -400,16 +259,8 @@ if (isset($_POST['send_notifications'])) {
                             <section>
                                 <div class="flex">
                                     <a href="admin_products.php">
-                                        <h4> + Adaugă produs nou / Modifică produs</h4>
+                                        <h4> + Adaugă produs nou / Actualizează produs</h4>
                                     </a>
-                                    <!-- <input type="date" class="menu-date-picker" id="datePicker" onchange="updateMenuHeading()">
-                                    <form action="admin_menu.php" method="post">
-                                        <button type="submit" name="send_notifications">Trimite notificare pe email!</button>
-                                    </form> -->
-
-                                    <!-- <form method="post">
-                                        <button type="submit" name="empty_menu" class="cart-btn transparent-button" onclick="return confirm('Dorești să golești meniul zilei?')"><i class="fas fa-trash-alt" title="Sterge datele din meniu"></i> Șterge meniul</button>
-                                    </form> -->
                                 </div>
 
                                 <div class="category-box">
@@ -427,9 +278,6 @@ if (isset($_POST['send_notifications'])) {
                                     </div>
                                 </div>
                             </section>
-                            <!-- <input type="text" id="search-input" placeholder="Search by keyword..." style="width:min-content">
-
-                            <a href="admin_view_products.php"> Add / Edit a Product</a> -->
 
                             <!-- SHOW TABLE PRODUCTS WITH SORT AND FILTER-->
                             <section>
@@ -501,7 +349,6 @@ if (isset($_POST['send_notifications'])) {
                                                 $error_message[] = 'Error ' . $th->getMessage();
                                             }
                                             ?>
-
                                         </tbody>
                                     </table>
                                 </div>
@@ -513,14 +360,12 @@ if (isset($_POST['send_notifications'])) {
         </section>
         <!-- END MAIN -->
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
     <?php include '../components/alert.php'; ?>
 
-    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
-    <script src="../script.js"></script>
-    <script>
-        // popup 
+    <script src="../js/script.js"></script>
+    <!-- <script>
+        // popup image
         $(document).ready(function() {
             $('.product-image').on('click', function() {
                 var src = $(this).attr('src');
@@ -532,44 +377,7 @@ if (isset($_POST['send_notifications'])) {
                 $(this).fadeOut();
             });
         });
-    </script>
-    <script>
-        // const menuHeading = document.getElementById('menu-heading');
-
-        // Function to format the date as "Month Day, Year"
-        function formatDate(date) {
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            };
-            return date.toLocaleDateString('en-US', options);
-        }
-
-        // Function to set the date picker value from local storage
-        function setDatePickerValue() {
-            const datePicker = document.getElementById('datePicker');
-            const savedDate = localStorage.getItem('selectedDate');
-            if (savedDate) {
-                datePicker.value = savedDate;
-            }
-        }
-
-        // Function to update the heading with the selected date and save to local storage
-        function updateMenuHeading() {
-            // const menuHeading = document.getElementById('menu-heading');
-            const datePicker = document.getElementById('datePicker');
-            const selectedDate = new Date(datePicker.value); // Get the selected date from the date picker
-            // menuHeading.textContent = "Today's menu - " + formatDate(selectedDate);
-
-            // Save the selected date to local storage
-            localStorage.setItem('selectedDate', datePicker.value);
-        }
-
-        // Call the function to set the date picker value from local storage
-        setDatePickerValue();
-    </script>
+    </script> -->
 </body>
 
 </html>

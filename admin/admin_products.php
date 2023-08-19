@@ -86,7 +86,8 @@ if (isset($_POST['add_product'])) {
             }
 
             $id = unique_id();
-            $query = "INSERT INTO `products` (`id`,`name`, `price`, `product_detail`, `image`, `category`, `measure`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO `products` (`id`,`name`, `price`, `product_detail`, `image`, `category`, `measure`) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
             $stmt->execute([$id, $add_name, $add_price, $add_detail, $add_image_name, $category, $measure]);
 
@@ -96,7 +97,7 @@ if (isset($_POST['add_product'])) {
             header('location: admin_products.php');
         } catch (PDOException $e) {
             $conn->rollback();
-            echo "Error adding product: " . $e->getMessage();
+            echo "Eroare la adăugarea produsului: " . $e->getMessage();
         }
     } else {
         //display errors
@@ -120,10 +121,6 @@ if (isset($_GET['delete'])) {
             $stmt = $conn->prepare($query);
             $stmt->execute([$delete_id]);
 
-            // $query = "DELETE FROM `wishlist` WHERE user_id = ?";
-            // $stmt = $conn->prepare($query);
-            // $stmt->execute([$delete_id]);
-
             $query = "DELETE FROM `cart` WHERE id = ?";
             $stmt = $conn->prepare($query);
             $stmt->execute([$delete_id]);
@@ -132,48 +129,66 @@ if (isset($_GET['delete'])) {
 
         header('location: admin_products.php');
     } catch (PDOException $e) {
-        echo "Error deleting product: " . $e->getMessage();
+        echo "Eroare la ștergerea produsului: " . $e->getMessage();
     }
 }
 
 
 //update product
 if (isset($_POST['update_product'])) {
+    if ($_FILES['update_image']['error'] == UPLOAD_ERR_INI_SIZE || $_FILES['update_image']['error'] == UPLOAD_ERR_FORM_SIZE) {
+        $messages[] = "The uploaded file is too large.";
+    } elseif ($_FILES['update_image']['error'] == UPLOAD_ERR_NO_FILE) {
+        $messages[] = "No file was uploaded.";
+    } elseif ($_FILES['update_image']['error'] == UPLOAD_ERR_PARTIAL) {
+        $messages[] = "The uploaded file was only partially uploaded.";
+    } elseif ($_FILES['update_image']['error'] == UPLOAD_ERR_NO_TMP_DIR || $_FILES['update_image']['error'] == UPLOAD_ERR_CANT_WRITE || $_FILES['update_image']['error'] == UPLOAD_ERR_EXTENSION) {
+        $messages[] = "An error occurred while uploading the file. Please try again later.";
+    } elseif (!in_array($_FILES['update_image']['type'], ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'])) {
+        $messages[] = "The uploaded file must be a JPEG, PNG, or GIF image.";
+    } else {
+        $update_image_size = $_FILES['update_image']['size'];
+        $update_image = $_FILES['update_image']['name'];
+        $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
+        $update_image_folder = '../image/' . $update_image;
+    }
+
     $update_id = $_POST['update_id'];
     $update_name = $_POST['update_name'];
     $update_detail = $_POST['update_detail'];
     $update_price = $_POST['update_price'];
-    $update_image = $_FILES['update_image']['name'];
-    $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
-    $update_image_folder = '../image/' . $update_image;
-
-    try {
-        $conn->beginTransaction();
-        $query = "SELECT image FROM `products` WHERE id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$update_id]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($result && !empty($update_image)) {
-            unlink('image/' . $result['image']);
-            move_uploaded_file($update_image_tmp_name, $update_image_folder);
-
-            $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=?, `image`=? WHERE id = ?";
+    // $update_image = $_FILES['update_image']['name'];
+    // $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
+    // $update_image_folder = '../image/' . $update_image;
+    if (empty($messages)) {
+        try {
+            $conn->beginTransaction();
+            $query = "SELECT image FROM `products` WHERE id = ?";
             $stmt = $conn->prepare($query);
-            $stmt->execute([$update_name, $update_price, $update_detail, $update_image, $update_id]);
-        } else {
-            $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=? WHERE id = ?";
-            $stmt = $conn->prepare($query);
-            $stmt->execute([$update_name, $update_price, $update_detail, $update_id]);
+            $stmt->execute([$update_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result && !empty($update_image)) {
+                unlink('image/' . $result['image']);
+                move_uploaded_file($update_image_tmp_name, $update_image_folder);
+
+                $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=?, `image`=? WHERE id = ?";
+                $stmt = $conn->prepare($query);
+                $stmt->execute([$update_name, $update_price, $update_detail, $update_image, $update_id]);
+            } else {
+                $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=? WHERE id = ?";
+                $stmt = $conn->prepare($query);
+                $stmt->execute([$update_name, $update_price, $update_detail, $update_id]);
+            }
+
+            $conn->commit();
+            $success_msg[] = "Produsul a fost adaugat!";
+
+            header('location: admin_products.php');
+        } catch (PDOException $e) {
+            $conn->rollback();
+            echo "Eroare la actualizare: " . $e->getMessage();
         }
-
-        $conn->commit();
-        $success_msg[] = "Produsul a fost adaugat!";
-
-        header('location: admin_products.php');
-    } catch (PDOException $e) {
-        $conn->rollback();
-        echo "Error updating product: " . $e->getMessage();
     }
 }
 
@@ -239,17 +254,11 @@ if (isset($_POST['add-to-menu'])) {
         try {
             $conn->beginTransaction();
 
-            $check_menu = $conn->prepare("
-            SELECT * 
-            FROM `daily_menu` 
-            WHERE date = CURDATE()
-            FOR UPDATE
-        ");
+            $query = "SELECT * FROM `daily_menu` WHERE date = CURDATE() FOR UPDATE";
+            $check_menu = $conn->prepare($query);
             $check_menu->execute();
 
             if ($check_menu->rowCount() > 0) {
-                // There is already a daily menu for today
-
                 // Retrieve the daily_menu_id for today
                 $daily_menu_id = $check_menu->fetch(PDO::FETCH_ASSOC)['id'];
 
@@ -266,7 +275,6 @@ if (isset($_POST['add-to-menu'])) {
                     $update_qty->execute([$qty, $product_id, $daily_menu_id]);
 
                     $success_msg[] = 'cantitatea produsului din meniu a fost modificata!';
-                    // $warning_msg[] = 'product already exist in your menu';
                 } else {
                     $query = "INSERT INTO `daily_menu_items` (`daily_menu_id`, `product_id`, `qty`) VALUES (?, ?, ?)";
                     $stmt = $conn->prepare($query);
@@ -364,10 +372,10 @@ if (isset($_POST['update_product2'])) {
     }
 }
 
-//for chart
+//CHART
 try {
-    // Assuming your table structure has a `created_at` field for the date
-    $stmt = $conn->prepare("SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, COUNT(*) AS record_count FROM products GROUP BY month");
+    $query = "SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, COUNT(*) AS record_count FROM products GROUP BY month";
+    $stmt = $conn->prepare($query);
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -375,8 +383,7 @@ try {
     $xValues = array_column($result, 'month');
     $yValues = array_column($result, 'record_count');
 } catch (PDOException $e) {
-    // Handle any errors that may occur during database query
-    die("Query failed: " . $e->getMessage());
+    $error_msg[] = "Eroare: " . $e->getMessage();
 }
 
 ?>
@@ -394,7 +401,6 @@ try {
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
@@ -458,7 +464,7 @@ try {
 
                             </section>
 
-                            <!--Add New User Modal box -->
+                            <!--Add New Product Modal box -->
                             <section class="modal" id="product-modal">
                                 <div class="modal-content">
                                     <span class="close" id="close-modal">&times;</span>
@@ -466,7 +472,6 @@ try {
                                         <h2>Produs nou</h2>
 
                                         <form class="Form" action="admin_products.php" method="post" enctype="multipart/form-data">
-
                                             <label for="add-name">Product Name:</label>
                                             <input type="text" name="add_name" id="add-name" required>
                                             <label for="product-category">Catgoria:</label>
@@ -483,7 +488,6 @@ try {
                                             <input type="number" name="add_price" id="add-price" required>
                                             <label for="measure">Unitatea de Masura:</label>
                                             <input type="text" name="measure" id="measure" required>
-
                                             <label for="add-image">Product Image:</label>
                                             <input type="file" name="add_image" id="add-image" required>
 
@@ -502,26 +506,21 @@ try {
                                     <table id="product-table" class="product-table">
                                         <thead>
                                             <tr>
-                                                <th class="sortable" data-column="image">Image</th>
-                                                <th class="sortable" data-sort="string" data-column="name">Name</th>
-                                                <th class="sortable" data-sort="string" data-column="category">Category</th>
-                                                <th class="sortable" data-sort="string" data-column="category">Measure</th>
-                                                <th class="sortable" data-sort="number" data-column="price">Price</th>
-                                                <!-- <th>Image</th> -->
-                                                <th>Actions</th>
+                                                <th>Imagine</th>
+                                                <th class="sortable" data-sort="string" data-column="name">Nume</th>
+                                                <th class="sortable" data-sort="string" data-column="category">Categorie</th>
+                                                <th class="sortable" data-sort="string" data-column="measure">Unitate de măsură</th>
+                                                <th class="sortable" data-sort="number" data-column="price">Preț</th>
+                                                <th>Acțiuni</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
                                             try {
-
                                                 $query = "SELECT * FROM `products`";
                                                 $stmt = $conn->prepare($query);
                                                 $stmt->execute();
                                                 $fetch_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                                // if (!$stmt->execute()) {
-                                                //     throw new Exception('Query execution failed.');
-                                                // }
 
                                                 if (count($fetch_products) > 0) {
                                                     foreach ($fetch_products as $product) {
@@ -579,7 +578,7 @@ try {
     </div>
     <?php include '../components/alert.php'; ?>
     <script src="../js/searchCard.js"></script>
-    <script src="../script.js"></script>
+    <script src="../js/script.js"></script>
     <script>
         // popup 
         $(document).ready(function() {

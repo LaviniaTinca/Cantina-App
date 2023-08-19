@@ -1,29 +1,14 @@
 /*---------global settings-------------*/
+
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
-  :root{
-    /* --green : #87a243; */
-    /* --sage: #B6C197; */
-    --green: #8A9B68;
-    --chamoise : rgb(147, 123, 99);
-    --metallic-gold: #D4AF37;
-    --terracotta: #C66E4E;
-    /* --olive: teal; */
-    --olive: #8A9B68;
-    /* --olive: olivedrab; */
-    /* --dark-olive: teal; */
-    --dark-olive: #556b2f;
-    --teal: teal;
-    --light-green: #e0ffcd;
-    --cart: rgb(194, 56, 56);
-    --box-shadow: 0 0 10px rgb(0 0 0/15%);
-      }
+  
   html{
     font-size: 16px;
-    font-family:  sans-serif;
+    font-family:  Arial, Helvetica, sans-serif;
     -ms-overflow-style: scrollbar;
     -webkit-tap-highlight-color: transparent;
     --ms-text-size-adjust: 100%;
@@ -34,6 +19,19 @@
     background-image: url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg');
     background-size: auto;
     width: 100%;
+  }
+
+  :root{
+    --green: #8A9B68;
+    --chamoise : rgb(147, 123, 99);
+    --metallic-gold: #D4AF37;
+    --terracotta: #C66E4E;
+    --olive: #8A9B68;
+    --dark-olive: #556b2f;
+    --teal: teal;
+    --light-green: #e0ffcd;
+    --cart: rgb(194, 56, 56);
+    --box-shadow: 0 0 10px rgb(0 0 0/15%);
   }
 
   .main{
@@ -192,7 +190,6 @@
 .logo-image {
   width: 180px;
   height: auto;
-  /* background: url("images/logo1.png"); */
   background-size: cover;
   background-repeat: no-repeat;
   border-radius: 20%;
@@ -214,26 +211,21 @@
 }
 
 /*--------header------------------*/
+
 header{
 position: fixed;
-/* top: 5%; */
-  top: 0;
+top: 0;
 left: 7%;
 width: 85vw;
 height: 82px;
-/* height: auto; */
-padding: 1rem;
-z-index: 101;
-transition: .3s;
 box-shadow: var(--box-shadow);
 background-image: linear-gradient(to top, rgba(255,255,255,0.9), rgba(255,255,255,0.3)),
  url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg');
- /* url('https://media.istockphoto.com/photos/healthy-food-background-picture-id515273512'); */
- /* url('https://media.istockphoto.com/photos/organic-food-background-and-copy-space-picture-id516490448'); */
-
-/* background-image: url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg'); */
-/* background-image: url('https://i0.wp.com/sociallover.net/wp-content/uploads/2018/12/wood5.png'); */
+padding: 1rem;
+z-index: 101;
+transition: .3s;
 }
+
 header.scrolled {
   top: 0;
   box-shadow: 0 5px 20px 0.1px rgba(0, 0, 0, 0.1);
@@ -1573,6 +1565,8 @@ float: left;
   margin-left: 200px;
   height: 100%;
   flex-grow: 1;
+  /* display: flex; */
+  justify-content: center;
 }
 
 .panel-container.title2 {
@@ -2092,7 +2086,20 @@ border-color: #800000;
   .product-table td img {
       max-width: 60px;
   }
-
+  .widgets{
+    grid-template-columns: repeat(1, 1fr);
+  }
+  
+  .widgets .widget {
+    /* Adjust styles for smaller screens */
+    width: 100px; /* Adjust width for individual widgets */
+    padding: 0.1rem; /* Adjust padding for individual widgets */
+    font-size: 10px; /* Adjust font size for individual widgets */
+  }
+  canvas{
+    width: 30%;
+    height: auto;
+  }
 }
 
 /* @media (min-width: 769px) {
@@ -2107,13 +2114,41 @@ border-color: #800000;
   }
   .panel-container{
     margin: 0;
-    z-index: -1;
+    /* z-index: -1; */
     display: flex;
     flex-direction: column;
+
+  }
+  canvas{
+    width: 50%;
+    height: auto;
   }
   .content{
+    /* width: max-content; */
     padding: 1.2rem;
+  }
 
+  .widgets {
+    /* grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));  */
+    grid-template-columns: repeat(2, 1fr); /* Display one card per row */
+    grid-gap: 4px; /* Adjust grid gap for smaller screens */
+    /* display: flex;
+    flex-direction: column; */
+    /* width: 350px; */
+  }
+  i{
+    margin: 0;
+  }
+
+  .widgets .widget {
+    /* Adjust styles for smaller screens */
+    width: 160px; /* Adjust width for individual widgets */
+    padding: 0.4rem; /* Adjust padding for individual widgets */
+    font-size: 10px; /* Adjust font size for individual widgets */
+  }
+  .widgets .widget a{
+    width: 100px;
+    height: auto;
   }
 
   .sidebar.sidebar-collapsed {

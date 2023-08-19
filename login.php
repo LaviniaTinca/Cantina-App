@@ -29,7 +29,7 @@ if (isset($_POST['submit'])) {
 
     header('location: home.php');
   } else {
-    $messages[] = 'incorrect username or password';
+    $messages[] = 'Email sau parola incorectă!';
   }
 }
 
@@ -55,7 +55,7 @@ if (isset($_POST['submit'])) {
   </section>
 
 
-  <main class="main" style=" margin-top: 100px;">
+  <main class="main">
     <div class="Container">
       <div class="wrapper">
         <?php

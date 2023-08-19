@@ -1,21 +1,6 @@
 <?php
 include '../php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
-
-if (!isset($_SESSION['user_id'])) {
-    header('location:../login.php');
-}
-
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: ../login.php");
-}
-$current_page = basename($_SERVER['PHP_SELF']);
+include '../php/session_handler.php'
 
 ?>
 
@@ -26,11 +11,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cantina -admin</title>
+    <title>Cantina - admin</title>
     <link rel="stylesheet" href="../css/style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -45,7 +31,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <section>
             <div class="admin-container">
                 <?php include('../components/admin/sidebar.php'); ?>
-
                 <div class="panel-container">
                     <div class="banner" style=" height: 100px; color: var(--olive); background: rgba(255, 255, 255, 0.9) url('https://thumbs.dreamstime.com/z/cooking-banner-background-spices-vegetables-top-view-cooking-banner-background-spices-vegetables-top-view-free-168096882.jpg') ; background-size:cover">
                         <h1 style="color:var(--green)">help</h1>
@@ -94,8 +79,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <!-- //END MAIN -->
     </main>
     <!-- SCRIPT SECTION -->
-    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
-    <script src="../script.js"></script>
+    <script src="../js/script.js"></script>
 </body>
 
 </html>

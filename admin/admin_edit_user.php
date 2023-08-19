@@ -1,82 +1,18 @@
 <?php
 include '../php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
+include '../php/session_handler.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('location:../login.php');
-}
-if ($_SESSION['user_type'] === 'user') {
-    header('location:../home.php');
-}
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: ../login.php");
-}
-$current_page = basename($_SERVER['PHP_SELF']);
-$messages = array();
-
-
-//update and keep old image if necessary
-if (isset($_POST['update_user2'])) {
-    $update_id = $_POST['update_id'];
-    $update_firstName = $_POST['update_firstName'];
-    $update_lastName = $_POST['update_lastName'];
-    $update_email = $_POST['update_email'];
-    $update_password = $_POST['update_password'];
-    $update_image = $_FILES['update_image']['name'];
-    $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
-
-    try {
-        $conn->beginTransaction();
-
-        if (!empty($update_image)) {
-            $update_image_folder = 'image/' . $update_image;
-            move_uploaded_file($update_image_tmp_name, $update_image_folder);
-            $query = "UPDATE `users` SET `firstName`=?, `lastName`=?, `email`=?, `password`=?, `image`=? WHERE id=?";
-            $stmt = $conn->prepare($query);
-            $stmt->execute([$update_firstName, $update_lastName, $update_email, $update_password, $update_image, $update_id]);
-
-            // Delete the old image
-            $old_image = $_POST['old_image'];
-            if (!empty($old_image)) {
-                unlink('image/' . $old_image);
-            }
-        } else {
-            $query = "UPDATE `users` SET `firstName`=?, `lastName`=?, `email`=?, `password`=? WHERE id=?";
-            $stmt = $conn->prepare($query);
-            $stmt->execute([$update_firstName, $update_lastName, $update_email, $update_password, $update_id]);
-        }
-
-        $conn->commit();
-        $success_msg[] = "Utilizatorul a fost modificat!";
-
-        header('location: admin_users.php');
-    } catch (PDOException $e) {
-        $conn->rollback();
-        $messages[] = "Error at update: " . $e->getMessage();
-
-        echo "Error: " . $e->getMessage();
-    }
-}
-
-//EFIT USER SECTION GOOD
+//EDIT USER SECTION GOOD
 if (isset($_POST['update_user'])) {
     try {
-        // Connect to the database
-        // Begin a transaction
         $conn->beginTransaction();
 
         // Get the values from the form
         $id = $_POST['update_id'];
-        $name = $_POST['add_name'];
-        $email = $_POST['add_email'];
-        $password = $_POST['add_password'];
-        $confirm_password = $_POST['add_confirm_password'];
+        $name = htmlspecialchars($_POST['add_name'], ENT_QUOTES, 'UTF-8');
+        $email = htmlspecialchars($_POST['add_email'], ENT_QUOTES, 'UTF-8');
+        $password = htmlspecialchars($_POST['add_password'], ENT_QUOTES, 'UTF-8');
+        $confirm_password = htmlspecialchars($_POST['add_confirm_password'], ENT_QUOTES, 'UTF-8');
         $user_type = "";
 
         // validate user type field
@@ -107,20 +43,14 @@ if (isset($_POST['update_user'])) {
 
         // Commit the transaction
         $conn->commit();
-
-        // Redirect to the user list page
         header("Location: admin_users.php");
     } catch (Exception $e) {
         // Roll back the transaction
         $conn->rollBack();
-
-        // Display the error message
-        echo "Error at update: " . $e->getMessage();
-        $messages[] = "Error at update: " . $e->getMessage();
+        $messages[] = "Eroare la actualizare: " . $e->getMessage();
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -129,11 +59,14 @@ if (isset($_POST['update_user'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantina - admin</title>
 
     <link rel="stylesheet" href="../css/style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Cantina - admin</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -170,56 +103,63 @@ if (isset($_POST['update_user'])) {
 
                             <!-- EDIT USER SECTION -->
                             <section class="update-container">
-                                <h3 class="update">MODIFICĂ UTILIZATORUL</h3>
+                                <h3 class="update">ACTUALIZEAZĂ UTILIZATORUL</h3>
 
                                 <?php
-                                if (isset($_GET['edit'])) {
-                                    $edit_id = $_GET['edit'];
-                                    $query = "SELECT * FROM `users` WHERE id = '$edit_id'";
-                                    $stmt = $conn->prepare($query);
-                                    $stmt->execute();
-                                    $num_rows = $stmt->rowCount();
+                                try {
 
-                                    if ($num_rows > 0) {
-                                        while ($fetch_edit = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                    if (isset($_GET['edit'])) {
+                                        $edit_id = $_GET['edit'];
+                                        $query = "SELECT * FROM `users` WHERE id = '$edit_id'";
+                                        $stmt = $conn->prepare($query);
+                                        $stmt->execute();
+                                        $num_rows = $stmt->rowCount();
+
+                                        if ($num_rows > 0) {
+                                            while ($fetch_edit = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                 ?>
-                                            <div class="form-container">
+                                                <div class="form-container">
 
-                                                <form class="Form" onsubmit="return validateForm()" action="admin_edit_user.php" method="post" enctype="multipart/form-data">
-                                                    <input type="hidden" name="update_id" value="<?php echo $fetch_edit['id']; ?>"><br>
+                                                    <form class="Form" onsubmit="return validateForm()" action="admin_edit_user.php" method="post" enctype="multipart/form-data">
+                                                        <input type="hidden" name="update_id" value="<?php echo $fetch_edit['id']; ?>"><br>
 
-                                                    <label for="add-name">Name:</label>
-                                                    <input type="text" name="add_name" id="add-name" value="<?php echo $fetch_edit['name']; ?>" required>
-                                                    <span id="nameError"></span>
+                                                        <label for="add-name">Name:</label>
+                                                        <input type="text" name="add_name" id="add-name" value="<?php echo $fetch_edit['name']; ?>" required>
+                                                        <span id="nameError"></span>
 
-                                                    <label for="add-email">Email:</label>
-                                                    <input type="email" name="add_email" id="add-email" value="<?php echo $fetch_edit['email']; ?>" required><span id="emailError" class="error"></span>
-                                                    <span id="emailError"></span>
+                                                        <label for="add-email">Email:</label>
+                                                        <input type="email" name="add_email" id="add-email" value="<?php echo $fetch_edit['email']; ?>" required><span id="emailError" class="error"></span>
+                                                        <span id="emailError"></span>
 
-                                                    <label for="user-type">User Type:</label>
-                                                    <select name="user_type" id="user-type">
+                                                        <label for="user-type">User Type:</label>
+                                                        <select name="user_type" id="user-type">
 
-                                                        <option value="user" <?php if ($fetch_edit['user_type'] === 'user') echo 'selected'; ?>>User</option>
-                                                        <option value="admin" <?php if ($fetch_edit['user_type'] === 'admin') echo 'selected'; ?>>Admin</option>
-                                                    </select>
+                                                            <option value="user" <?php if ($fetch_edit['user_type'] === 'user') echo 'selected'; ?>>User</option>
+                                                            <option value="admin" <?php if ($fetch_edit['user_type'] === 'admin') echo 'selected'; ?>>Admin</option>
+                                                        </select>
 
 
-                                                    <label for="add-password">Password:</label>
-                                                    <input type="password" name="add_password" id="add-password" value="" required><span id="passwordError" class="error"></span>
-                                                    <span id="passwordError"></span>
+                                                        <label for="add-password">Password:</label>
+                                                        <input type="password" name="add_password" id="add-password" value="" required><span id="passwordError" class="error"></span>
+                                                        <span id="passwordError"></span>
 
-                                                    <label for="add-confirm-password">Confirm Password:</label>
-                                                    <input type="password" name="add_confirm_password" id="add-confirm-password" value="" required><span id="confirmPasswordError" class="error"></span>
-                                                    <span id="confirmPasswordError"></span>
-                                                    <input class="form-button" type="submit" name="update_user" value="UPDATE">
+                                                        <label for="add-confirm-password">Confirm Password:</label>
+                                                        <input type="password" name="add_confirm_password" id="add-confirm-password" value="" required><span id="confirmPasswordError" class="error"></span>
+                                                        <span id="confirmPasswordError"></span>
+                                                        <input class="form-button" type="submit" name="update_user" value="ACTUALIZEAZĂ">
 
-                                                </form>
-                                            </div>
+                                                    </form>
+                                                </div>
                                 <?php
+                                            }
+                                        } else {
+                                            //no results found
                                         }
-                                    } else {
-                                        //no results found
                                     }
+                                } catch (PDOException $e) {
+                                    echo "Eroare: " . $e->getMessage();
+                                } catch (Exception $e) {
+                                    echo "Eroare: " . $e->getMessage();
                                 }
                                 ?>
                             </section>
@@ -231,14 +171,9 @@ if (isset($_POST['update_user'])) {
         <!-- END MAIN -->
     </div>
     <?php include '../components/alert.php'; ?>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="script.js"></script>
-    <script src="formValidation.js"></script>
-    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
-
-
+    <script src="../js/script.js"></script>
+    <script src="../js/formValidation.js"></script>
 </body>
 
 </html>

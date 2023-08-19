@@ -80,9 +80,9 @@ if (isset($_POST['contact'])) {
                 <div class="title">
                     <!-- <img src="images/download.png" alt="contact" class="logo-image"> -->
                     <ul>
-                        <li> <box-icon name='phone'></box-icon>
+                        <li> <i class='bx bx-phone'></i>
                             0742 222 222</li>
-                        <li><box-icon name='map'></box-icon>Str. Episcop Nicolae Ivan, FN </li>
+                        <li><i class='bx bx-map'></i>Str. Episcop Nicolae Ivan, FN </li>
                         <li> Cluj-Napoca, RO</li>
                     </ul>
                     <hr class="dotted-line">

@@ -1,22 +1,6 @@
 <?php
 include '../php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
-
-if (!isset($_SESSION['user_id'])) {
-    header('location:../login.php');
-}
-
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: ../login.php");
-}
-$current_page = basename($_SERVER['PHP_SELF']);
-$messages = array();
+include '../php/session_handler.php';
 
 
 // List of pages that don't exist yet
@@ -33,8 +17,6 @@ if (in_array($request_uri, $not_found_pages)) {
     header('Location: ../not_found.php');
     exit;
 }
-
-
 
 ?>
 
@@ -65,7 +47,6 @@ if (in_array($request_uri, $not_found_pages)) {
             <div class="admin-container">
                 <?php include('../components/admin/sidebar.php'); ?>
                 <div class="panel-container">
-
                     <div class="content">
                         <!-- //MESSAGES -->
                         <div class="detail">
@@ -82,7 +63,6 @@ if (in_array($request_uri, $not_found_pages)) {
                             }
                             ?>
                         </div>
-
 
                         <!-- order_item table -->
                         <section>
@@ -172,8 +152,7 @@ if (in_array($request_uri, $not_found_pages)) {
         <!-- END MAIN -->
     </main>
     <?php include '../components/alert.php'; ?>
-    <script src="../script.js"></script>
-
+    <script src="../js/script.js"></script>
 </body>
 
 </html>

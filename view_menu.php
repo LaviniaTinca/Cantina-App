@@ -46,7 +46,6 @@ if (in_array($request_uri, $not_found_pages)) {
 //adding products in the cart
 if (isset($_POST['add_to_cart'])) {
     try {
-        $id = unique_id();
         $product_id = $_POST['product_id'];
 
         $qty = $_POST['qty'];
@@ -69,7 +68,6 @@ if (isset($_POST['add_to_cart'])) {
             $update_cart->execute([$newQty, $fetch_existingCartItem['id']]);
 
             if ($update_cart) {
-                // $success_msg[] = 'Product quantity updated in cart successfully';
                 $success_msg[] = 'Cantitatea a fost modificată!';
             } else {
                 $error_msg[] = 'Nu s-a putut efectuat modificarea cantității!';

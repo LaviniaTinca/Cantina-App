@@ -1,32 +1,10 @@
 <?php
 include '../php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
-
-if (!isset($_SESSION['user_id'])) {
-    header('location:../login.php');
-}
-
-if ($_SESSION['user_type'] === 'user') {
-    header('location:../home.php');
-}
-
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: ../login.php");
-}
-$current_page = basename($_SERVER['PHP_SELF']);
+include '../php/session_handler.php';
 
 //for chart
 try {
-    // Assuming your table structure has a `created_at` field for the date
-    // $stmt = $conn->prepare("SELECT DATE_FORMAT(order_date, '%Y-%m') AS month, COUNT(*) AS record_count FROM orders GROUP BY month");
     $stmt = $conn->prepare("SELECT category, COUNT(*) AS product_count FROM products GROUP BY category");
-
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -34,8 +12,9 @@ try {
     $xValues = array_column($result, 'category');
     $yValues = array_column($result, 'product_count');
 } catch (PDOException $e) {
-    // Handle any errors that may occur during database query
-    die("Query failed: " . $e->getMessage());
+    $error_msg[] = "Eroare: " . $e->getMessage();
+} catch (Exception $e) {
+    $error_msg[] = "Eroare: " . $e->getMessage();
 }
 
 ?>
@@ -53,15 +32,14 @@ try {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-
 </head>
 
 <body>
     <!-- HEADER SECTION -->
     <section>
         <?php include('../components/admin/header.php'); ?>
-
     </section>
 
     <main class="main" style="margin-top: 50px">
@@ -70,7 +48,6 @@ try {
         <section>
             <div class="admin-container">
                 <?php include('../components/admin/sidebar.php'); ?>
-
                 <div class="panel-container">
                     <div class=" content">
                         <!-- WIDGETS -->
@@ -84,10 +61,10 @@ try {
                                         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         $num_of_users = count($users);
                                     } catch (PDOException $e) {
-                                        die("Query failed: " . $e->getMessage());
+                                        $error_msg[] = "Eroare: " . $e->getMessage();
+                                    } catch (Exception $e) {
+                                        $error_msg[] = "Eroare: " . $e->getMessage();
                                     }
-                                    // $select_users = mysqli_query($con, "SELECT * FROM `users` where isAdmin = 0") or die('query failed');
-                                    // $num_of_users = mysqli_num_rows($select_users);
                                     ?>
                                     <div class="small-widget">
                                         <i class='bx bx-group'></i>
@@ -105,7 +82,9 @@ try {
                                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         $num_of_orders = count($result);
                                     } catch (PDOException $e) {
-                                        die("Query failed: " . $e->getMessage());
+                                        $error_msg[] = "Eroare: " . $e->getMessage();
+                                    } catch (Exception $e) {
+                                        $error_msg[] = "Eroare: " . $e->getMessage();
                                     }
                                     ?>
                                     <div class="small-widget">
@@ -125,7 +104,9 @@ try {
                                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         $num_of_products = count($result);
                                     } catch (PDOException $e) {
-                                        die("Query failed: " . $e->getMessage());
+                                        $error_msg[] = "Eroare: " . $e->getMessage();
+                                    } catch (Exception $e) {
+                                        $error_msg[] = "Eroare: " . $e->getMessage();
                                     }
                                     ?>
                                     <div class="small-widget">
@@ -145,7 +126,9 @@ try {
                                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         $num_of_messages = count($result);
                                     } catch (PDOException $e) {
-                                        die("Query failed: " . $e->getMessage());
+                                        $error_msg[] = "Eroare: " . $e->getMessage();
+                                    } catch (Exception $e) {
+                                        $error_msg[] = "Eroare: " . $e->getMessage();
                                     }
                                     ?>
                                     <div class="small-widget">
@@ -157,7 +140,7 @@ try {
                             </a>
                         </section>
                     </div>
-                    <div class="banner" style="margin: 2rem;">
+                    <div class="banner" style="height: auto;">
                         <canvas id="myChart" style="width:70%;max-width:600px"></canvas>
                     </div>
                 </div>
@@ -168,29 +151,7 @@ try {
     </main>
 
     <!-- SCRIPT SECTION -->
-
-    <script src="../script.js"></script>
-
-    <!-- <script>
-        $(document).ready(function() {
-            $('#search-input3').on('input', function() {
-                var filter = $(this).val().toLowerCase();
-                $('#filtered-options').empty();
-                $('#user-select3 option').each(function() {
-                    var text = $(this).text().toLowerCase();
-                    var match = text.indexOf(filter) > -1;
-                    $(this).toggle(match);
-                    if (match) {
-                        $('#filtered-options').append('<div>' + $(this).text() + '</div>');
-                    }
-                });
-                if (filter === '') {
-                    $('#filtered-options').empty();
-                }
-            });
-        });
-    </script> -->
-
+    <script src="../js/script.js"></script>
     <script>
         const xValues = <?php echo json_encode($xValues); ?>;
         const yValues = <?php echo json_encode($yValues); ?>;
@@ -220,7 +181,6 @@ try {
             }
         });
     </script>
-
 </body>
 
 </html>

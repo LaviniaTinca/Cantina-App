@@ -1,46 +1,7 @@
 <?php
 include 'php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
+include 'php/session_handler.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('location:login.php');
-}
-
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: login.php");
-}
-
-// // Get the requested page from the URL
-// $request_uri = $_SERVER['REQUEST_URI'];
-
-// // Check if the requested page or resource exists
-// if (!file_exists($request_uri)) {
-// 	// Redirect to the custom "not found" page
-// 	header('Location: not_found.php');
-// 	exit;
-// }
-
-
-// List of pages that don't exist yet
-$not_found_pages = array(
-    '/wishlist.php',
-);
-
-// Get the requested page from the URL
-$request_uri = $_SERVER['REQUEST_URI'];
-
-// Check if the requested page is in the "not found" pages array
-if (in_array($request_uri, $not_found_pages)) {
-    // Redirect to the custom "not found" page
-    header('Location: not_found.php');
-    exit;
-}
 
 //update product in cart
 
@@ -90,19 +51,16 @@ if (isset($_POST['empty_cart'])) {
 
 if (isset($_POST['order'])) {
     $user_id = $_SESSION['user_id'];
-    $id = unique_id();
 
     try {
         $conn->beginTransaction();
 
         // Step 1: Retrieve Cart Data
-        $stmt_cart = $conn->prepare("SELECT product_id, qty, price FROM cart WHERE user_id = ?");
         $query = "SELECT c.*, dmi.qty AS dmi_qty, dmi.id AS dmi_id
-        FROM cart c
-        LEFT JOIN daily_menu dm ON dm.date = CURDATE()
-        LEFT JOIN daily_menu_items dmi ON dmi.daily_menu_id = dm.id AND dmi.product_id = c.product_id
-        -- JOIN products p ON p.id = c.product_id
-        WHERE c.user_id = ?";
+                    FROM cart c
+                    LEFT JOIN daily_menu dm ON dm.date = CURDATE()
+                    LEFT JOIN daily_menu_items dmi ON dmi.daily_menu_id = dm.id AND dmi.product_id = c.product_id
+                    WHERE c.user_id = ?";
         $stmt_cart = $conn->prepare($query);
         $stmt_cart->execute([$user_id]);
         $cart_data = $stmt_cart->fetchAll(PDO::FETCH_ASSOC);
@@ -113,7 +71,6 @@ if (isset($_POST['order'])) {
 
         foreach ($cart_data as $cart_item) {
             if ($cart_item['dmi_qty'] < $cart_item['qty']) {
-                // Fetch product name based on product_id
                 $product_query = $conn->prepare("SELECT name FROM products WHERE id = ?");
                 $product_query->execute([$cart_item['product_id']]);
                 $product_name = $product_query->fetchColumn();
@@ -126,13 +83,13 @@ if (isset($_POST['order'])) {
         $payment_status = 'pending';
         $shipping_address = '';
         $order_status = 'processing';
+        $id = unique_id();
 
-        $stmt_order = $conn->prepare("INSERT INTO orders (id, user_id, order_date, total_amount, payment_status, shipping_address, order_status) 
-                                     VALUES (?, ?, ?, ?, ?, ?, ?)");
-
+        $query = "INSERT INTO orders (id, user_id, order_date, total_amount, payment_status, shipping_address, order_status) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt_order = $conn->prepare($query);
         $stmt_order->execute([$id, $user_id, $order_date, $total_amount, $payment_status, $shipping_address, $order_status]);
 
-        // $order_id = $conn->lastInsertId(); // Get the last inserted order_id IF is AUTO-INCREMENTED
         $order_id = $id;
         // Step 3: Store Order Items
         foreach ($cart_data as $cart_item) {
@@ -145,11 +102,12 @@ if (isset($_POST['order'])) {
             $price = $cart_item['price'];
             $subtotal = $quantity * $price;
 
-            $stmt_order_items = $conn->prepare("INSERT INTO order_items (order_id, product_id, quantity, price, subtotal) 
-                                               VALUES (?, ?, ?, ?, ?)");
+            $query = "INSERT INTO order_items (order_id, product_id, quantity, price, subtotal) 
+                        VALUES (?, ?, ?, ?, ?)";
+            $stmt_order_items = $conn->prepare($query);
             $stmt_order_items->execute([$order_id, $product_id, $quantity, $price, $subtotal]);
-            var_dump($cart_item['dmi_id']);
-            //upfate the qty in the menu
+
+            //update the qty in the menu
             $stmt_update_menu_qty = $conn->prepare("UPDATE `daily_menu_items` SET qty = ? WHERE id = ?");
             $stmt_update_menu_qty->execute([$cart_item['dmi_qty'] - $quantity, $cart_item['dmi_id']]);
         }
@@ -160,16 +118,11 @@ if (isset($_POST['order'])) {
 
         $conn->commit(); // Commit the transaction
         $success_msg[] = "Comanda a fost plasată! ";
-
-        // echo "Order placed successfully!";
     } catch (PDOException $e) {
         $conn->rollBack(); // Rollback the transaction in case of any error
         $error_msg[] = "Eroare la plasarea comenzii: " . $e->getMessage();
-
-        // echo "Error placing the order: " . $e->getMessage();
     } catch (Exception $e) {
-        $conn->rollBack(); // Rollback the transaction in case of any error
-        // echo "Error: " . $e->getMessage();
+        $conn->rollBack();
         $error_msg[] = "Eroare la plasarea comenzii: " . $e->getMessage();
     }
 }

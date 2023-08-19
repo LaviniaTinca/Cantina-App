@@ -1,31 +1,10 @@
 <?php
 include '../php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
+include '../php/session_handler.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('location:../login.php');
-}
-if ($_SESSION['user_type'] === 'user') {
-    header('location:../home.php');
-}
-
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: ../login.php");
-}
-$current_page = basename($_SERVER['PHP_SELF']);
-$messages = array();
-
-//add user //!!!!! good for register but without IMAGE
 // Add user to the database
 if (isset($_POST['add_user'])) {
     try {
-        //code...
 
         // Validate input
         if (empty($_POST['add_name'])) {
@@ -61,17 +40,15 @@ if (isset($_POST['add_user'])) {
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = :email");
         $stmt->execute(['email' => $add_email]);
         if ($stmt->rowCount() > 0) {
-            // $messages[] = "Email-ul exista deja";
-
             throw new Exception("Email is already taken.");
         }
     } catch (PDOException $e) {
-        echo $e;
+        $conn->rollBack();
+        $error_msg[] = "Eroare: " . $e->getMessage();
     } catch (Exception $e) {
-
-        // Display the error message
-        echo "Error at register: " . $e->getMessage();
-        $messages[] = "Error at register: " . $e->getMessage();
+        $conn->rollBack();
+        $error_msg[] = "Eroare: " . $e->getMessage();
+        $messages[] = "Eroare: " . $e->getMessage();
     }
 
     // Insert user into database
@@ -86,17 +63,18 @@ if (isset($_POST['add_user'])) {
 
             $conn->commit();
             $success_msg[] = "Utilizatorul a fost adaugat!";
-
             header('location: admin_users.php');
         } catch (PDOException $e) {
-            $conn->rollback();
-            echo "Error adding user: " . $e->getMessage();
-            $messages[] = "Error: " . $e->getMessage();
+            $conn->rollBack();
+            $error_msg[] = "Eroare: " . $e->getMessage();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            $error_msg[] = "Eroare: " . $e->getMessage();
         }
     }
 }
 
-//delete user without image in the table
+//delete user 
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
     try {
@@ -106,15 +84,11 @@ if (isset($_GET['delete'])) {
 
         $success_msg[] = "Utilizatorul a fost șters!";
     } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
-        $messages[] = $e->getMessage();
+        $error_msg[] = "Eroare: " . $e->getMessage();
+    } catch (Exception $e) {
+        $error_msg[] = "Eroare: " . $e->getMessage();
     }
 }
-//-------------------------------------------------
-//delete announcement
-
-
-//edit announcement
 
 //edit user
 if (isset($_POST['update_user'])) {
@@ -157,24 +131,19 @@ if (isset($_POST['update_user'])) {
         $stmt = $conn->prepare("UPDATE users SET name = :name, email = :email, password = :password, user_type=:user_type WHERE id = :id");
         $stmt->execute(['name' => $name, 'email' => $email, 'password' => $hashed_password, 'user_type' => $user_type, 'id' => $id]);
 
-        // Commit the transaction
         $conn->commit();
-
-        // Redirect to the user list page
         header("Location: admin_users.php");
-    } catch (Exception $e) {
-        // Roll back the transaction
+    } catch (PDOException $e) {
         $conn->rollBack();
-
-        // Display the error message
-        echo "Error at update: " . $e->getMessage();
-        $messages[] = "Error at update: " . $e->getMessage();
+        $error_msg[] = "Eroare: " . $e->getMessage();
+    } catch (Exception $e) {
+        $conn->rollBack();
+        $error_msg[] = "Eroare: " . $e->getMessage();
     }
 }
 
 //for chart
 try {
-    // Assuming your table structure has a `created_at` field for the date
     $stmt = $conn->prepare("SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, COUNT(*) AS record_count FROM users GROUP BY month");
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -183,8 +152,9 @@ try {
     $xValues = array_column($result, 'month');
     $yValues = array_column($result, 'record_count');
 } catch (PDOException $e) {
-    // Handle any errors that may occur during database query
-    die("Query failed: " . $e->getMessage());
+    $error_msg[] = "Eroare: " . $e->getMessage();
+} catch (Exception $e) {
+    $error_msg[] = "Eroare: " . $e->getMessage();
 }
 
 ?>
@@ -196,18 +166,12 @@ try {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cantina - admin</title>
-
+    <link rel="stylesheet" href="../css/style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <link rel="stylesheet" href="../css/style.css">
-    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css"> -->
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script> -->
-
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <style>
         .pagination {
@@ -243,11 +207,9 @@ try {
             background-color: var(--green);
         }
     </style>
-
 </head>
 
 <body>
-
     <!-- HEADER SECTION -->
     <section>
         <?php include '../components/admin/header.php'; ?>
@@ -260,7 +222,6 @@ try {
                 <div class="admin-container">
                     <?php include('../components/admin/sidebar.php'); ?>
                     <div class="panel-container">
-
                         <div class="content">
                             <!-- //MESSAGES -->
                             <div class="detail">
@@ -280,7 +241,6 @@ try {
 
                             <!-- WIDGETS -->
                             <section class="widgets">
-
                                 <div class="widget setting-widget">
                                     <div class="flex">
 
@@ -302,7 +262,6 @@ try {
                                     </div>
                                 </div>
                                 <canvas id="myChart" style="max-width:400px"></canvas>
-
                             </section>
 
                             <!--Add New User Modal box -->
@@ -331,11 +290,8 @@ try {
                                             <input class="form-button" type="submit" name="add_user" id="add_user" value="ÎNREGISTREAZĂ">
                                         </form>
                                     </div>
-
                                 </div>
                             </section>
-                            <!-- Add the search input2 field -->
-                            <!-- <input type="text" id="search-input2" placeholder="Search the whole table..."> -->
 
                             <!-- SHOW USERS TABLE with FILTER  -->
                             <section>
@@ -360,15 +316,11 @@ try {
                                                     <th class=" sortable" data-sort="string" data-column="name">Name</th>
                                                     <th class="sortable" data-sort="string" data-column="email">Email</th>
                                                     <th class="sortable" data-sort="string" data-column="user_type">User Type</th>
-
                                                     <th>Actions</th>
-
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
-
-
                                                 if (count($users) > 0) {
                                                     $nr = 1;
                                                     foreach ($users as $user) {
@@ -387,8 +339,6 @@ try {
                                                                 </form>
                                                             </td>
                                                         </tr>
-                                                        <!-- //REVIEWS TABLE -->
-
                                                 <?php
                                                     }
                                                 } else {
@@ -406,8 +356,9 @@ try {
                                     </div>
                                 <?php
                                 } catch (PDOException $e) {
-                                    // Handle any errors that may occur during the database query
-                                    echo "Error: " . $e->getMessage();
+                                    $error_msg[] = "Eroare: " . $e->getMessage();
+                                } catch (Exception $e) {
+                                    $error_msg[] = "Eroare: " . $e->getMessage();
                                 }
                                 ?>
                             </section>
@@ -417,27 +368,34 @@ try {
                             <!-- PAGINATION -->
                             <div class="table-pagination">
                                 <?php
-                                // Get the total number of records in the users table
-                                $stmt = $conn->prepare("SELECT COUNT(*) as total FROM users");
-                                $stmt->execute();
-                                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                                $total_records = $result['total'];
+                                try {
 
-                                // Calculate the total number of pages
-                                $total_pages = ceil($total_records / $limit);
+                                    // Get the total number of records in the users table
+                                    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM users");
+                                    $stmt->execute();
+                                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                                    $total_records = $result['total'];
 
-                                echo '<ul class="pagination admin-pagination">';
-                                if ($page > 1) {
-                                    echo '<li><a href="admin_users.php?page=' . ($page - 1) . '">Prev</a></li>';
+                                    // Calculate the total number of pages
+                                    $total_pages = ceil($total_records / $limit);
+
+                                    echo '<ul class="pagination admin-pagination">';
+                                    if ($page > 1) {
+                                        echo '<li><a href="admin_users.php?page=' . ($page - 1) . '">Prev</a></li>';
+                                    }
+                                    for ($i = 1; $i <= $total_pages; $i++) {
+                                        $active = ($i == $page) ? "active" : "";
+                                        echo '<li><a href="admin_users.php?page=' . $i . '" class="' . $active . '">' . $i . '</a></li>';
+                                    }
+                                    if ($page < $total_pages) {
+                                        echo '<li><a href="admin_users.php?page=' . ($page + 1) . '">Next</a></li>';
+                                    }
+                                    echo '</ul>';
+                                } catch (PDOException $e) {
+                                    $error_msg[] = "Eroare: " . $e->getMessage();
+                                } catch (Exception $e) {
+                                    $error_msg[] = "Eroare: " . $e->getMessage();
                                 }
-                                for ($i = 1; $i <= $total_pages; $i++) {
-                                    $active = ($i == $page) ? "active" : "";
-                                    echo '<li><a href="admin_users.php?page=' . $i . '" class="' . $active . '">' . $i . '</a></li>';
-                                }
-                                if ($page < $total_pages) {
-                                    echo '<li><a href="admin_users.php?page=' . ($page + 1) . '">Next</a></li>';
-                                }
-                                echo '</ul>';
                                 ?>
                             </div>
                         </div>
@@ -450,14 +408,10 @@ try {
         </section>
     </main>
     <?php include '../components/alert.php'; ?>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
-    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
-
-    <script src="../script.js"></script>
-    <script src="../formValidation.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/formValidation.js"></script>
     <script src="../js/searchCard.js"></script>
-
     <script>
         // Function to open the modal
         $("#user-widget").click(function() {
@@ -469,14 +423,12 @@ try {
             $("#user-modal").hide();
         });
 
-        // Function to save the announcement
+        // Function to save the user
         $("#add_user").click(function() {
-
             $("#user-modal").hide();
         });
     </script>
     <script>
-        // Use PHP's json_encode function to convert PHP arrays to JavaScript arrays
         const xValues = <?php echo json_encode($xValues); ?>;
         const yValues = <?php echo json_encode($yValues); ?>;
 
@@ -507,97 +459,6 @@ try {
             }
         });
     </script>
-
-    <!-- <script>
-        //aceasta functioneaza cu data-sort pe row, include data table cu css dar daca am paginare ia doar atat.
-        $(document).ready(function() {
-            // Initialize DataTable for the user-table
-            const dataTable = $("#product-table").DataTable();
-
-            // Function to handle the search with search-input2
-            $("#search-input2").on("input", function() {
-                const keyword = $(this).val();
-
-                // Perform AJAX request to search_users.php
-                $.ajax({
-                    type: "POST",
-                    url: "search_users.php",
-                    data: {
-                        keyword: keyword
-                    },
-                    dataType: "json",
-                    success: function(response) {
-                        // Clear the current table data
-                        dataTable.clear().draw();
-
-                        // Add the retrieved data to the DataTable
-                        dataTable.rows.add(response).draw();
-                    },
-                    error: function(xhr, status, error) {
-                        console.log(error);
-                    }
-                });
-            });
-        });
-    </script> -->
-
-    <!-- <script>
-        // Initialize DataTables with server-side processing and AJAX call
-        $(document).ready(function() {
-            $('#user-table').DataTable({
-                "serverSide": true, // Enable server-side processing
-                "ajax": {
-                    "url": "search_users2.php ", // Replace with the URL of your PHP script
-                    "type": "GET",
-                    "data": function(d) {
-                        // Include additional parameters if needed
-                        d.start = 0;
-                        d.length = 7;
-                        d.search.value = $('#search-input2').val(); // Add the search keyword to the AJAX request
-                    }
-                },
-                "columns": [{
-                        "data": "name"
-                    },
-                    {
-                        "data": "email"
-                    },
-                    // Add more columns as needed
-                ]
-            });
-        });
-    </script> -->
-    <!-- <script>
-        //acesta functioneaza daca scot din tabel nr si actions, DAR tot de pe aceeasi pagina imi sorteaza
-        $(document).ready(function() {
-            $('#product-table').DataTable({
-                serverSide: true, // Enable server-side processing
-                ajax: {
-                    url: 'search_users.php', // Replace with the URL of your PHP script
-                    type: 'GET',
-                    data: function(data) {
-                        // Additional parameters for your PHP script
-                        // For example, you can pass the search keyword entered by the user
-                        data.search = {
-                            value: $('#search-input').val()
-                        };
-                    }
-                },
-                columns: [{
-                        data: 'name'
-                    },
-                    {
-                        data: 'email'
-                    },
-                    {
-                        data: 'user_type'
-                    },
-
-                ]
-                // Add any other DataTables options you need
-            });
-        });
-    </script> -->
 
 </body>
 

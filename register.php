@@ -147,7 +147,7 @@ if (isset($_POST['add_user'])) {
     <?php include 'components/footer.php'; ?>
   </section>
 
-  <script src="formValidation.js"></script>
+  <script src="js/formValidation.js"></script>
 
 </body>
 

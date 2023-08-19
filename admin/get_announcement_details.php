@@ -1,11 +1,6 @@
 <?php
 include '../php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
+
 try {
     // Check if the ID is provided through POST request
     if (isset($_POST['id'])) {

@@ -1,25 +1,6 @@
 <?php
 include '../php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
-
-if (!isset($_SESSION['user_id'])) {
-    header('location:../login.php');
-}
-
-if ($_SESSION['user_type'] === 'user') {
-    header('location:../home.php');
-}
-
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: ../login.php");
-}
-$current_page = basename($_SERVER['PHP_SELF']);
+include '../php/session_handler.php';
 
 // Handle save announcement
 if (isset($_POST['save-announcement'])) {
@@ -48,7 +29,7 @@ if (isset($_GET['delete'])) {
         $stmt->execute([$delete_id]);
         $success_msg[] = "Anunțul a fost șters!";
     } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+        $error_msg[] = "Eroare: " . $e->getMessage();
     }
 }
 
@@ -69,12 +50,11 @@ if (isset($_POST['edit-announcement'])) {
     } catch (PDOException $e) {
         // Handle specific PDO exceptions (if needed)
         $conn->rollback();
-        $error_msg[] = "Eroare la modificare!";
-        echo "Eroare la modificarea anuntului: " . $e->getMessage();
+        $error_msg[] = "Eroare la modificarea anuntului: " . $e->getMessage();
     } catch (Exception $e) {
         // General catch block for any uncaught exceptions
         $conn->rollback();
-        echo "Error: " . $e->getMessage();
+        $error_msg[] = "Eroare: " . $e->getMessage();
     }
 }
 
@@ -93,14 +73,13 @@ if (isset($_POST['edit-announcement'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
 
 <body>
     <!-- HEADER SECTION -->
     <section>
         <?php include('../components/admin/header.php'); ?>
-
     </section>
 
     <main class="main" style="margin-top: 50px">
@@ -111,13 +90,11 @@ if (isset($_POST['edit-announcement'])) {
                 <?php include('../components/admin/sidebar.php'); ?>
 
                 <div class="panel-container">
-
                     <div class=" content">
                         <!-- WIDGETS -->
                         <section class="widgets">
                             <div class="widget settings-widget">
                                 <div class="flex">
-
                                     <div class="small-widget">
                                         <i class='bx bx-cog'></i>
                                     </div>
@@ -137,6 +114,7 @@ if (isset($_POST['edit-announcement'])) {
                             </div>
                             <div id="success-message"></div>
 
+                            <!-- SHOW FEATURED CARD  -->
                             <div class="show-card box-container">
                                 <?php
                                 try {
@@ -144,30 +122,34 @@ if (isset($_POST['edit-announcement'])) {
                                     $stmt = $conn->prepare($query);
                                     $stmt->execute();
                                     $record = $stmt->fetch(PDO::FETCH_ASSOC);
-                                } catch (PDOException $e) {
-                                    echo "Error: " . $e->getMessage();
-                                }
-                                if (!empty($record)) {
+
+                                    if (!empty($record)) {
                                 ?>
-                                    <div class="box featured-card" style="border: 1px solid var(--cart)">
-                                        <h6>Anunț setat din categoria: <?php echo $record['category']; ?></h6>
-                                        <div class="flex">
-                                            <h4 class="announcement-content filter"><?php echo $record['description']; ?></h4>
-                                            <div>
-                                                <form method="post" action="admin_announcements.php">
-                                                    <input type="hidden" name="record_id" value="<?= $record['id']; ?>">
-                                                    <input type="checkbox" class="announcement-checkbox" title="Setează anunț" data-announcement-id="<?php echo $record['id']; ?>" <?php echo ($record['is_set'] == 1) ? 'checked' : ''; ?>>
-                                                    <a href="#" class="edit edit-link" data-announcement-id="<?php echo $record['id']; ?>" data-category=" <?php echo $record['category']; ?>" data-description="<?php echo $record['description']; ?>">
-                                                        <i class=" fas fa-edit" title="Editează"></i>
-                                                    </a>
-                                                    <a href="admin_announcements.php?delete=<?php echo $record['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi anuntul <?php echo $record['description']; ?> ?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
-                                                </form>
+                                        <div class="box featured-card" style="border: 1px solid var(--cart)">
+                                            <h6>Anunț setat din categoria: <?php echo $record['category']; ?></h6>
+                                            <div class="flex">
+                                                <h4 class="announcement-content filter"><?php echo $record['description']; ?></h4>
+                                                <div>
+                                                    <form method="post" action="admin_announcements.php">
+                                                        <input type="hidden" name="record_id" value="<?= $record['id']; ?>">
+                                                        <input type="checkbox" class="announcement-checkbox" title="Setează anunț" data-announcement-id="<?php echo $record['id']; ?>" <?php echo ($record['is_set'] == 1) ? 'checked' : ''; ?>>
+                                                        <a href="#" class="edit edit-link" data-announcement-id="<?php echo $record['id']; ?>" data-category=" <?php echo $record['category']; ?>" data-description="<?php echo $record['description']; ?>">
+                                                            <i class=" fas fa-edit" title="Editează"></i>
+                                                        </a>
+                                                        <a href="admin_announcements.php?delete=<?php echo $record['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi anuntul <?php echo $record['description']; ?> ?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                <?php } ?>
+                                <?php
+                                    }
+                                } catch (PDOException $e) {
+                                    $error_msg[] = "Eroare: " . $e->getMessage();
+                                } catch (Exception $e) {
+                                    $error_msg[] = "Eroare: " . $e->getMessage();
+                                }
+                                ?>
                             </div>
-
                         </section>
 
                         <!--Add New Announcement Modal box -->
@@ -226,54 +208,51 @@ if (isset($_POST['edit-announcement'])) {
                                     $stmt = $conn->prepare($query);
                                     $stmt->execute();
                                     $fetch_records = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                } catch (PDOException $e) {
-                                    echo "Error: " . $e->getMessage();
-                                }
 
-                                if (!empty($fetch_records)) {
-                                    foreach ($fetch_records as $record) {
+                                    if (!empty($fetch_records)) {
+                                        foreach ($fetch_records as $record) {
                                 ?>
-                                        <div class="box">
-                                            <h6><?php echo $record['category']; ?></h6>
-                                            <div class="flex">
-                                                <h4 class="announcement-content filter"><?php echo $record['description']; ?></h4>
-                                                <div>
-                                                    <form method="post" action="admin_announcements.php">
-                                                        <input type="hidden" name="record_id" value="<?= $record['id']; ?>">
-                                                        <input type="checkbox" class="announcement-checkbox" title="Setează anunț" data-announcement-id="<?php echo $record['id']; ?>" <?php echo ($record['is_set'] == 1) ? 'checked' : ''; ?>>
-                                                        <a href="#" class="edit edit-link" data-announcement-id="<?php echo $record['id']; ?>" data-category=" <?php echo $record['category']; ?>" data-description="<?php echo $record['description']; ?>">
-                                                            <i class=" fas fa-edit" title="Editează"></i>
-                                                        </a>
-                                                        <a href="admin_announcements.php?delete=<?php echo $record['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi anuntul <?php echo $record['description']; ?> ?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
-                                                    </form>
+                                            <div class="box">
+                                                <h6><?php echo $record['category']; ?></h6>
+                                                <div class="flex">
+                                                    <h4 class="announcement-content filter"><?php echo $record['description']; ?></h4>
+                                                    <div>
+                                                        <form method="post" action="admin_announcements.php">
+                                                            <input type="hidden" name="record_id" value="<?= $record['id']; ?>">
+                                                            <input type="checkbox" class="announcement-checkbox" title="Setează anunț" data-announcement-id="<?php echo $record['id']; ?>" <?php echo ($record['is_set'] == 1) ? 'checked' : ''; ?>>
+                                                            <a href="#" class="edit edit-link" data-announcement-id="<?php echo $record['id']; ?>" data-category=" <?php echo $record['category']; ?>" data-description="<?php echo $record['description']; ?>">
+                                                                <i class=" fas fa-edit" title="Editează"></i>
+                                                            </a>
+                                                            <a href="admin_announcements.php?delete=<?php echo $record['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi anuntul <?php echo $record['description']; ?> ?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
                                 <?php
+                                        }
+                                    } else {
+                                        echo '<div class="empty"><p>Nu sunt anunturi</p></div>';
                                     }
-                                } else {
-                                    echo '<div class="empty"><p>nu sunt anunturi</p></div>';
+                                } catch (PDOException $e) {
+                                    echo "Eroare: " . $e->getMessage();
+                                } catch (Exception $e) {
+                                    echo "Eroare: " . $e->getMessage();
                                 }
                                 ?>
                             </div>
                         </section>
                     </div>
-
                 </div>
             </div>
             </div>
         </section>
         <!-- //END MAIN -->
     </main>
-
-    <!-- SCRIPT SECTION -->
-
-    <script src="../script.js"></script>
-    <script src="../js/searchCard.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <?php include '../components/alert.php'; ?>
 
+    <!-- SCRIPT SECTION -->
+    <script src="../js/script.js"></script>
+    <script src="../js/searchCard.js"></script>
     <script>
         // Function to open the modal
         $("#announcement-widget").click(function() {
@@ -291,7 +270,6 @@ if (isset($_POST['edit-announcement'])) {
             $("#announcement-modal").hide();
         });
     </script>
-
     <script>
         //script to set the old data to the edit announcement modal
         $(document).ready(function() {
