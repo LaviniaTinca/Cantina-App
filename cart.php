@@ -1,14 +1,11 @@
 <?php
 include 'php/connection.php';
-include 'php/session_handler.php';
-
+include 'php/session.php';
 
 //update product in cart
-
 if (isset($_POST['update_cart'])) {
     $cart_id = $_POST['cart_id'];
     $cart_id = htmlspecialchars($cart_id, ENT_QUOTES, 'UTF-8');
-    $qty = $_POST['qty'];
     $qty = $_POST['qty'];
     $qty = htmlspecialchars($qty, ENT_QUOTES, 'UTF-8');
 
@@ -24,14 +21,9 @@ if (isset($_GET['delete'])) {
         $query = "DELETE FROM `cart` WHERE id = ?";
         $stmt = $conn->prepare($query);
         $stmt->execute([$delete_id]);
-        // $success_msg[] = "cart item deleted successfully";
         $success_msg[] = "Produsul a fost șters din coș!";
-        // header('location: admin_view_products.php');
     } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
         $error_msg[] = $e->getMessage();
-
-        // echo "Error deleting product: " . $e->getMessage();
     }
 }
 
@@ -45,10 +37,11 @@ if (isset($_POST['empty_cart'])) {
         $delete_cart_id->execute([$user_id]);
         $success_msg[] = "Coșul este gol! ";
     } else {
-        $warning_msg[] = 'coșul nu s-a putut goli!';
+        $warning_msg[] = 'Nu s-a putut goli coșul!';
     }
 }
 
+//handle order
 if (isset($_POST['order'])) {
     $user_id = $_SESSION['user_id'];
 
@@ -138,8 +131,9 @@ if (isset($_POST['order'])) {
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
 
 <body>
@@ -209,7 +203,9 @@ if (isset($_POST['order'])) {
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <input type="hidden" name="cart_id" value="<?= $fetch_cart['id']; ?>">
-                                                <a href="cart.php?delete=<?php echo $fetch_cart['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi produsul <?php echo $fetch_products['name']; ?> din coș?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
+                                                <a href="cart.php?delete=<?php echo $fetch_cart['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi produsul <?php echo $fetch_products['name']; ?> din coș?');">
+                                                    <i class="fas fa-trash-alt" title="Șterge"></i>
+                                                </a>
                                             </form>
                                         </td>
                                         <td><?= $fetch_products['price']; ?> Ron</td>
@@ -218,7 +214,6 @@ if (isset($_POST['order'])) {
                             <?php
                                 } else {
                                     echo '<tr><td colspan="5">Produsul nu a fost găsit</td></tr>';
-                                    // echo '<tr><td colspan="5">Product was not found</td></tr>';
                                 }
                             }
                             ?>
@@ -231,7 +226,6 @@ if (isset($_POST['order'])) {
                 <a href="view_menu.php" class="cart-btn">Continuă cumpărăturile</a>
                 </div>
                 ';
-                // echo '<p class="empty">No products added yet!</p>';
             } ?>
 
                 <?php if ($grand_total != 0) { ?>
@@ -260,10 +254,9 @@ if (isset($_POST['order'])) {
     <section id="menu">
         <?php include 'components/footer.php'; ?>
     </section>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-    <script src="script.js"></script>
     <?php include 'components/alert.php'; ?>
+
+    <script src="js/script.js"></script>
 </body>
 
 </html>

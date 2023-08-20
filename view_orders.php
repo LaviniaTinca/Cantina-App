@@ -1,20 +1,6 @@
 <?php
 include 'php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
-
-if (!isset($_SESSION['user_id'])) {
-    header('location:login.php');
-}
-
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: login.php");
-}
+include 'php/session.php';
 
 ?>
 
@@ -67,13 +53,12 @@ if (isset($_POST['logout'])) {
                         <table id="product-table" class="product-table">
                             <thead>
                                 <tr>
-                                    <th>ID Comandă</th>
-                                    <!-- <th>Nume client</th> -->
-                                    <th class="sortable" data-sort="number" data-column="num_items">Nr. de produse</th>
-                                    <th class="sortable" data-sort="enum" data-column="order_status">Status livrare</th>
-                                    <th class="sortable" data-sort="enum" data-column="payment_status">Status plată</th>
-                                    <th class="sortable" data-sort="number" data-column="total_amount">Total</th>
-                                    <th class="sortable" data-sort="date" data-column="order_date">Data adăugării</th>
+                                    <th class="sortable">ID Comandă</th>
+                                    <th class="sortable" data-column="num_items">Nr. de produse</th>
+                                    <th class="sortable" data-column="order_status">Status livrare</th>
+                                    <th class="sortable" data-column="payment_status">Status plată</th>
+                                    <th class="sortable" data-column="total_amount">Total</th>
+                                    <th class="sortable" data-column="order_date">Data adăugării</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -88,9 +73,6 @@ if (isset($_POST['logout'])) {
                                         <td><?php echo $order['payment_status']; ?></td>
                                         <td><?php echo $order['total_amount']; ?></td>
                                         <td><?php echo $order['order_date']; ?></td>
-                                        <!-- <td> <a href="view_order.php?pid=<?php echo $order['id']; ?>" title="Vezi comanda"><i class="fa fa-eye"></i>
-                                        </a>
-                                    </td> -->
                                         <td>
                                             <a href="view_order.php?oid=<?php echo $order['id']; ?>&total_amount=<?php echo $order['total_amount']; ?>" title="Vezi comanda">
                                                 <i class="fa fa-eye"></i>
@@ -105,16 +87,14 @@ if (isset($_POST['logout'])) {
 
                     </div>
             <?php
-
                 } else {
                     echo '<p class="empty">Nu aveți comenzi!!</p>';
                 }
             } catch (PDOException $e) {
                 $error_msg[] = "Error fetching order items: " . $e->getMessage();
             } catch (Exception $e) {
-                $error_msg[] = "Error: " . $e->getMessage();
+                $error_msg[] = "Eroare: " . $e->getMessage();
             }
-
             ?>
         </section>
 
@@ -122,7 +102,7 @@ if (isset($_POST['logout'])) {
     <?php include 'components/footer.php'; ?>
     <?php include 'components/alert.php'; ?>
 
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </html>

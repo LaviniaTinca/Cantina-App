@@ -1,46 +1,6 @@
 <?php
 include 'php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
-
-if (!isset($_SESSION['user_id'])) {
-    header('location:login.php');
-}
-
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: login.php");
-}
-
-// // Get the requested page from the URL
-// $request_uri = $_SERVER['REQUEST_URI'];
-
-// // Check if the requested page or resource exists
-// if (!file_exists($request_uri)) {
-// 	// Redirect to the custom "not found" page
-// 	header('Location: not_found.php');
-// 	exit;
-// }
-
-
-// List of pages that don't exist yet
-$not_found_pages = array(
-    '/wishlist.php'
-);
-
-// Get the requested page from the URL
-$request_uri = $_SERVER['REQUEST_URI'];
-
-// Check if the requested page is in the "not found" pages array
-if (in_array($request_uri, $not_found_pages)) {
-    // Redirect to the custom "not found" page
-    header('Location: not_found.php');
-    exit;
-}
+include 'php/session.php';
 
 
 //adding products in the cart
@@ -81,19 +41,16 @@ if (isset($_POST['add_to_cart'])) {
 
             if ($insert_cart) {
                 $success_msg[] = 'Produsul a fost adaugat în coș';
-                // $success_msg[] = 'Product added to cart successfully';
             } else {
                 $error_msg[] = 'Nu s-a putut adăuga produsul în coș';
-                // $error_msg[] = 'Failed to add product to cart';
             }
         }
     } catch (PDOException $th) {
-        $error_msg = 'ERROR ' . $th->getMessage();
+        $error_msg = 'Eroare ' . $th->getMessage();
     } catch (Exception $th) {
-        $error_msg = 'ERROR ' . $th->getMessage();
+        $error_msg = 'Eroare' . $th->getMessage();
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -105,10 +62,10 @@ if (isset($_POST['add_to_cart'])) {
     <title>Cantina - products</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -127,7 +84,6 @@ if (isset($_POST['add_to_cart'])) {
         </div>
 
         <!-- SHOW PRODUCTS SECTION -->
-
         <div class="menu1">
             <div id="popup-container" style="display: none;">
                 <img id="popup-image" src="" alt="popup image">
@@ -149,15 +105,11 @@ if (isset($_POST['add_to_cart'])) {
 
                     ?>
                                 <form action="view_menu.php" method="post" class="box <?php echo $finished_class; ?>">
-                                    <!-- <a href="not_found.php?page=checkout?get_id=<?= $fetch_products['id']; ?>" class="add-btn">add</a> -->
                                     <div class="products-img-wrapper">
                                         <img src="image/<?= $fetch_products['image']; ?>" alt="product image" class="img product-image">
-                                        <!-- <a href="view_item.php?pid=<?php echo $fetch_products['id']; ?>" class="bx bxs-show"></a> -->
                                         <a href="view_item.php?pid=<?php echo $fetch_products['id']; ?>" class="far fa-eye eye-icon" title="Previzualizare"></a>
-
                                     </div>
                                     <br>
-
                                     <br>
                                     <h3 class="name"><?= $fetch_products['name']; ?></h3>
                                     <input type="hidden" name="product_id" value="<?= $fetch_products['id']; ?>">
@@ -167,7 +119,6 @@ if (isset($_POST['add_to_cart'])) {
 
                                         <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
                                         <button type="submit" name="add_to_cart" class="menu-add-btn" title="Adaugă în coș"><i class="bx bx-cart"></i></button>
-
                                     </div>
                                     <?php
                                     if ($fetch_products['qty'] == 1) {
@@ -183,12 +134,11 @@ if (isset($_POST['add_to_cart'])) {
                             }
                         } else {
                             echo '<p class="empty">nu au fost incă adăugate produse!</p>';
-                            // echo '<p class="empty">no products added yet!</p>';
                         }
                     } catch (PDOException $th) {
-                        $error_msg = 'ERROR ' . $th->getMessage();
+                        $error_msg = 'Eroare ' . $th->getMessage();
                     } catch (Exception $th) {
-                        $error_msg = 'ERROR ' . $th->getMessage();
+                        $error_msg = 'Eroare' . $th->getMessage();
                     }
                     ?>
                 </div>
@@ -203,23 +153,10 @@ if (isset($_POST['add_to_cart'])) {
         <?php include 'components/footer.php'; ?>
     </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-    <!-- <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script> -->
-    <script src="script.js"></script>
-    <script src="popup.js"></script>
-
-    <!-- <script>
-        //asta e bun doar pt toggle culoare
-        $(document).ready(function() {
-            $(".wishlistButton").click(function(event) {
-                event.preventDefault(); // Prevent form submission
-
-                $(this).toggleClass("active");
-            });
-        });
-    </script> -->
-
     <?php include 'components/alert.php'; ?>
+
+    <script src="js/script.js"></script>
+    <!-- <script src="js/popup.js"></script> -->
 </body>
 
 </html>

@@ -12,7 +12,7 @@ function validateEmail() {
   var emailRegex = /^\S+@\S+\.\S+$/;
 
   if (!emailRegex.test(email)) {
-    emailError.innerHTML = "Invalid email address";
+    emailError.innerHTML = "Adresa de e-mail invalidă";
     emailInput.classList.remove("valid");
     emailInput.classList.add("error");
   } else {
@@ -25,10 +25,10 @@ function validateEmail() {
 function validatePassword() {
   var password = passwordInput.value;
   var passwordError = document.getElementById("passwordError");
-  var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+  var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
 
   if (!passwordRegex.test(password)) {
-    passwordError.innerHTML = "Invalid password (minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number)";
+    passwordError.innerHTML = "Parolă invalidă (minim 6 caractere, cel puțin o litera mare, o literă mică și o cifră!)";
     passwordInput.classList.remove("valid");
     passwordInput.classList.add("error");
   } else {
@@ -41,14 +41,14 @@ function validatePassword() {
 function validateConfirmPassword() {
   var password = confirmPasswordInput.value;
   var passwordError = document.getElementById("confirmPasswordError");
-  var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+  var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
 
   if (!passwordRegex.test(password)) {
-    passwordError.innerHTML = "Invalid password (minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number)";
+    passwordError.innerHTML = "Parolă invalidă (minim 6 caractere, cel puțin o litera mare, o literă mică și o cifră!)";
     confirmPasswordInput.classList.remove("valid");
     confirmPasswordInput.classList.add("error");
   } else if (password !== passwordInput.value) {
-    passwordError.innerHTML = "Passwords do not match";
+    passwordError.innerHTML = "Parolele nu corespund!";
     confirmPasswordInput.classList.remove("valid");
     confirmPasswordInput.classList.add("error");
   } else {

@@ -1,41 +1,18 @@
 <?php
 include 'php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
-
-if (!isset($_SESSION['user_id'])) {
-    header('location:login.php');
-}
-
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: login.php");
-}
+include 'php/session.php';
 
 // Handle contact us 
 if (isset($_POST['contact'])) {
     $id = unique_id();
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $message = $_POST['message'];
-    $number = $_POST['number'];
+    $name = htmlspecialchars($_POST['name'], ENT_QUOTES, 'UTF-8');
+    $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
+    $message = htmlspecialchars($_POST['message'], ENT_QUOTES, 'UTF-8');
+    $number = htmlspecialchars($_POST['number'], ENT_QUOTES, 'UTF-8');
 
 
     try {
-        // Check if email already exists
-
-        // $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-        // $stmt->execute([$email]);
-        // $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-
-        // $stmt = $conn->prepare("INSERT INTO messages(`id`, `user_id`, `message`, `number`) VALUES (?,?,?, ?)");
         $stmt = $conn->prepare("INSERT INTO messages(`id`, `name`, `email`, `number`, `message`) VALUES (?,?,?,?,?)");
-        // if ($stmt->execute([$id, $user['id'], $message, $number])) {
         if ($stmt->execute([$id, $name, $email, $number, $message])) {
             $success_msg[] = "Mesajul a fost trimis!";
         } else {
@@ -53,11 +30,12 @@ if (isset($_POST['contact'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantina - contact</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="css/style.css">
 
-    <title>Cantina - contact</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
 
 <body>
@@ -76,9 +54,7 @@ if (isset($_POST['contact'])) {
 
         <div class="form-container flex " style="width: 70vw;">
             <form method="post" action="contact.php">
-
                 <div class="title">
-                    <!-- <img src="images/download.png" alt="contact" class="logo-image"> -->
                     <ul>
                         <li> <i class='bx bx-phone'></i>
                             0742 222 222</li>
@@ -110,14 +86,9 @@ if (isset($_POST['contact'])) {
         </div>
     </main>
     <?php include 'components/footer.php'; ?>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-
-    <script src="script.js"></script>
-    <script>
-        document.cookie = "myCookie=myValue; SameSite=Strict";
-    </script>
     <?php include 'components/alert.php'; ?>
+
+    <script src="js/script.js"></script>
 </body>
 
 </html>

@@ -1,6 +1,7 @@
 <?php
 include 'php/connection.php';
 session_start();
+
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 } else {
@@ -8,12 +9,14 @@ if (isset($_SESSION['user_id'])) {
 }
 
 if (!isset($_SESSION['user_id'])) {
-    header('location:login.php');
+    header('location: login.php');
+    exit(); // Add exit to stop further execution
 }
 
 if (isset($_POST['logout'])) {
     session_destroy();
     header("location: login.php");
+    exit();
 }
 
 $page = isset($_GET['page']) ? $_GET['page'] : 'unknown page';
@@ -43,9 +46,9 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'unknown page';
         <!-- NOT FOUND -->
         <div class="Container">
             <div class="not-found">
-                <!-- <img src="images/dought.png" alt="dought image"> -->
                 <img src="images/not_found.png" alt="dought image">
-                <h1 class="title2">Page "<?php echo $page ?>" is under construction</h1>
+                <!-- <h1 class="title2">Page "<?php echo $page ?>" is under construction</h1> -->
+                <h1 class="title2">Page under construction</h1>
             </div>
         </div>
 
@@ -54,7 +57,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'unknown page';
     <section>
         <?php include 'components/footer.php'; ?>
     </section>
-    <script src="script.js"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </html>

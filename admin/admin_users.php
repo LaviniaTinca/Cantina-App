@@ -312,10 +312,10 @@ try {
                                         <table id="product-table" class="product-table">
                                             <thead>
                                                 <tr>
-                                                    <th>Nr.</th>
-                                                    <th class=" sortable" data-sort="string" data-column="name">Name</th>
-                                                    <th class="sortable" data-sort="string" data-column="email">Email</th>
-                                                    <th class="sortable" data-sort="string" data-column="user_type">User Type</th>
+                                                    <th class="sortable">Nr.</th>
+                                                    <th class="sortable" data-column="name">Name</th>
+                                                    <th class="sortable" data-column="email">Email</th>
+                                                    <th class="sortable" data-column="user_type">User Type</th>
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
@@ -325,7 +325,7 @@ try {
                                                     $nr = 1;
                                                     foreach ($users as $user) {
                                                 ?>
-                                                        <tr class="filter">
+                                                        <tr>
                                                             <td><?php echo $nr;
                                                                 $nr++; ?></td>
                                                             <td><?php echo $user['name']; ?></td>

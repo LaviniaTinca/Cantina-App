@@ -10,9 +10,11 @@
         <div class="box-container">
             <?php
             try {
-                $query = "SELECT products.*, menu.qty AS qty, menu.id AS menu_id
-                FROM menu
-                JOIN products ON menu.product_id = products.id LIMIT 3";
+                $query = "SELECT products.*, dmi.id AS menu_id, dmi.qty AS qty
+                                                FROM daily_menu AS dm
+                                                JOIN daily_menu_items AS dmi ON dmi.daily_menu_id = dm.id
+                                                JOIN products ON dmi.product_id = products.id 
+                                                WHERE dm.date = CURDATE() LIMIT 3";
                 $stmt = $conn->prepare($query);
                 $stmt->execute();
                 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -24,7 +26,6 @@
                             <img src="image/<?php echo $product['image']; ?>" alt="product image" class="product-image">
                             <p>preț : <?php echo $product['price']; ?> lei</p>
                             <h4><?php echo $product['name']; ?></h4>
-                            <!-- <details><?php echo $product['product_detail']; ?></details> -->
                         </div>
             <?php
                     }
@@ -46,23 +47,3 @@
         <button id="read-more-btn" class="menu0-btn">Citește MAI MULT.....</button>
     </section>
 </div>
-
-<script>
-    // //jquery for the popup
-    // $(document).ready(function() {
-    //     $('.product-image').on('click', function() {
-    //         var src = $(this).attr('src');
-    //         $('#popup-image').attr('src', src);
-    //         $('#popup-container').fadeIn();
-    //     });
-
-    //     $('#popup-container').on('click', function() {
-    //         $(this).fadeOut();
-    //     });
-    // });
-
-    //js for read-more button
-    document.getElementById("read-more-btn").addEventListener("click", function() {
-        window.location.href = "view_menu.php";
-    });
-</script>

@@ -11,7 +11,6 @@ $messages = array();
 
 //login user HASH PASSWORD
 if (isset($_POST['submit'])) {
-
   $email = $_POST['email'];
   $email = filter_var($email, FILTER_SANITIZE_EMAIL);
   $pass = $_POST['password'];
@@ -20,7 +19,6 @@ if (isset($_POST['submit'])) {
   $select_user = $conn->prepare("SELECT * FROM `users` WHERE  email = ?");
   $select_user->execute([$email]);
   $user_data = $select_user->fetch(PDO::FETCH_ASSOC);
-
   if ($select_user->rowCount() > 0 && password_verify($pass, $user_data['password'])) {
     $_SESSION['user_id'] = $user_data['id'];
     $_SESSION['user_name'] = $user_data['name'];
@@ -70,19 +68,16 @@ if (isset($_POST['submit'])) {
           }
         }
         ?>
-        <h1>SIGN IN</h1>
+        <h1>AUTENTIFICARE</h1>
         <form class="Form" onsubmit="return validateForm()" method="post">
           <label for="email"><b>Email:</b></label><br>
           <input type="email" id="email" name="email"><span id="emailError" class="error"></span><br><br>
-          <label for="password"><b>Password:</b></label><br>
+          <label for="password"><b>Parola:</b></label><br>
           <input type="password" id="password" name="password">
           <span id="passwordError" class="error"></span><br><br>
-
-          <button type="submit" name="submit" class="auth-button">LOGIN</button>
-
-
+          <button type="submit" name="submit" class="auth-button">AUTENTIFICARE</button>
           <a href="register.php">
-            <h3>Don't have an account? Register here</h3>
+            <h3>Nu ai cont? Înregistrează-te aici!</h3>
           </a>
         </form>
       </div>
@@ -102,19 +97,19 @@ if (isset($_POST['submit'])) {
       var passwordError = document.getElementById("passwordError");
 
       var emailRegex = /^\S+@\S+\.\S+$/;
-      var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+      var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
 
       var isValid = true;
 
       if (!emailRegex.test(email)) {
-        emailError.innerHTML = "Invalid email address";
+        emailError.innerHTML = "Adresa de email nu este validă!";
         isValid = false;
       } else {
         emailError.innerHTML = "";
       }
 
       if (!passwordRegex.test(password)) {
-        passwordError.innerHTML = "Invalid password (minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number)";
+        passwordError.innerHTML = "Parolă nu este validă (minim 6 caractere, cel puțin o litera mare, o literă mică și o cifră!)";
         isValid = false;
       } else {
         passwordError.innerHTML = "";
@@ -138,7 +133,7 @@ if (isset($_POST['submit'])) {
       var emailRegex = /^\S+@\S+\.\S+$/;
 
       if (!emailRegex.test(email)) {
-        emailError.innerHTML = "Invalid email address";
+        emailError.innerHTML = "Adresa de email nu este validă!";
         emailInput.classList.remove("valid");
         emailInput.classList.add("error");
       } else {
@@ -154,7 +149,7 @@ if (isset($_POST['submit'])) {
       var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 
       if (!passwordRegex.test(password)) {
-        passwordError.innerHTML = "Invalid password (minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number)";
+        passwordError.innerHTML = "Parolă invalidă (minim 6 caractere, cel puțin o litera mare, o literă mică și o cifră!)";
         passwordInput.classList.remove("valid");
         passwordInput.classList.add("error");
       } else {

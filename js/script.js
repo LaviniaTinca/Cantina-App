@@ -21,6 +21,10 @@ $(document).ready(function() {
     });
 });
 
+$("#read-more-btn").on("click", function() {
+    window.location.href = "view_menu.php";
+});
+
 
         $(document).ready(function() {
             $("#collapse-btn").click(function() {

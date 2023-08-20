@@ -1,24 +1,10 @@
 <?php
 include 'php/connection.php';
-session_start();
-if (isset($_SESSION['user_id'])) {
-  $user_id = $_SESSION['user_id'];
-} else {
-  $user_id = '';
-}
-
-if (!isset($_SESSION['user_id'])) {
-  header('location:login.php');
-}
-
-if (isset($_POST['logout'])) {
-  session_destroy();
-  header("location: login.php");
-}
+include 'php/session.php';
 
 // Handle email subscription
 if (isset($_POST['subscribe-button'])) {
-  $email = $_POST['email'];
+  $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
   $id = unique_id();
 
   // Check if email already exists
@@ -28,14 +14,14 @@ if (isset($_POST['subscribe-button'])) {
 
   if ($count > 0) {
     // Email already exists
-    $warning_msg[] = "Email address is already subscribed.";
+    $warning_msg[] = "Există deja o abonare cu această adresă de email!";
   } else {
     // Email does not exist, insert into database
     $stmt = $conn->prepare("INSERT INTO subscribers (id, email) VALUES (?,?)");
     if ($stmt->execute([$id, $email])) {
-      $success_msg[] = "Subscribed with email: " . $email;
+      $success_msg[] = "Abonare cu email: " . $email;
     } else {
-      $warning_msg[] = "Error subscribing with email: " . $email;
+      $warning_msg[] = "Eroare la abonare: " . $email;
     }
   }
 }
@@ -52,13 +38,13 @@ if (isset($_POST['subscribe-button'])) {
   <title>Cantina</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/slider.css">
-  <link rel="stylesheet" href="css/header.css">
+  <!-- <link rel="stylesheet" href="css/header.css"> -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </head>
 
 <body>
@@ -81,12 +67,10 @@ if (isset($_POST['subscribe-button'])) {
       <?php include 'components/rotateIcons.php'; ?>
     </section>
 
-    <!-- <div class="banner"> -->
     <!-- MENU SUMMARY SECTION -->
     <section id="menu">
       <?php include 'components/menu0.php'; ?>
     </section>
-    <!-- </div> -->
 
     <!-- ABOUT US SECTION -->
     <section id="about">
@@ -103,14 +87,9 @@ if (isset($_POST['subscribe-button'])) {
   <section>
     <?php include 'components/footer.php'; ?>
   </section>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-  <!-- <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script> -->
-
-  <script src="script.js"></script>
   <?php include 'components/alert.php'; ?>
 
-
+  <script src="js/script.js"></script>
 </body>
 
 </html>
