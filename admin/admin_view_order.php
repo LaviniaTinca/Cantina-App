@@ -2,22 +2,6 @@
 include '../php/connection.php';
 include '../php/session_handler.php';
 
-
-// List of pages that don't exist yet
-$not_found_pages = array(
-    '/wishlist.php',
-);
-
-// Get the requested page from the URL
-$request_uri = $_SERVER['REQUEST_URI'];
-
-// Check if the requested page is in the "not found" pages array
-if (in_array($request_uri, $not_found_pages)) {
-    // Redirect to the custom "not found" page
-    header('Location: ../not_found.php');
-    exit;
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -100,9 +84,9 @@ if (in_array($request_uri, $not_found_pages)) {
                                             <table id="product-table" class="product-table">
                                                 <thead>
                                                     <tr>
-                                                        <th></th>
+                                                        <th>Imagine</th>
                                                         <th class="sortable" data-sort="string" data-column="name">Nume produs</th>
-                                                        <th class="sortable" data-sort="string" data-column="qty">Cantitate</th>
+                                                        <th class="sortable" data-sort="string" data-column="qty">Nr. de porții</th>
                                                         <th class="sortable" data-sort="string" data-column="price">Preț</th>
                                                         <th>Subtotal</th>
                                                     </tr>
@@ -126,13 +110,13 @@ if (in_array($request_uri, $not_found_pages)) {
                                         </div>
                             <?php
                                     } else {
-                                        echo '<p class="empty">No order items found!</p>';
+                                        echo '<p class="empty">Nu s-a găsit produsul!</p>';
                                     }
                                 }
                             } catch (PDOException $e) {
-                                $error_msg[] = "Error fetching order items: " . $e->getMessage();
+                                $error_msg[] = "Eroare: " . $e->getMessage();
                             } catch (Exception $e) {
-                                $error_msg[] = "Error: " . $e->getMessage();
+                                $error_msg[] = "Eroare: " . $e->getMessage();
                             }
 
 

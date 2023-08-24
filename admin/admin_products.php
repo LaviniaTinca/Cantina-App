@@ -85,30 +85,34 @@ if (isset($_POST['add_product'])) {
 //delete product 
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
-    try {
-        $query = "SELECT image FROM `products` WHERE id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$delete_id]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($result) {
-            unlink('../image/' . $result['image']);
-
-            $query = "DELETE FROM `products` WHERE id = ?";
+    $ok = false;
+    if ($ok) {
+        try {
+            $query = "SELECT image FROM `products` WHERE id = ?";
             $stmt = $conn->prepare($query);
             $stmt->execute([$delete_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $query = "DELETE FROM `cart` WHERE id = ?";
-            $stmt = $conn->prepare($query);
-            $stmt->execute([$delete_id]);
-            $success_msg[] = "Produsul a fost sters!";
+            if ($result) {
+                $query = "DELETE FROM `cart` WHERE id = ?";
+                $stmt = $conn->prepare($query);
+                $stmt->execute([$delete_id]);
+
+                unlink('../image/' . $result['image']);
+                $query = "DELETE FROM `products` WHERE id = ?";
+                $stmt = $conn->prepare($query);
+                $stmt->execute([$delete_id]);
+                $success_msg[] = "Produsul a fost sters!";
+            }
+
+            header('location: admin_products.php');
+        } catch (PDOException $e) {
+            $error_msg[] = "Eroare la ștergerea produsului: " . $e->getMessage();
+        } catch (Exception $e) {
+            $error_msg[] = "Eroare la ștergerea produsului: " . $e->getMessage();
         }
-
-        header('location: admin_products.php');
-    } catch (PDOException $e) {
-        echo "Eroare la ștergerea produsului: " . $e->getMessage();
-    } catch (Exception $e) {
-        echo "Eroare la ștergerea produsului: " . $e->getMessage();
+    } else {
+        $warning_msg[] = 'Stergerea produselor este dezactivata momentan!';
     }
 }
 
@@ -136,6 +140,7 @@ if (isset($_POST['add-to-menu'])) {
             $query = "SELECT * FROM `daily_menu` WHERE date = CURDATE() FOR UPDATE";
             $check_menu = $conn->prepare($query);
             $check_menu->execute();
+            echo $check_menu->rowCount();
 
             if ($check_menu->rowCount() > 0) {
                 // Retrieve the daily_menu_id for today
@@ -143,16 +148,18 @@ if (isset($_POST['add-to-menu'])) {
                 $query = "SELECT dmi.* 
                             FROM `daily_menu_items` dmi
                             INNER JOIN `daily_menu` dm ON dmi.daily_menu_id = dm.id
-                            WHERE dmi.product_id = ? AND dm.date > CURDATE()";
+                            WHERE dmi.product_id = ? AND dm.date = CURDATE()";
                 $verify_menu = $conn->prepare($query);
                 $verify_menu->execute([$product_id]);
+                echo '..' . $verify_menu->rowCount();
 
                 if ($verify_menu->rowCount() > 0) {
                     $query = "UPDATE `daily_menu_items` SET qty = ? WHERE product_id = ? and daily_menu_id =?";
                     $update_qty = $conn->prepare($query);
                     $update_qty->execute([$qty, $product_id, $daily_menu_id]);
 
-                    $success_msg[] = 'cantitatea produsului din meniu a fost modificata!';
+                    $conn->commit();
+                    $success_msg[] = 'Nr. de porții din  produs, in meniu, a fost actualizat!';
                 } else {
                     $query = "INSERT INTO `daily_menu_items` (`daily_menu_id`, `product_id`, `qty`) VALUES (?, ?, ?)";
                     $stmt = $conn->prepare($query);
@@ -162,7 +169,7 @@ if (isset($_POST['add-to-menu'])) {
                     $conn->commit();
 
                     $success_msg[] = 'produsul a fost adăugat în meniul zilei';
-                    header('location: admin_products.php');
+                    //header('location: admin_products.php');
                 }
             } else {
                 // Create a new daily menu entry for today
@@ -331,7 +338,7 @@ try {
                                                 <th class="sortable" data-column="image">Imagine</th>
                                                 <th class="sortable" data-column="name">Nume</th>
                                                 <th class="sortable" data-column="category">Categorie</th>
-                                                <th class="sortable" data-column="measure">Unitate de măsură</th>
+                                                <th class="sortable" data-column="measure">Cantitate</th>
                                                 <th class="sortable" data-column="price">Preț</th>
                                                 <th>Acțiuni</th>
                                             </tr>
@@ -350,14 +357,14 @@ try {
                                                         <tr>
                                                             <td> <img src="../image/<?php echo $product['image']; ?>" alt="img" class="product-image"></td>
                                                             <td title="<?php echo $product['name']; ?>"><a href="admin_view_product.php?pid=<?php echo $product['id']; ?>"><?php echo substr($product['name'], 0, 25) . '...'; ?></a></td>
-                                                            <td title="<?php echo $product['category']; ?>"><?php echo substr($product['category'], 0, 15) . '...'; ?></td>
-                                                            <td title="<?php echo $product['measure']; ?>"><?php echo substr($product['measure'], 0, 15) . '...'; ?></td>
+                                                            <td title="<?php echo $product['category']; ?>"><?php echo $product['category']; ?></td>
+                                                            <td title="<?php echo $product['measure']; ?>"><?php echo $product['measure']; ?></td>
                                                             <td><?php echo $product['price']; ?></td>
                                                             <td>
                                                                 <form action="admin_products.php" method="post" class="add-to-menu-form">
                                                                     <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                                                                    <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
-                                                                    <button class="form-button" type="submit" name="add-to-menu" title="Adaugă cantitatea specificată în meniul zilei">
+                                                                    <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty" title="Setează nr. de porții">
+                                                                    <button class="form-button" type="submit" name="add-to-menu" title="Adaugă nr. de porții specificat în meniul zilei">
                                                                         <i class="fas fa-utensils"></i>
                                                                         <i class="fas fa-pizza-slice"></i>
                                                                     </button>

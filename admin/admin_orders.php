@@ -160,13 +160,15 @@ try {
 
                                                             <td>
                                                                 <div class="flex">
-                                                                    <?php echo $order['order_status']; ?>
+                                                                    <!-- <?php echo $order['order_status']; ?> -->
+                                                                    <?php echo ($order['order_status'] == 'delivered') ? 'livrat' : 'procesare'; ?>
                                                                     <input type="checkbox" class="status-checkbox" title="Setează livrarea comenzii" data-order-id="<?php echo $order['id']; ?>" data-status-type="order_status" <?php echo ($order['order_status'] == 'delivered') ? 'checked' : ''; ?>>
                                                                 </div>
                                                             </td>
                                                             <td>
                                                                 <div class="flex">
-                                                                    <?php echo $order['payment_status']; ?>
+                                                                    <!-- <?php echo $order['payment_status']; ?> -->
+                                                                    <?php echo ($order['payment_status'] == 'completed') ? 'achitat' : 'în așteptare'; ?>
                                                                     <input type="checkbox" class="status-checkbox" title="Setează efectuarea plății" data-order-id="<?php echo $order['id']; ?>" data-status-type="payment_status" <?php echo ($order['payment_status'] == 'completed') ? 'checked' : ''; ?>>
                                                                 </div>
                                                             </td>

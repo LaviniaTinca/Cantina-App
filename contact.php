@@ -18,8 +18,10 @@ if (isset($_POST['contact'])) {
         } else {
             $error_msg[] = "Eroare la trimiterea mesajului";
         }
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+    } catch (PDOException $th) {
+        $error_msg = 'Eroare ' . $th->getMessage();
+    } catch (Exception $th) {
+        $error_msg = 'Eroare' . $th->getMessage();
     }
 }
 ?>

@@ -39,7 +39,7 @@ include 'php/session.php';
                 if ($select_products->rowCount() > 0) {
                     $fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)
             ?>
-                    <form action="view_menu.php" method="post">
+                    <form action="view_menu.php" method="post" class="flex">
                         <img src="image/<?php echo $fetch_products['image']; ?>">
                         <div class="detail">
                             <div class="name"><?php echo $fetch_products['name']; ?></div>
@@ -55,7 +55,7 @@ include 'php/session.php';
                                 <p class="price"> <?= $fetch_products['measure']; ?></p>
 
                                 <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
-                                <button type="submit" name="add_to_cart" class="menu0-btn">Adaugă <i class="bx bx-cart"></i></button>
+                                <button type="submit" name="add_to_cart" class="auth-button">Adaugă <i class="bx bx-cart"></i></button>
                             </div>
                         </div>
                     </form>

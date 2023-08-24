@@ -81,6 +81,13 @@ try {
                                         $stmt->execute();
                                         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         $num_of_orders = count($result);
+
+                                        // Get the number of orders from today
+                                        $today = date('Y-m-d');
+                                        $todayOrdersQuery = $conn->prepare("SELECT COUNT(*) AS today_orders FROM orders WHERE DATE(order_date) = ?");
+                                        $todayOrdersQuery->execute([$today]);
+                                        $todayOrdersResult = $todayOrdersQuery->fetch(PDO::FETCH_ASSOC);
+                                        $todayOrders = $todayOrdersResult['today_orders'];
                                     } catch (PDOException $e) {
                                         $error_msg[] = "Eroare: " . $e->getMessage();
                                     } catch (Exception $e) {
@@ -90,9 +97,40 @@ try {
                                     <div class="small-widget">
                                         <i class="bx bx-receipt"></i>
                                     </div>
-                                    <h3><?php echo $num_of_orders; ?></h3>
-                                    <p>Comenzi</p>
+                                    <!-- <h3><?php echo $num_of_orders; ?></h3> -->
+                                    <h3><?php echo $todayOrders; ?>/ <?php echo $num_of_orders; ?> </h3>
+
+                                    <p>Comenzi azi</p>
                                 </div>
+                                <!-- <div class="widget jump order-widget" style="width: max-content;">
+                                    <?php
+                                    try {
+                                        // Get the total number of orders
+                                        $totalOrdersQuery = $conn->prepare("SELECT COUNT(*) AS total_orders FROM orders");
+                                        $totalOrdersQuery->execute();
+                                        $totalOrdersResult = $totalOrdersQuery->fetch(PDO::FETCH_ASSOC);
+                                        $totalOrders = $totalOrdersResult['total_orders'];
+
+                                        // Get the number of orders from today
+                                        $today = date('Y-m-d');
+                                        $todayOrdersQuery = $conn->prepare("SELECT COUNT(*) AS today_orders FROM orders WHERE DATE(order_date) = ?");
+                                        $todayOrdersQuery->execute([$today]);
+                                        $todayOrdersResult = $todayOrdersQuery->fetch(PDO::FETCH_ASSOC);
+                                        $todayOrders = $todayOrdersResult['today_orders'];
+                                    } catch (PDOException $e) {
+                                        $error_msg[] = 'Error PDO' . $e->getMessage();
+                                    } catch (Exception $e) {
+                                        $error_msg[] = 'Error' . $e->getMessage();
+                                    }
+                                    ?>
+                                    <div class="flex">
+                                        <div class="small-widget">
+                                            <i class="bx bx-receipt"></i>
+                                        </div>
+                                        <h3><?php echo $todayOrders; ?> Comenzi azi</h3>
+                                    </div>
+                                    <h5>din <?php echo $totalOrders; ?> înregistrate</h5>
+                                </div> -->
                             </a>
 
                             <a href="admin_products.php">

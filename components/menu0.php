@@ -24,7 +24,7 @@
             ?>
                         <div class="box">
                             <img src="image/<?php echo $product['image']; ?>" alt="product image" class="product-image">
-                            <p>preț : <?php echo $product['price']; ?> lei</p>
+                            <p>Preț : <?php echo $product['price']; ?> lei</p>
                             <h4><?php echo $product['name']; ?></h4>
                         </div>
             <?php

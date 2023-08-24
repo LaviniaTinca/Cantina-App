@@ -4,40 +4,56 @@ include 'php/session.php';
 
 //update product in cart
 if (isset($_POST['update_cart'])) {
-    $cart_id = $_POST['cart_id'];
-    $cart_id = htmlspecialchars($cart_id, ENT_QUOTES, 'UTF-8');
-    $qty = $_POST['qty'];
-    $qty = htmlspecialchars($qty, ENT_QUOTES, 'UTF-8');
+    try {
 
-    $update_qty = $conn->prepare("UPDATE `cart` SET qty = ? WHERE id = ?");
-    $update_qty->execute([$qty, $cart_id]);
-    $success_msg[] = 'cantitatea produsului a fost modificata';
+        $cart_id = $_POST['cart_id'];
+        $cart_id = htmlspecialchars($cart_id, ENT_QUOTES, 'UTF-8');
+        $qty = $_POST['qty'];
+        $qty = htmlspecialchars($qty, ENT_QUOTES, 'UTF-8');
+
+        $update_qty = $conn->prepare("UPDATE `cart` SET qty = ? WHERE id = ?");
+        $update_qty->execute([$qty, $cart_id]);
+        $success_msg[] = 'cantitatea produsului a fost modificata';
+    } catch (PDOException $th) {
+        $error_msg = 'Eroare ' . $th->getMessage();
+    } catch (Exception $th) {
+        $error_msg = 'Eroare' . $th->getMessage();
+    }
 }
 
 //delete menu item
 if (isset($_GET['delete'])) {
+
     $delete_id = $_GET['delete'];
     try {
         $query = "DELETE FROM `cart` WHERE id = ?";
         $stmt = $conn->prepare($query);
         $stmt->execute([$delete_id]);
         $success_msg[] = "Produsul a fost șters din coș!";
-    } catch (PDOException $e) {
-        $error_msg[] = $e->getMessage();
+    } catch (PDOException $th) {
+        $error_msg = 'Eroare ' . $th->getMessage();
+    } catch (Exception $th) {
+        $error_msg = 'Eroare' . $th->getMessage();
     }
 }
 
 //empty cart
 if (isset($_POST['empty_cart'])) {
-    $verify_empty_item = $conn->prepare("SELECT * FROM `cart` WHERE user_id=?");
-    $verify_empty_item->execute([$user_id]);
+    try {
+        $verify_empty_item = $conn->prepare("SELECT * FROM `cart` WHERE user_id=?");
+        $verify_empty_item->execute([$user_id]);
 
-    if ($verify_empty_item->rowCount() > 0) {
-        $delete_cart_id = $conn->prepare("DELETE FROM `cart` WHERE user_id = ?");
-        $delete_cart_id->execute([$user_id]);
-        $success_msg[] = "Coșul este gol! ";
-    } else {
-        $warning_msg[] = 'Nu s-a putut goli coșul!';
+        if ($verify_empty_item->rowCount() > 0) {
+            $delete_cart_id = $conn->prepare("DELETE FROM `cart` WHERE user_id = ?");
+            $delete_cart_id->execute([$user_id]);
+            $success_msg[] = "Coșul este gol! ";
+        } else {
+            $warning_msg[] = 'Nu s-a putut goli coșul!';
+        }
+    } catch (PDOException $th) {
+        $error_msg = 'Eroare ' . $th->getMessage();
+    } catch (Exception $th) {
+        $error_msg = 'Eroare' . $th->getMessage();
     }
 }
 
@@ -167,8 +183,8 @@ if (isset($_POST['order'])) {
                             <tr>
                                 <th class="th-cart">Imagine</th>
                                 <th class="th-cart">Produs</th>
-                                <th class="th-cart">Măsura</th>
                                 <th class="th-cart">Cantitate</th>
+                                <th class="th-cart">Nr. de porții</th>
                                 <th class="th-cart">Preț unitar</th>
                                 <th class="th-cart">Total</th>
                             </tr>

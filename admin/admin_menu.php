@@ -2,83 +2,6 @@
 include '../php/connection.php';
 include '../php/session_handler.php';
 
-//add product to menu
-if (isset($_POST['add-to-menu'])) {
-    // Validate input
-    if (empty($_POST['product_id'])) {
-        $warning_msg[] = "Product id is required.";
-        $messages[] = "Product id is required.";
-    } else {
-        $product_id = htmlspecialchars($_POST['product_id'], ENT_QUOTES, 'UTF-8');
-    }
-    if (empty($_POST['qty'])) {
-        $messages[] = "Quantity id is required.";
-        $warning_msg[] = "Quantity id is required.";
-    } else {
-        $qty = htmlspecialchars($_POST['qty'], ENT_QUOTES, 'UTF-8');
-    }
-
-    // Insert product into menu table 
-    if (empty($messages)) {
-        try {
-            $conn->beginTransaction();
-            $query = "SELECT * FROM `daily_menu` WHERE date = CURDATE() FOR UPDATE";
-            $check_menu = $conn->prepare($query);
-            $check_menu->execute();
-
-            if ($check_menu->rowCount() > 0) {
-                // Retrieve the daily_menu_id for today
-                $daily_menu_id = $check_menu->fetch(PDO::FETCH_ASSOC)['id'];
-                $verify_menu = $conn->prepare("SELECT dmi.* 
-                                                FROM `daily_menu_items` dmi
-                                                INNER JOIN `daily_menu` dm ON dmi.daily_menu_id = dm.id
-                                                WHERE dmi.product_id = ? AND dm.date > CURDATE()
-                                            ");
-                $verify_menu->execute([$product_id]);
-
-                if ($verify_menu->rowCount() > 0) {
-                    $query = "UPDATE `daily_menu_items` SET qty = ? WHERE product_id = ? and daily_menu_id =?";
-                    $update_qty = $conn->prepare($query);
-                    $update_qty->execute([$qty, $product_id, $daily_menu_id]);
-
-                    $success_msg[] = 'cantitatea produsului din meniu a fost modificata!';
-                } else {
-                    $query = "INSERT INTO `daily_menu_items` (`daily_menu_id`, `product_id`, `qty`) VALUES (?, ?, ?)";
-                    $stmt = $conn->prepare($query);
-                    $stmt->execute([$daily_menu_id, $product_id, $qty]);
-
-                    // Commit the transaction
-                    $conn->commit();
-                    $success_msg[] = 'product added to menu successfully';
-                    header('location: admin_products.php');
-                }
-            } else {
-                // Create a new daily menu entry for today
-                $create_menu = $conn->prepare("INSERT INTO `daily_menu` (`date`) VALUES (CURDATE()) ");
-                $create_menu->execute();
-
-                // Retrieve the newly created daily_menu_id
-                $daily_menu_id = $conn->lastInsertId();
-
-                // Perform your insertion into the daily_menu_items table
-                $query = "INSERT INTO `daily_menu_items` (`daily_menu_id`, `product_id`, `qty`) VALUES (?, ?, ?)";
-                $stmt = $conn->prepare($query);
-                $stmt->execute([$daily_menu_id, $product_id, $qty]);
-
-                $conn->commit();
-                $success_msg[] = 'product added to menu successfully';
-                header('location: admin_products.php');
-            }
-        } catch (PDOException $e) {
-            $conn->rollback();
-            $error_msg[] = "Eroare la adăugarea produsului: " . $e->getMessage();
-        } catch (Exception $e) {
-            $conn->rollback();
-            $error_msg[] = "Eroare la adăugarea produsului: " . $e->getMessage();
-        }
-    }
-}
-
 //update product qty in menu 
 if (isset($_POST['update_menu'])) {
     $menu_id = htmlspecialchars($_POST['menu_id'], ENT_QUOTES, 'UTF-8');
@@ -259,7 +182,7 @@ if (isset($_POST['empty_menu'])) {
                             <section>
                                 <div class="flex">
                                     <a href="admin_products.php">
-                                        <h4> + Adaugă produs nou / Actualizează produs</h4>
+                                        <h4 class="cart-btn"> + Adaugă produs nou / Actualizează produs</h4>
                                     </a>
                                 </div>
 
@@ -288,13 +211,13 @@ if (isset($_POST['empty_menu'])) {
                                     <table id="product-table" class="product-table">
                                         <thead>
                                             <tr>
-                                                <th class="sortable" data-column="image">Image</th>
-                                                <th class="sortable" data-column="name">Name</th>
-                                                <th class="sortable" data-column="price">Price</th>
-                                                <th class="sortable" data-column="category">Category</th>
-                                                <th class="sortable" data-column="qty">Quantity</th>
-                                                <th>Unit</th>
-                                                <th>Actions</th>
+                                                <th class="sortable" data-column="image">Imagine</th>
+                                                <th class="sortable" data-column="name">Nume</th>
+                                                <th class="sortable" data-column="price">Preț</th>
+                                                <th class="sortable" data-column="category">Categorie</th>
+                                                <th class="sortable" data-column="qty">Nr. de porții</th>
+                                                <th>Cantitate</th>
+                                                <th>Acțiuni</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -315,9 +238,10 @@ if (isset($_POST['empty_menu'])) {
                                             ?>
                                                         <tr>
                                                             <td> <img src="../image/<?php echo $product['image']; ?>" alt="product image" class="product-image"></td>
-                                                            <td><?php echo $product['name']; ?></td>
+                                                            <!-- <td><?php echo $product['name']; ?></td> -->
+                                                            <td title="<?php echo $product['name']; ?>"><a href="admin_view_product.php?pid=<?php echo $product['id']; ?>"><?php echo substr($product['name'], 0, 25) . '...'; ?></a></td>
                                                             <td><?php echo $product['price']; ?></td>
-                                                            <td><?php echo substr($product['category'], 0, 15) . '...'; ?></td>
+                                                            <td><?php echo $product['category']; ?></td>
                                                             <td><?php echo $product['qty']; ?></td>
                                                             <td><?php echo $product['measure']; ?></td>
                                                             <td>
@@ -364,20 +288,6 @@ if (isset($_POST['empty_menu'])) {
     <?php include '../components/alert.php'; ?>
 
     <script src="../js/script.js"></script>
-    <!-- <script>
-        // popup image
-        $(document).ready(function() {
-            $('.product-image').on('click', function() {
-                var src = $(this).attr('src');
-                $('#popup-image').attr('src', src);
-                $('#popup-container').fadeIn();
-            });
-
-            $('#popup-container').on('click', function() {
-                $(this).fadeOut();
-            });
-        });
-    </script> -->
 </body>
 
 </html>

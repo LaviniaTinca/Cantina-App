@@ -69,8 +69,8 @@ include 'php/session.php';
                                     <tr>
                                         <td><a style="color: var(--green)" href="view_order.php?oid=<?php echo $order['id']; ?>&total_amount=<?php echo $order['total_amount']; ?>" title="Vezi comanda"><?php echo $order['id']; ?></a></td>
                                         <td><?php echo $order['num_items']; ?></td>
-                                        <td><?php echo $order['order_status']; ?></td>
-                                        <td><?php echo $order['payment_status']; ?></td>
+                                        <td><?php echo ($order['order_status'] == 'delivered') ? 'livrat' : 'procesare'; ?></td>
+                                        <td><?php echo ($order['payment_status'] == 'completed') ? 'achitat' : 'în așteptare'; ?></td>
                                         <td><?php echo $order['total_amount']; ?></td>
                                         <td><?php echo $order['order_date']; ?></td>
                                         <td>
@@ -84,7 +84,6 @@ include 'php/session.php';
                                 ?>
                             </tbody>
                         </table>
-
                     </div>
             <?php
                 } else {

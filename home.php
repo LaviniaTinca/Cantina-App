@@ -6,23 +6,28 @@ include 'php/session.php';
 if (isset($_POST['subscribe-button'])) {
   $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
   $id = unique_id();
+  try {
+    // Check if email already exists
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM subscribers WHERE email = ?");
+    $stmt->execute([$email]);
+    $count = $stmt->fetchColumn();
 
-  // Check if email already exists
-  $stmt = $conn->prepare("SELECT COUNT(*) FROM subscribers WHERE email = ?");
-  $stmt->execute([$email]);
-  $count = $stmt->fetchColumn();
-
-  if ($count > 0) {
-    // Email already exists
-    $warning_msg[] = "Există deja o abonare cu această adresă de email!";
-  } else {
-    // Email does not exist, insert into database
-    $stmt = $conn->prepare("INSERT INTO subscribers (id, email) VALUES (?,?)");
-    if ($stmt->execute([$id, $email])) {
-      $success_msg[] = "Abonare cu email: " . $email;
+    if ($count > 0) {
+      // Email already exists
+      $warning_msg[] = "Există deja o abonare cu această adresă de email!";
     } else {
-      $warning_msg[] = "Eroare la abonare: " . $email;
+      // Email does not exist, insert into database
+      $stmt = $conn->prepare("INSERT INTO subscribers (id, email) VALUES (?,?)");
+      if ($stmt->execute([$id, $email])) {
+        $success_msg[] = "Abonare cu email: " . $email;
+      } else {
+        $warning_msg[] = "Eroare la abonare: " . $email;
+      }
     }
+  } catch (PDOException $th) {
+    $error_msg = 'Eroare ' . $th->getMessage();
+  } catch (Exception $th) {
+    $error_msg = 'Eroare' . $th->getMessage();
   }
 }
 ?>

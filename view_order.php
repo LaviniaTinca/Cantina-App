@@ -53,9 +53,9 @@ include 'php/session.php'
                             <table id="product-table" class="product-table">
                                 <thead>
                                     <tr>
-                                        <th></th>
+                                        <th>Imagine</th>
                                         <th>Nume produs</th>
-                                        <th>Cantitate</th>
+                                        <th>Nr. de porții</th>
                                         <th>Preț</th>
                                         <th>Subtotal</th>
                                     </tr>

@@ -1,23 +1,7 @@
 <?php
 include 'php/connection.php';
-session_start();
+include 'php/session.php';
 
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    $user_id = '';
-}
-
-if (!isset($_SESSION['user_id'])) {
-    header('location: login.php');
-    exit(); // Add exit to stop further execution
-}
-
-if (isset($_POST['logout'])) {
-    session_destroy();
-    header("location: login.php");
-    exit();
-}
 
 $page = isset($_GET['page']) ? $_GET['page'] : 'unknown page';
 

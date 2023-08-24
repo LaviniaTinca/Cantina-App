@@ -15,19 +15,46 @@ if (isset($_POST['submit'])) {
   $email = filter_var($email, FILTER_SANITIZE_EMAIL);
   $pass = $_POST['password'];
   $pass = htmlspecialchars($pass, ENT_QUOTES, 'UTF-8');
+  try {
+    $select_user = $conn->prepare("SELECT * FROM `users` WHERE  email = ?");
+    $select_user->execute([$email]);
+    $user_data = $select_user->fetch(PDO::FETCH_ASSOC);
+    if ($select_user->rowCount() > 0 && password_verify($pass, $user_data['password'])) {
+      $_SESSION['user_id'] = $user_data['id'];
+      $_SESSION['user_name'] = $user_data['name'];
+      $_SESSION['user_email'] = $user_data['email'];
+      $_SESSION['user_type'] = $user_data['user_type'];
 
-  $select_user = $conn->prepare("SELECT * FROM `users` WHERE  email = ?");
-  $select_user->execute([$email]);
-  $user_data = $select_user->fetch(PDO::FETCH_ASSOC);
-  if ($select_user->rowCount() > 0 && password_verify($pass, $user_data['password'])) {
-    $_SESSION['user_id'] = $user_data['id'];
-    $_SESSION['user_name'] = $user_data['name'];
-    $_SESSION['user_email'] = $user_data['email'];
-    $_SESSION['user_type'] = $user_data['user_type'];
+      $query = "SELECT * FROM `daily_menu` WHERE `date` = CURDATE()";
+      $stmt = $conn->prepare($query);
+      if ($stmt->execute()) {
+        $daily_menu = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch the row as an associative array
 
-    header('location: home.php');
-  } else {
-    $messages[] = 'Email sau parola incorectă!';
+        if (!$daily_menu) {
+          // Meniul zilnic nu este setat, deci coșul de cumpărături trebuie golit
+          $query_clear_cart = "DELETE FROM cart WHERE user_id = ?";
+          $stmt_clear_cart = $conn->prepare($query_clear_cart);
+          if ($stmt_clear_cart->execute([$user_data['id']])) {
+          } else {
+            // Handle the error
+            $error_info = $stmt_clear_cart->errorInfo();
+            $error_msg[] = "Eroare : " . $error_info[2];
+          }
+        }
+      } else {
+        // Handle the error
+        $error_info = $stmt->errorInfo();
+        $error_msg = 'Eroare' . $error_info[2];
+      }
+
+      header('location: home.php');
+    } else {
+      $messages[] = 'Email sau parola incorectă!';
+    }
+  } catch (PDOException $th) {
+    $error_msg = 'Eroare ' . $th->getMessage();
+  } catch (Exception $th) {
+    $error_msg = 'Eroare' . $th->getMessage();
   }
 }
 
