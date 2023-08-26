@@ -1,6 +1,6 @@
  <div class="about-us-container" id="about-us">
    <h1 class=" main-page-title">Despre noi</h1>
-   <img src="../public/cantina/IMG-20230808-WA0045.jpg" alt="Our Team" class="about-us-img">
+   <img src="../public/images/IMG-20230808-WA0045.jpg" alt="Our Team" class="about-us-img">
    <p class="about-us-content">
      Suntem o echipă unită de bucătari pasionați, dedicați să aducem experiențe culinare de neuitat pentru fiecare client. Cu o bogată experiență în arta culinară și o dragoste profundă pentru ingrediente proaspete și autentice, ne străduim să punem în valoare aromele și gusturile autentice ale fiecărui preparat. Fiecare membru al echipei noastre aduce un talent unic și creativitate în bucătărie, asigurându-ne că fiecare masă servită este o operă de artă culinară. Ne mândrim cu profesionalismul și atenția noastră la detalii, creând astfel experiențe gastronomice inedite, care să încânte toate simțurile clienților noștri.
    </p>
