@@ -102,23 +102,25 @@ if (isset($_POST['order'])) {
         $order_id = $id;
         // Step 3: Store Order Items
         foreach ($cart_data as $cart_item) {
-            if ($cart_item['dmi_qty'] < $cart_item['qty']) {
-                $quantity = $cart_item['dmi_qty'];
-            } else {
-                $quantity = $cart_item['qty'];
-            }
-            $product_id = $cart_item['product_id'];
-            $price = $cart_item['price'];
-            $subtotal = $quantity * $price;
+            if ($cart_item['dmi_qty'] > 0) {
+                if ($cart_item['dmi_qty'] < $cart_item['qty']) {
+                    $quantity = $cart_item['dmi_qty'];
+                } else {
+                    $quantity = $cart_item['qty'];
+                }
+                $product_id = $cart_item['product_id'];
+                $price = $cart_item['price'];
+                $subtotal = $quantity * $price;
 
-            $query = "INSERT INTO order_items (order_id, product_id, quantity, price, subtotal) 
+                $query = "INSERT INTO order_items (order_id, product_id, quantity, price, subtotal) 
                         VALUES (?, ?, ?, ?, ?)";
-            $stmt_order_items = $conn->prepare($query);
-            $stmt_order_items->execute([$order_id, $product_id, $quantity, $price, $subtotal]);
+                $stmt_order_items = $conn->prepare($query);
+                $stmt_order_items->execute([$order_id, $product_id, $quantity, $price, $subtotal]);
 
-            //update the qty in the menu
-            $stmt_update_menu_qty = $conn->prepare("UPDATE `daily_menu_items` SET qty = ? WHERE id = ?");
-            $stmt_update_menu_qty->execute([$cart_item['dmi_qty'] - $quantity, $cart_item['dmi_id']]);
+                //update the qty in the menu
+                $stmt_update_menu_qty = $conn->prepare("UPDATE `daily_menu_items` SET qty = ? WHERE id = ?");
+                $stmt_update_menu_qty->execute([$cart_item['dmi_qty'] - $quantity, $cart_item['dmi_id']]);
+            }
         }
 
         // Step 4: Empty Cart
@@ -192,14 +194,29 @@ if (isset($_POST['order'])) {
                         <tbody>
                             <?php
                             while ($fetch_cart = $select_cart->fetch(PDO::FETCH_ASSOC)) {
+                                $sub_total = 0;
+                                $query = "SELECT products.*, dmi.id AS menu_id, dmi.qty AS qty
+                                            FROM daily_menu
+                                            JOIN daily_menu_items AS dmi ON dmi.daily_menu_id = daily_menu.id
+                                            JOIN products ON dmi.product_id = products.id
+                                            WHERE daily_menu.date = CURDATE() and products.id = ?";
+                                $select_product = $conn->prepare($query);
+                                $select_product->execute([$fetch_cart['product_id']]);
+                                if ($select_product->rowCount() > 0) {
+                                    $questioned_product = $select_product->fetch(PDO::FETCH_ASSOC);
+                                    $finished = ($questioned_product['qty'] <= 0) ? 'finished' : '';
+                                }
+
                                 $select_products = $conn->prepare("SELECT * FROM `products` WHERE id= ?");
                                 $select_products->execute([$fetch_cart['product_id']]);
                                 if ($select_products->rowCount() > 0) {
                                     $fetch_products = $select_products->fetch(PDO::FETCH_ASSOC);
-                                    $sub_total = $fetch_cart['qty'] * $fetch_products['price'];
+                                    if ($fetch_cart['qty'] <= $questioned_product['qty']) {
+                                        $sub_total = $fetch_cart['qty'] * $fetch_products['price'];
+                                    }
                                     $grand_total += $sub_total;
                             ?>
-                                    <tr>
+                                    <tr class="<?php echo $finished; ?>">
                                         <td>
                                             <a href="view_item.php?php echo $fetch_products['id']; ?>">
                                                 <img src=" ../public/image/<?= $fetch_products['image']; ?>" alt="product image" class="img">

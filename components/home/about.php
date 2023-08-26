@@ -25,7 +25,7 @@
      });
 
      $('.lightbox').on('click', function() {
-       $(this).fadeOut(); // Hide the lightbox on click
+       $(this).fadeOut();
      });
    });
  </script>

@@ -5,6 +5,7 @@ include '../config/session_admin.php';
 //update product
 if (isset($_POST['update_product'])) {
 
+    //set the new image data and folder
     $update_image_size = $_FILES['update_image']['size'];
     $update_image = $_FILES['update_image']['name'];
     $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
@@ -25,6 +26,7 @@ if (isset($_POST['update_product'])) {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($result && !empty($update_image)) {
+            //delete the old image and replace it with the new uploaded one
             unlink('public/image/' . $result['image']);
             move_uploaded_file($update_image_tmp_name, $update_image_folder);
 
@@ -32,6 +34,7 @@ if (isset($_POST['update_product'])) {
             $stmt = $conn->prepare($query);
             $stmt->execute([$update_name, $update_price, $update_detail, $category, $measure, $update_image, $update_id]);
         } else {
+            //just update product without image
             $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=?, `category`=?, `measure`=? WHERE id = ?";
             $stmt = $conn->prepare($query);
             $stmt->execute([$update_name, $update_price, $update_detail, $category, $measure, $update_id]);

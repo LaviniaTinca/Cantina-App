@@ -31,7 +31,6 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'unknown page';
         <div class="Container">
             <div class="not-found">
                 <img src="../public/images/not_found.png" alt="dought image">
-                <!-- <h1 class="title2">Page "<?php echo $page ?>" is under construction</h1> -->
                 <h1 class="title2">Page under construction</h1>
             </div>
         </div>

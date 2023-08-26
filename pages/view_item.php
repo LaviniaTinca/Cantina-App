@@ -14,6 +14,11 @@ include '../config/session.php';
     <link rel="stylesheet" href="../css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .not-available {
+            opacity: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -33,33 +38,58 @@ include '../config/session.php';
         <section class="view_page">
             <?php
             if (isset($_GET['pid'])) {
-                $pid = $_GET['pid'];
-                $select_products = $conn->prepare("SELECT * FROM `products` WHERE id = '$pid'");
-                $select_products->execute();
-                if ($select_products->rowCount() > 0) {
-                    $fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)
-            ?>
-                    <form action="view_menu.php" method="post" class="flex">
-                        <img src="../public/image/<?php echo $fetch_products['image']; ?>">
-                        <div class="detail">
-                            <div class="name"><?php echo $fetch_products['name']; ?></div>
-                            <div class="detail">
-                                <?php echo $fetch_products['product_detail']; ?>
-                            </div>
-                            <input type="hidden" name="product_id" value="<?php echo $fetch_products['id']; ?>">
-                            <div class="button">
-                                <input type="hidden" name="qty" value="1" min="0" class="quantity">
-                            </div>
-                            <div class="flex">
-                                <p class="price"> <?= $fetch_products['price']; ?> Ron</p>
-                                <p class="price"> <?= $fetch_products['measure']; ?></p>
+                try {
 
-                                <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
-                                <button type="submit" name="add_to_cart" class="auth-button">Adaugă <i class="bx bx-cart"></i></button>
+                    $pid = $_GET['pid'];
+                    $query = "SELECT id from `daily_menu` where `date` = CURDATE()";
+                    $stmt = $conn->prepare($query);
+                    $stmt->execute();
+                    $not_available = ($stmt->rowCount() > 0) ? '' : 'not-available';
+
+                    $query = "SELECT products.*, dmi.id AS menu_id, dmi.qty AS qty
+                                                FROM daily_menu
+                                                JOIN daily_menu_items AS dmi ON dmi.daily_menu_id = daily_menu.id
+                                                JOIN products ON dmi.product_id = products.id
+                                                WHERE daily_menu.date = CURDATE() and products.id = ?";
+                    $select_product = $conn->prepare($query);
+                    $select_product->execute([$pid]);
+                    if ($select_product->rowCount() > 0) {
+                        $fetch_product = $select_product->fetch(PDO::FETCH_ASSOC);
+                        $not_available = ($fetch_product['qty'] <= 0) ? 'not-available' : '';
+                    }
+                    $select_products = $conn->prepare("SELECT * FROM `products` WHERE id = '$pid'");
+                    $select_products->execute();
+                    if ($select_products->rowCount() > 0) {
+                        $fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)
+            ?>
+                        <form action="view_menu.php" method="post" class="flex">
+                            <img src="../public/image/<?php echo $fetch_products['image']; ?>">
+                            <div class="detail">
+                                <div class="name"><?php echo $fetch_products['name']; ?></div>
+                                <div class="detail">
+                                    <?php echo $fetch_products['product_detail']; ?>
+                                </div>
+                                <input type="hidden" name="product_id" value="<?php echo $fetch_products['id']; ?>">
+                                <div class="button">
+                                    <input type="hidden" name="qty" value="1" min="0" class="quantity">
+                                </div>
+                                <div class="flex">
+                                    <p class="price"> <?= $fetch_products['price']; ?> Ron</p>
+                                    <p class="price"> <?= $fetch_products['measure']; ?></p>
+                                    <div class="<?php echo $not_available ?>">
+                                        <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
+                                        <button type="submit" name="add_to_cart" class="auth-button">Adaugă <i class="bx bx-cart"></i></button>
+                                    </div>
+
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
             <?php
+                    }
+                } catch (PDOException $th) {
+                    $error_msg = 'Eroare ' . $th->getMessage();
+                } catch (Exception $th) {
+                    $error_msg = 'Eroare' . $th->getMessage();
                 }
             }
             ?>

@@ -76,7 +76,10 @@ if (isset($_POST['add_product'])) {
             header('location: admin_products.php');
         } catch (PDOException $e) {
             $conn->rollback();
-            echo "Eroare la adăugarea produsului: " . $e->getMessage();
+            $error_msg[] = "Eroare la adaugarea produsului: " . $e->getMessage();
+        } catch (Exception $e) {
+            $conn->rollback();
+            $error_msg[] = "Eroare la adaugarea produsului: " . $e->getMessage();
         }
     }
 }
@@ -151,9 +154,9 @@ if (isset($_POST['add-to-menu'])) {
                             WHERE dmi.product_id = ? AND dm.date = CURDATE()";
                 $verify_menu = $conn->prepare($query);
                 $verify_menu->execute([$product_id]);
-                echo '..' . $verify_menu->rowCount();
 
                 if ($verify_menu->rowCount() > 0) {
+                    //the product is in the menu, needs only update
                     $query = "UPDATE `daily_menu_items` SET qty = ? WHERE product_id = ? and daily_menu_id =?";
                     $update_qty = $conn->prepare($query);
                     $update_qty->execute([$qty, $product_id, $daily_menu_id]);
@@ -161,13 +164,13 @@ if (isset($_POST['add-to-menu'])) {
                     $conn->commit();
                     $success_msg[] = 'Nr. de porții din  produs, in meniu, a fost actualizat!';
                 } else {
+                    //create a new menu for today
                     $query = "INSERT INTO `daily_menu_items` (`daily_menu_id`, `product_id`, `qty`) VALUES (?, ?, ?)";
                     $stmt = $conn->prepare($query);
                     $stmt->execute([$daily_menu_id, $product_id, $qty]);
 
                     // Commit the transaction
                     $conn->commit();
-
                     $success_msg[] = 'produsul a fost adăugat în meniul zilei';
                     //header('location: admin_products.php');
                 }
@@ -176,18 +179,15 @@ if (isset($_POST['add-to-menu'])) {
                 $create_menu = $conn->prepare("INSERT INTO `daily_menu` (`date`) VALUES (CURDATE()) ");
                 $create_menu->execute();
 
-                // Retrieve the newly created daily_menu_id, (primary key - identity)
+                // Retrieve the newly created daily_menu_id, (works only if primary key - identity)
                 $daily_menu_id = $conn->lastInsertId();
 
-                // Perform your insertion into the daily_menu_items table
                 $query = "INSERT INTO `daily_menu_items` (`daily_menu_id`, `product_id`, `qty`) VALUES (?, ?, ?)";
                 $stmt = $conn->prepare($query);
                 $stmt->execute([$daily_menu_id, $product_id, $qty]);
 
                 // Commit the transaction
                 $conn->commit();
-
-                // Display a success message or perform other actions
                 $success_msg[] = 'produsul a fost adăugat în meniul zilei';
                 header('location: admin_products.php');
             }
@@ -212,6 +212,8 @@ try {
     $xValues = array_column($result, 'month');
     $yValues = array_column($result, 'record_count');
 } catch (PDOException $e) {
+    $error_msg[] = "Eroare: " . $e->getMessage();
+} catch (Exception $e) {
     $error_msg[] = "Eroare: " . $e->getMessage();
 }
 
@@ -406,24 +408,20 @@ try {
     <script src="../js/script.js"></script>
 
     <script>
-        // Function to open the modal
         $("#product-widget").click(function() {
             $("#product-modal").show();
         });
 
-        // Function to close the modal
         $("#close-modal").click(function() {
             $("#product-modal").hide();
         });
 
-        // Function to save the announcement
         $("#add_product").click(function() {
 
             $("#product-modal").hide();
         });
     </script>
     <script>
-        // Use PHP's json_encode function to convert PHP arrays to JavaScript arrays
         const xValues = <?php echo json_encode($xValues); ?>;
         const yValues = <?php echo json_encode($yValues); ?>;
 

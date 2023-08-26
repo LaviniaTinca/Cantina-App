@@ -18,7 +18,6 @@ if (isset($_GET['delete'])) {
 
 //for chart
 try {
-    // Assuming your table structure has a `created_at` field for the date
     $stmt = $conn->prepare("SELECT DATE_FORMAT(order_date, '%Y-%m') AS month, COUNT(*) AS record_count FROM orders GROUP BY month");
     $stmt->execute();
     $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -27,8 +26,9 @@ try {
     $xValues = array_column($result, 'month');
     $yValues = array_column($result, 'record_count');
 } catch (PDOException $e) {
-    // Handle any errors that may occur during database query
-    die("Query failed: " . $e->getMessage());
+    $error_msg[] = "Eroare: " . $e->getMessage();
+} catch (Exception $e) {
+    $error_msg[] = "Eroare: " . $e->getMessage();
 }
 
 ?>
@@ -219,7 +219,7 @@ try {
                 const statusType = $(this).data("status-type");
                 const isSet = $(this).prop("checked") ? (statusType === 'order_status' ? 'delivered' : 'completed') : (statusType === 'order_status' ? 'processing' : 'pending');
 
-                // Send the AJAX request to update the status value in the database
+                // Send the AJAX request to update the status value in the db
                 $.ajax({
                     type: "POST",
                     url: "../api/set_order_status.php",
@@ -230,7 +230,6 @@ try {
                     },
                     dataType: "json",
                     success: function(response) {
-                        // Handle the response if needed
                         if (response.success) {
                             const successMessage = (statusType === 'order_status') ? "Statusul comenzii a fost modificat!" : "Statusul plății comenzii a fost modificat!";
                             $("#success-message").text(successMessage);

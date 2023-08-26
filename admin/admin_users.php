@@ -8,39 +8,39 @@ if (isset($_POST['add_user'])) {
 
         // Validate input
         if (empty($_POST['add_name'])) {
-            $messages[] = "Name is required.";
+            $messages[] = "Numele este necesar.";
         } else {
             $add_name = htmlspecialchars($_POST['add_name'], ENT_QUOTES, 'UTF-8');
         }
 
         if (empty($_POST['add_email'])) {
-            $messages[] = "Email is required.";
+            $messages[] = "Email-ul este necesar.";
         } else {
             $add_email = filter_var($_POST['add_email'], FILTER_SANITIZE_EMAIL);
             if (!filter_var($add_email, FILTER_VALIDATE_EMAIL)) {
-                $messages[] = "Invalid email format.";
+                $messages[] = "Email-ul are un format invalid.";
             }
         }
 
         if (empty($_POST['add_password'])) {
-            $messages[] = "Password is required.";
+            $messages[] = "Parola este necesara.";
         } elseif (strlen($_POST['add_password']) < 6) {
-            $messages[] = "Password must be at least 6 characters long.";
+            $messages[] = "Parola sa fie de minim 6 caratere, o litera mica, o litera mare si o cifra.";
         } else {
             $add_password = password_hash($_POST['add_password'], PASSWORD_DEFAULT);
         }
 
         if (empty($_POST['add_confirm_password'])) {
-            $messages[] = "Confirm password is required.";
+            $messages[] = "Confirma parola.";
         } elseif ($_POST['add_confirm_password'] != $_POST['add_password']) {
-            $messages[] = "Passwords do not match.";
+            $messages[] = "Parolele nu se potrivesc.";
         }
 
         // Check if the email already exists in the database
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = :email");
         $stmt->execute(['email' => $add_email]);
         if ($stmt->rowCount() > 0) {
-            throw new Exception("Email is already taken.");
+            throw new Exception("Email-ul este deja luat.");
         }
     } catch (PDOException $e) {
         $conn->rollBack();
@@ -86,58 +86,6 @@ if (isset($_GET['delete'])) {
     } catch (PDOException $e) {
         $error_msg[] = "Eroare: " . $e->getMessage();
     } catch (Exception $e) {
-        $error_msg[] = "Eroare: " . $e->getMessage();
-    }
-}
-
-//edit user
-if (isset($_POST['update_user'])) {
-    try {
-        // Connect to the database
-        // Begin a transaction
-        $conn->beginTransaction();
-
-        // Get the values from the form
-        $id = $_POST['user_id'];
-        $name = $_POST['add_name'];
-        $email = $_POST['add_email'];
-        $password = $_POST['add_password'];
-        $confirm_password = $_POST['add_confirm_password'];
-        $user_type = "";
-
-        // validate user type field
-        if (empty($_POST["user_type"])) {
-            $user_type_err = "User type is required";
-        } else {
-            $user_type = test_input($_POST["user_type"]);
-        }
-
-        // Check if the passwords match
-        if ($password != $confirm_password) {
-            throw new Exception("Passwords do not match.");
-        }
-
-        // Check if the email already exists in the database
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = :email AND id != :id");
-        $stmt->execute(['email' => $email, 'id' => $id]);
-        if ($stmt->rowCount() > 0) {
-            throw new Exception("Email is already taken.");
-        }
-
-        // Hash the password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        // Update the user in the database
-        $stmt = $conn->prepare("UPDATE users SET name = :name, email = :email, password = :password, user_type=:user_type WHERE id = :id");
-        $stmt->execute(['name' => $name, 'email' => $email, 'password' => $hashed_password, 'user_type' => $user_type, 'id' => $id]);
-
-        $conn->commit();
-        header("Location: admin_users.php");
-    } catch (PDOException $e) {
-        $conn->rollBack();
-        $error_msg[] = "Eroare: " . $e->getMessage();
-    } catch (Exception $e) {
-        $conn->rollBack();
         $error_msg[] = "Eroare: " . $e->getMessage();
     }
 }
@@ -345,7 +293,7 @@ try {
                                                     echo '
                                                     <tr>
                                                         <td colspan="5" class="empty">
-                                                            <p>No users yet</p>
+                                                            <p>Nu sunt utilizatori</p>
                                                         </td>
                                                     </tr>
                                                 ';
@@ -413,17 +361,14 @@ try {
     <script src="../js/formValidation.js"></script>
     <script src="../js/searchCard.js"></script>
     <script>
-        // Function to open the modal
         $("#user-widget").click(function() {
             $("#user-modal").show();
         });
 
-        // Function to close the modal
         $("#close-modal").click(function() {
             $("#user-modal").hide();
         });
 
-        // Function to save the user
         $("#add_user").click(function() {
             $("#user-modal").hide();
         });
@@ -451,8 +396,8 @@ try {
                 scales: {
                     yAxes: [{
                         ticks: {
-                            min: Math.min(...yValues), // Set the minimum value based on the minimum of yValues
-                            max: Math.max(...yValues) // Set the maximum value based on the maximum of yValues
+                            min: Math.min(...yValues),
+                            max: Math.max(...yValues)
                         }
                     }],
                 }

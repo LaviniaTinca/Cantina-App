@@ -43,7 +43,6 @@ if (isset($_POST['subscribe-button'])) {
   <title>Cantina</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/slider.css">
-  <!-- <link rel="stylesheet" href="css/header.css"> -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
 

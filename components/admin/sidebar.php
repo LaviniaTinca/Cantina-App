@@ -51,13 +51,6 @@
         Anunțuri
       </a>
     </li>
-    <!-- <li <?php if ($current_page == 'help.php') echo 'class="active"'; ?>>
-      <a href="help.php">
-        <i class="bx bx-info-circle"></i>
-        Help & Support
-      </a>
-    </li> -->
-
     <li <?php if ($current_page == 'logout.php') echo 'class="active"'; ?>>
       <div class="logout">
         <a href="../pages/logout.php"><i class="bx bx-run"></i>Deconectare</a>

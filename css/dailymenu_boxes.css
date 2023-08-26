@@ -1,0 +1,55 @@
+.category-box {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+/* Styles for the filter boxes */
+.filter-box {
+    width: 140px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.filter-box h3 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.filter-box[data-category="soup"] {
+    background-image: url('../public/images/soup.png');
+    background-size: cover;
+}
+
+.filter-box[data-category="garniture"] {
+    background-image: url('../public/images/orez_legume.png');
+    background-size: cover;
+}
+
+.filter-box[data-category="principal"] {
+    background-image: url('../public/images/gratar.png');
+    background-size: cover;
+}
+
+.filter-box[data-category="desert"] {
+    background-image: url('../public/images/cookie.jpg');
+    background-size: cover;
+}
+
+.filter-box[data-category="salad"] {
+    background-image: url('../public/images/salata.png');
+    background-size: cover;
+}
+
+.filter-box[data-category="beverage"] {
+    background-image: url('../public/images/tea2.jpg');
+    background-size: cover;
+}
+
+.cart-btn:hover i.fas.fa-trash-alt {
+    color: white;
+}

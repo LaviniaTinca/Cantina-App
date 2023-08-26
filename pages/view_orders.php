@@ -90,7 +90,7 @@ include '../config/session.php';
                     echo '<p class="empty">Nu aveți comenzi!!</p>';
                 }
             } catch (PDOException $e) {
-                $error_msg[] = "Error fetching order items: " . $e->getMessage();
+                $error_msg[] = "Eroare: " . $e->getMessage();
             } catch (Exception $e) {
                 $error_msg[] = "Eroare: " . $e->getMessage();
             }

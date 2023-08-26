@@ -2,7 +2,6 @@
 include '../config/connection.php';
 
 try {
-    // Check if the ID is provided through POST request
     if (isset($_POST['id'])) {
         $announcementId = $_POST['id'];
         // Prepare the query
@@ -10,7 +9,6 @@ try {
         $stmt->bindParam(':id', $announcementId);
         $stmt->execute();
 
-        // Fetch the announcement details
         $announcement = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Return the announcement details as JSON response
@@ -20,6 +18,5 @@ try {
         echo json_encode(array('error' => 'ID not provided'));
     }
 } catch (PDOException $e) {
-    // Handle any errors that may occur during the database query
     echo json_encode(array('error' => 'Database error: ' . $e->getMessage()));
 }

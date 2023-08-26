@@ -31,18 +31,16 @@ if (isset($_POST['submit'])) {
         $daily_menu = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch the row as an associative array
 
         if (!$daily_menu) {
-          // Meniul zilnic nu este setat, deci coșul de cumpărături trebuie golit
+          // The daily menu is not set, so the user cannot have anything in the cart
           $query_clear_cart = "DELETE FROM cart WHERE user_id = ?";
           $stmt_clear_cart = $conn->prepare($query_clear_cart);
           if ($stmt_clear_cart->execute([$user_data['id']])) {
           } else {
-            // Handle the error
             $error_info = $stmt_clear_cart->errorInfo();
             $error_msg[] = "Eroare : " . $error_info[2];
           }
         }
       } else {
-        // Handle the error
         $error_info = $stmt->errorInfo();
         $error_msg = 'Eroare' . $error_info[2];
       }

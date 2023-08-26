@@ -66,83 +66,12 @@ if (isset($_POST['empty_menu'])) {
     <title>Cantina - admin</title>
 
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dailymenu_boxes.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <style>
-        /* General styles for the admin page */
-        .category-box {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            /* Add any additional styling for the admin page layout */
-        }
-
-        /* Styles for the filter boxes */
-        .filter-box {
-            width: 140px;
-            height: 100px;
-            /* border: 1px solid #ccc; */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border-radius: 8px;
-            /* Add any additional styling for the filter boxes */
-        }
-
-        /* Styles for the category names */
-        .filter-box h3 {
-            font-size: 14px;
-            font-weight: bold;
-            /* Add any additional styling for the category names */
-        }
-
-        /* Add specific styles for each filter box */
-        .filter-box[data-category="soup"] {
-            /* background-color: #c5eff7; */
-            background-image: url('../public/images/soup.png');
-            background-size: cover;
-        }
-
-        .filter-box[data-category="garniture"] {
-            background-image: url('../public/images/orez_legume.png');
-            background-size: cover;
-        }
-
-        .filter-box[data-category="principal"] {
-            /* background-color: #c2dfff; */
-            background-image: url('../public/images/gratar.png');
-            background-size: cover;
-        }
-
-        .filter-box[data-category="desert"] {
-            background-image: url('../public/images/cookie.jpg');
-            background-size: cover;
-        }
-
-        .filter-box[data-category="salad"] {
-            background-image: url('../public/images/salata.png');
-            background-size: cover;
-        }
-
-        .filter-box[data-category="beverage"] {
-            background-image: url('../public/images/tea2.jpg');
-            background-size: cover;
-        }
-
-        .menu-date-picker {
-            width: 220px;
-            border: none;
-        }
-
-        .cart-btn:hover i.fas.fa-trash-alt {
-            color: white;
-        }
-    </style>
 </head>
 
 <body>
@@ -176,7 +105,6 @@ if (isset($_POST['empty_menu'])) {
                             </div>
 
                             <!-- Banner Section - with image card -->
-
                             <section>
                                 <div class="flex">
                                     <a href="admin_products.php">
@@ -266,9 +194,9 @@ if (isset($_POST['empty_menu'])) {
                                             ';
                                                 }
                                             } catch (PDOException $th) {
-                                                $error_message[] = 'Error ' . $th->getMessage();
+                                                $error_message[] = 'Eroare ' . $th->getMessage();
                                             } catch (Exception $th) {
-                                                $error_message[] = 'Error ' . $th->getMessage();
+                                                $error_message[] = 'Eroare ' . $th->getMessage();
                                             }
                                             ?>
                                         </tbody>

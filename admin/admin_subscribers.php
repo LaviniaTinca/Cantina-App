@@ -17,6 +17,7 @@ if (isset($_GET['delete'])) {
     }
 }
 
+//chart
 try {
     $query = "SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, COUNT(*) AS record_count FROM subscribers GROUP BY month";
     $stmt = $conn->prepare($query);
@@ -106,14 +107,11 @@ try {
                                             <div class="box">
                                                 <?php
                                                 // Check if email already exists
-
                                                 $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
                                                 $stmt->execute([$record['email']]);
                                                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                                                 ?>
                                                 <div class="flex">
-                                                    <!-- <h4 class="filter"><img src="../public/image/<?php echo $user['image']; ?>" alt="user"><?php echo isset($user['name']) ? $user['name'] : ''; ?></h4> -->
-
                                                     <h4 class="subscriber-content filter"><?php echo $record['email']; ?></h4>
                                                     <div>
                                                         <form method="post" action="admin_subscribers.php">
@@ -150,7 +148,6 @@ try {
     <script src="../js/script.js"></script>
     <script src="../js/searchCard.js"></script>
     <script>
-        // Use PHP's json_encode function to convert PHP arrays to JavaScript arrays
         const xValues = <?php echo json_encode($xValues); ?>;
         const yValues = <?php echo json_encode($yValues); ?>;
 
@@ -173,8 +170,8 @@ try {
                 scales: {
                     yAxes: [{
                         ticks: {
-                            min: Math.min(...yValues), // Set the minimum value based on the minimum of yValues
-                            max: Math.max(...yValues) // Set the maximum value based on the maximum of yValues
+                            min: Math.min(...yValues),
+                            max: Math.max(...yValues)
                         }
                     }],
                 }

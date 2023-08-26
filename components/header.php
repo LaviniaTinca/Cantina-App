@@ -23,19 +23,7 @@ try {
 		<div class="logo-container">
 			<a href="../pages/home.php"><img src="../public/images/logo-cantina2.png" class="logo-image" alt="logo"></a>
 		</div>
-
-		<!-- <nav class="navbar">
-			<a href="home.php" <?php if (basename($_SERVER['PHP_SELF']) == 'home.php') echo 'class="active"'; ?>>acasa</a>
-			<a href="view_menu.php" <?php if (basename($_SERVER['PHP_SELF']) == 'view_menu.php') echo 'class="active"'; ?>>meniu</a>
-			<a href="view_orders.php" <?php if (basename($_SERVER['PHP_SELF']) == 'view_orders.php') echo 'class="active"'; ?>>comenzi</a>
-			<a href="contact.php" <?php if (basename($_SERVER['PHP_SELF']) == 'contact.php') echo 'class="active"'; ?>>contact</a>
-			<?php
-			if ($_SESSION['user_type'] == 'admin') { ?>
-				<a href="admin/admin.php" <?php if (basename($_SERVER['PHP_SELF']) == 'admin.php') echo 'class="active"'; ?>>Admin</a>
-			<?php } ?>
-		</nav> -->
 		<nav class="navbar">
-
 			<div class="nav-links" id="nav-links">
 				<div>
 					<a href="../pages/home.php" <?php if (basename($_SERVER['PHP_SELF']) == '../pages/home.php') echo 'class="active"'; ?>>acasa</a>
@@ -48,7 +36,6 @@ try {
 						</a>
 					<?php } ?>
 				</div>
-
 			</div>
 		</nav>
 
@@ -59,12 +46,7 @@ try {
 				$count_cart_items->execute([$user_id]);
 				$total_cart_items = $count_cart_items->rowCount();
 			?>
-				<!-- <a href="#"><i class="far fa-heart" title="Wishlist"></i></a>
-			<a href="#"><i class="far fa-bell" title="Notificări"></i></a> -->
-				<!-- <i class="fas fa-bars" id="collapse-btn"></i> -->
 				<a href="cart.php?page=cart"><i class="bx bx-cart-download" title="Coș de cumpărături"></i><sup><?= $total_cart_items ?></sup></a>
-
-				<!-- <i class='bx bx-list-plus' id="menu-btn" style="font-size: 2rem;"></i> -->
 				<i class="bx bxs-user" id="user-btn" title="Utilizator"></i>
 			<?php
 			} catch (PDOException $e) {
@@ -81,14 +63,3 @@ try {
 
 	</div>
 	</header>
-	<!-- <script>
-	$(document).ready(function() {
-		var collapseActive = false;
-		$('#collapse-btn').click(function() {
-			if ($(window).width() <= 768) {
-				collapseActive = !collapseActive;
-				$('#nav-links').toggleClass('user-box', collapseActive);
-			}
-		});
-	});
-</script> -->

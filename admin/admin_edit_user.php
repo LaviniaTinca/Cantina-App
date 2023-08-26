@@ -2,52 +2,77 @@
 include '../config/connection.php';
 include '../config/session_admin.php';
 
-//EDIT USER SECTION GOOD
+// update user in the database
 if (isset($_POST['update_user'])) {
     try {
-        $conn->beginTransaction();
+        // Validate input
+        if (empty($_POST['add_name'])) {
+            $messages[] = "Numele este necesar.";
+        } else {
+            $add_name = htmlspecialchars($_POST['add_name'], ENT_QUOTES, 'UTF-8');
+        }
 
-        // Get the values from the form
+        if (empty($_POST['add_email'])) {
+            $messages[] = "Email-ul este necesar.";
+        } else {
+            $add_email = filter_var($_POST['add_email'], FILTER_SANITIZE_EMAIL);
+            $add_email = htmlspecialchars($add_email, ENT_QUOTES, 'UTF-8');
+            if (!filter_var($add_email, FILTER_VALIDATE_EMAIL)) {
+                $messages[] = "Email în format invalid.";
+            }
+        }
+
+        if (empty($_POST['add_password'])) {
+            $messages[] = "Parola este necesară.";
+        } elseif (strlen($_POST['add_password']) < 6) {
+            $messages[] = "Parola trebuie sa aibă minim 6 caractere, o literă mare, una mică și o cifră.";
+        } else {
+            $add_password = password_hash($_POST['add_password'], PASSWORD_DEFAULT);
+        }
+        if (empty($_POST['add_confirm_password'])) {
+            $messages[] = "Confirmarea parolei este necesară.";
+        } elseif ($_POST['add_confirm_password'] != $_POST['add_password']) {
+            $messages[] = "Parolele introduse nu se potrivesc.";
+        }
+
         $id = $_POST['update_id'];
-        $name = htmlspecialchars($_POST['add_name'], ENT_QUOTES, 'UTF-8');
-        $email = htmlspecialchars($_POST['add_email'], ENT_QUOTES, 'UTF-8');
-        $password = htmlspecialchars($_POST['add_password'], ENT_QUOTES, 'UTF-8');
-        $confirm_password = htmlspecialchars($_POST['add_confirm_password'], ENT_QUOTES, 'UTF-8');
         $user_type = "";
 
         // validate user type field
         if (empty($_POST["user_type"])) {
-            $user_type_err = "User type is required";
+            $messages[] = "Rolul utilizatorului este necesar.";
         } else {
             $user_type = test_input($_POST["user_type"]);
         }
 
-        // Check if the passwords match
-        if ($password != $confirm_password) {
-            throw new Exception("Passwords do not match.");
-        }
-
         // Check if the email already exists in the database
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = :email AND id != :id");
-        $stmt->execute(['email' => $email, 'id' => $id]);
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND id != ?");
+        $stmt->execute([$add_email, $id]);
         if ($stmt->rowCount() > 0) {
-            throw new Exception("Email is already taken.");
+            throw new Exception("Acest email este deja folosit.");
         }
-
-        // Hash the password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        // Update the user in the database
-        $stmt = $conn->prepare("UPDATE users SET name = :name, email = :email, password = :password, user_type=:user_type WHERE id = :id");
-        $stmt->execute(['name' => $name, 'email' => $email, 'password' => $hashed_password, 'user_type' => $user_type, 'id' => $id]);
-
-        // Commit the transaction
-        $conn->commit();
-        header("Location: admin_users.php");
+    } catch (PDOException $e) {
+        $messages[] = "Eroare: " . $e->getMessage();
+        $warning_msg[] = "Eroare: " . $e->getMessage();
     } catch (Exception $e) {
-        // Roll back the transaction
-        $conn->rollBack();
-        $messages[] = "Eroare la actualizare: " . $e->getMessage();
+        $messages[] = "Eroare: " . $e->getMessage();
+        $warning_msg[] = "Eroare: " . $e->getMessage();
+    }
+
+    // Insert user into database
+    if (empty($messages)) {
+        try {
+            $query = "UPDATE users SET name = :name, email = :email, password = :password, user_type=:user_type WHERE id = :id";
+            $stmt = $conn->prepare($query);
+            $stmt->execute(['name' => $add_name, 'email' => $add_email, 'password' => $add_password, 'user_type' => $user_type, 'id' => $id]);
+
+            $success_msg[] = "Utilizatorul a fost actualizat";
+            header("Location: admin_users.php");
+        } catch (PDOException $e) {
+            $messages[] = "Eroare: " . $e->getMessage();
+        } catch (Exception $e) {
+            $messages[] = "Eroare: " . $e->getMessage();
+        }
     }
 }
 ?>
