@@ -1,6 +1,6 @@
 <?php
-include '../php/connection.php';
-include '../php/session_handler.php';
+include '../config/connection.php';
+include '../config/session_admin.php';
 
 //delete subscriber
 if (isset($_GET['delete'])) {
@@ -112,7 +112,7 @@ try {
                                                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
                                                 ?>
                                                 <div class="flex">
-                                                    <h4 class="filter"><img src="../image/<?php echo $user['image']; ?>" alt="user"><?php echo isset($user['name']) ? $user['name'] : ''; ?></h4>
+                                                    <!-- <h4 class="filter"><img src="../public/image/<?php echo $user['image']; ?>" alt="user"><?php echo isset($user['name']) ? $user['name'] : ''; ?></h4> -->
 
                                                     <h4 class="subscriber-content filter"><?php echo $record['email']; ?></h4>
                                                     <div>

@@ -1,6 +1,6 @@
 <?php
-include '../php/connection.php';
-include '../php/session_handler.php';
+include '../config/connection.php';
+include '../config/session_admin.php';
 
 //delete message
 if (isset($_GET['delete'])) {
@@ -16,27 +16,6 @@ if (isset($_GET['delete'])) {
         $error_msg[] = "Eroare: " . $e->getMessage();
     }
 }
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-
-    // Get the message id and is_mark value from the AJAX request
-    $messageId = $data['messageId'];
-    $isMarked = $data['isMarked'];
-
-    // Update the is_mark value in the database
-    try {
-        $stmt = $conn->prepare("UPDATE messages SET is_marked = ? WHERE id = ?");
-        $stmt->execute([$isMarked, $messageId]);
-
-        // Send a response back to the JavaScript to indicate success
-        echo json_encode(['status' => 'success']);
-    } catch (PDOException $e) {
-        // Handle the exception if needed
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-    }
-}
-
 
 // chart
 try {
@@ -128,15 +107,7 @@ try {
                                         foreach ($fetch_messages as $message) {
                                 ?>
                                             <div class="box">
-                                                <?php
-                                                // Check if email already exists
-
-                                                $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-                                                $stmt->execute([$message['email']]);
-                                                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                                                ?>
                                                 <div class="flex">
-                                                    <h6 class="filter"><img src=" ../image/<?php echo $user['image']; ?>" alt="user"><?php echo $message['name']; ?></h6>
                                                     <h6 class="filter"><?php echo $message['email']; ?></h6>
                                                     <h6 class="filter"><?php echo $message['number']; ?></h6>
                                                 </div>
@@ -146,9 +117,6 @@ try {
 
                                                     <div>
                                                         <form method="post" action="admin_messages.php">
-                                                            <!-- <input type="checkbox" name="mark_message[]" value="<?php echo $message['id']; ?>" <?php echo $message['is_marked'] ? 'checked' : ''; ?>>
-
-                                                        <a href="admin_messages.php?edit=<?php echo $message['id']; ?>" class="edit"><i class="fas fa-edit " title="Raspunde"></i></a> -->
                                                             <input type="hidden" name="message_id" value="<?= $message['id']; ?>">
                                                             <a href="admin_messages.php?delete=<?php echo $message['id']; ?>" class="delete" onclick="return confirm('Dorești să ștergi mesajul de la <?php echo $message['name']; ?> ?');"><i class="fas fa-trash-alt" title="Șterge"></i></a>
                                                         </form>
@@ -179,7 +147,6 @@ try {
     <?php include '../components/alert.php'; ?>
 
     <!-- SCRIPT SECTION -->
-
     <script src="../js/script.js"></script>
     <script src="../js/searchCard.js"></script>
     <script>
@@ -212,40 +179,6 @@ try {
                     }],
                 }
             }
-        });
-    </script>
-
-    <script>
-        // Add an event listener to the checkboxes
-        const checkboxes = document.querySelectorAll('input[name="mark_message[]"]');
-        checkboxes.forEach((checkbox) => {
-            checkbox.addEventListener('click', (event) => {
-                const messageId = event.target.value;
-                const isMarked = event.target.checked ? 1 : 0;
-
-                // Send an AJAX request to update the is_mark value in the database
-                // You can use fetch or XMLHttpRequest to make the AJAX request
-
-                // For example, using fetch:
-                fetch('admin_messages.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            messageId,
-                            isMarked
-                        }),
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        // Handle the response if needed
-                        console.log(data);
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
-            });
         });
     </script>
 </body>

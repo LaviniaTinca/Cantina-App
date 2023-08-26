@@ -1,6 +1,6 @@
 <?php
-include '../php/connection.php';
-include '../php/session_handler.php';
+include '../config/connection.php';
+include '../config/session_admin.php';
 
 //add product to the db
 if (isset($_POST['add_product'])) {
@@ -50,7 +50,7 @@ if (isset($_POST['add_product'])) {
             $add_image_name = $_FILES['add_image']['name'];
             $add_image_size = $_FILES['add_image']['size'];
             $add_image_tmp_name = $_FILES['add_image']['tmp_name'];
-            $add_image_folder = '../image/' . $add_image_name;
+            $add_image_folder = '../public/image/' . $add_image_name;
         }
     }
 
@@ -98,7 +98,7 @@ if (isset($_GET['delete'])) {
                 $stmt = $conn->prepare($query);
                 $stmt->execute([$delete_id]);
 
-                unlink('../image/' . $result['image']);
+                unlink('../public/image/' . $result['image']);
                 $query = "DELETE FROM `products` WHERE id = ?";
                 $stmt = $conn->prepare($query);
                 $stmt->execute([$delete_id]);
@@ -355,7 +355,7 @@ try {
                                                     foreach ($fetch_products as $product) {
                                             ?>
                                                         <tr>
-                                                            <td> <img src="../image/<?php echo $product['image']; ?>" alt="img" class="product-image"></td>
+                                                            <td> <img src="../public/image/<?php echo $product['image']; ?>" alt="img" class="product-image"></td>
                                                             <td title="<?php echo $product['name']; ?>"><a href="admin_view_product.php?pid=<?php echo $product['id']; ?>"><?php echo substr($product['name'], 0, 25) . '...'; ?></a></td>
                                                             <td title="<?php echo $product['category']; ?>"><?php echo $product['category']; ?></td>
                                                             <td title="<?php echo $product['measure']; ?>"><?php echo $product['measure']; ?></td>

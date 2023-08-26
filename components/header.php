@@ -11,7 +11,7 @@ try {
 								}
 							} ?>>
 	<?php if ($announcement && basename($_SERVER['PHP_SELF']) == 'home.php') {
-		include 'components/announcement.php';
+		include 'home/announcement.php';
 	}
 } catch (PDOException $e) {
 	$error_msg[] = "Eroare: " . $e->getMessage();
@@ -21,7 +21,7 @@ try {
 
 	<div class="flex">
 		<div class="logo-container">
-			<a href="home.php"><img src="images/logo-cantina2.png" class="logo-image" alt="logo"></a>
+			<a href="../pages/home.php"><img src="../public/images/logo-cantina2.png" class="logo-image" alt="logo"></a>
 		</div>
 
 		<!-- <nav class="navbar">
@@ -38,12 +38,12 @@ try {
 
 			<div class="nav-links" id="nav-links">
 				<div>
-					<a href="home.php" <?php if (basename($_SERVER['PHP_SELF']) == 'home.php') echo 'class="active"'; ?>>acasa</a>
-					<a href="view_menu.php" <?php if (basename($_SERVER['PHP_SELF']) == 'view_menu.php') echo 'class="active"'; ?>>meniu</a>
-					<a href="view_orders.php" <?php if (basename($_SERVER['PHP_SELF']) == 'view_orders.php') echo 'class="active"'; ?>>comenzi</a>
-					<a href="contact.php" <?php if (basename($_SERVER['PHP_SELF']) == 'contact.php') echo 'class="active"'; ?>>contact</a>
+					<a href="../pages/home.php" <?php if (basename($_SERVER['PHP_SELF']) == '../pages/home.php') echo 'class="active"'; ?>>acasa</a>
+					<a href="../pages/view_menu.php" <?php if (basename($_SERVER['PHP_SELF']) == '../pages/view_menu.php') echo 'class="active"'; ?>>meniu</a>
+					<a href="../pages/view_orders.php" <?php if (basename($_SERVER['PHP_SELF']) == '../pages/view_orders.php') echo 'class="active"'; ?>>comenzi</a>
+					<a href="../pages/contact.php" <?php if (basename($_SERVER['PHP_SELF']) == '../pages/contact.php') echo 'class="active"'; ?>>contact</a>
 					<?php if ($_SESSION['user_type'] == 'admin') { ?>
-						<a href="admin/admin.php" <?php if (basename($_SERVER['PHP_SELF']) == 'admin.php') echo 'class="active"'; ?>>
+						<a href="../admin/admin.php" <?php if (basename($_SERVER['PHP_SELF']) == 'admin.php') echo 'class="active"'; ?>>
 							Admin
 						</a>
 					<?php } ?>

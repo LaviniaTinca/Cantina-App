@@ -1,6 +1,6 @@
 <?php
-include '../php/connection.php';
-include '../php/session_handler.php';
+include '../config/connection.php';
+include '../config/session_admin.php';
 
 //update product qty in menu 
 if (isset($_POST['update_menu'])) {
@@ -29,9 +29,7 @@ if (isset($_GET['delete'])) {
         $query = "DELETE FROM `daily_menu_items` WHERE id = ?";
         $stmt = $conn->prepare($query);
         $stmt->execute([$delete_id]);
-
         $success_msg[] = 'produsul a fost sters din meniu';
-        header('location: admin_menu.php');
     } catch (PDOException $e) {
         $error_msg[] = "Eroare la ștergerea produsului: " . $e->getMessage();
     } catch (Exception $e) {
@@ -106,33 +104,33 @@ if (isset($_POST['empty_menu'])) {
         /* Add specific styles for each filter box */
         .filter-box[data-category="soup"] {
             /* background-color: #c5eff7; */
-            background-image: url('../images/soup.png');
+            background-image: url('../public/images/soup.png');
             background-size: cover;
         }
 
         .filter-box[data-category="garniture"] {
-            background-image: url('../images/orez_legume.png');
+            background-image: url('../public/images/orez_legume.png');
             background-size: cover;
         }
 
         .filter-box[data-category="principal"] {
             /* background-color: #c2dfff; */
-            background-image: url('../images/gratar.png');
+            background-image: url('../public/images/gratar.png');
             background-size: cover;
         }
 
         .filter-box[data-category="desert"] {
-            background-image: url('../images/cookie.jpg');
+            background-image: url('../public/images/cookie.jpg');
             background-size: cover;
         }
 
         .filter-box[data-category="salad"] {
-            background-image: url('../images/salata.png');
+            background-image: url('../public/images/salata.png');
             background-size: cover;
         }
 
         .filter-box[data-category="beverage"] {
-            background-image: url('../images/tea2.jpg');
+            background-image: url('../public/images/tea2.jpg');
             background-size: cover;
         }
 
@@ -237,7 +235,7 @@ if (isset($_POST['empty_menu'])) {
                                                     foreach ($fetch_products as $product) {
                                             ?>
                                                         <tr>
-                                                            <td> <img src="../image/<?php echo $product['image']; ?>" alt="product image" class="product-image"></td>
+                                                            <td> <img src="../public/image/<?php echo $product['image']; ?>" alt="product image" class="product-image"></td>
                                                             <!-- <td><?php echo $product['name']; ?></td> -->
                                                             <td title="<?php echo $product['name']; ?>"><a href="admin_view_product.php?pid=<?php echo $product['id']; ?>"><?php echo substr($product['name'], 0, 25) . '...'; ?></a></td>
                                                             <td><?php echo $product['price']; ?></td>

@@ -60,7 +60,7 @@
 
     <li <?php if ($current_page == 'logout.php') echo 'class="active"'; ?>>
       <div class="logout">
-        <a href="../logout.php"><i class="bx bx-run"></i>Deconectare</a>
+        <a href="../pages/logout.php"><i class="bx bx-run"></i>Deconectare</a>
       </div>
     </li>
   </ul>

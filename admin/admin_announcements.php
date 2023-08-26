@@ -1,6 +1,6 @@
 <?php
-include '../php/connection.php';
-include '../php/session_handler.php';
+include '../config/connection.php';
+include '../config/session_admin.php';
 
 // Handle save announcement
 if (isset($_POST['save-announcement'])) {
@@ -48,11 +48,9 @@ if (isset($_POST['edit-announcement'])) {
 
         $conn->commit();
     } catch (PDOException $e) {
-        // Handle specific PDO exceptions (if needed)
         $conn->rollback();
         $error_msg[] = "Eroare la modificarea anuntului: " . $e->getMessage();
     } catch (Exception $e) {
-        // General catch block for any uncaught exceptions
         $conn->rollback();
         $error_msg[] = "Eroare: " . $e->getMessage();
     }
@@ -176,7 +174,6 @@ if (isset($_POST['edit-announcement'])) {
                         </div>
 
                         <!-- Edit Announcement Modal Box -->
-
                         <div class="modal" id="edit-announcement-modal">
                             <div class="modal-content">
                                 <span class="close edit-close-modal" id="edit-close-modal">&times;</span>
@@ -254,36 +251,30 @@ if (isset($_POST['edit-announcement'])) {
     <script src="../js/script.js"></script>
     <script src="../js/searchCard.js"></script>
     <script>
-        // Function to open the modal
         $("#announcement-widget").click(function() {
             $("#announcement-modal").show();
         });
 
-        // Function to close the modal
         $("#close-modal").click(function() {
             $("#announcement-modal").hide();
         });
 
-        // Function to save the announcement
         $("#save-announcement").click(function() {
-
             $("#announcement-modal").hide();
         });
     </script>
     <script>
         //script to set the old data to the edit announcement modal
         $(document).ready(function() {
-            // Function to open the modal
             $(".edit-link").click(function() {
                 // Get the announcement ID from the data attribute
                 const announcementId = $(this).data("announcement-id");
                 $("#edit-announcement-id").val(announcementId);
 
-
                 // Fetch the announcement details from the server using AJAX
                 $.ajax({
                     type: "POST",
-                    url: "get_announcement_details.php", // Replace with the PHP script that fetches the announcement details
+                    url: "../api/get_announcement_details.php",
                     data: {
                         id: announcementId
                     },
@@ -291,7 +282,6 @@ if (isset($_POST['edit-announcement'])) {
                     success: function(response) {
                         // Populate the modal form with the fetched details
                         $("#edit-announcement-modal").attr("data-announcement-id", response.id).show();
-                        // Set the announcement ID value in the hidden input field
                         $("#edit-announcement-category option").each(function() {
                             if ($(this).val() === response.category) {
                                 $(this).prop("selected", true);
@@ -307,12 +297,10 @@ if (isset($_POST['edit-announcement'])) {
                 });
             });
 
-            // Function to close the modal
             $(".edit-close-modal").click(function() {
                 $(this).closest(".modal").hide();
             });
 
-            // Function to save the announcement (submit the form)
             $("#edit-announcement").click(function() {
                 $(this).closest(".modal").hide();
             });
@@ -326,19 +314,19 @@ if (isset($_POST['edit-announcement'])) {
                 const announcementId = $(this).data("announcement-id");
                 const isSet = $(this).prop("checked") ? 1 : 0;
 
-                // Send the AJAX request to update the is_set value in the database
+                // Send the AJAX request to update the is_set value in the db
                 $.ajax({
                     type: "POST",
-                    url: "set_announcement.php", // Replace with the PHP script that updates the database
+                    url: "../api/set_announcement.php",
                     data: {
                         id: announcementId,
                         is_set: isSet
                     },
                     dataType: "json",
                     success: function(response) {
-                        // Handle the response if needed
+                        // Handle the response 
                         if (response.success) {
-                            $("#success-message").text("Anunțul a fost actualizat!"); // Set the success message
+                            $("#success-message").text("Anunțul a fost actualizat!");
                             setTimeout(function() {
                                 $("#success-message").empty();
                             }, 3000);

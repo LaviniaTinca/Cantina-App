@@ -1,6 +1,6 @@
 <?php
-include '../php/connection.php';
-include '../php/session_handler.php';
+include '../config/connection.php';
+include '../config/session_admin.php';
 
 ?>
 
@@ -96,7 +96,7 @@ include '../php/session_handler.php';
                                                     while ($order_item = $stmt_order_items->fetch(PDO::FETCH_ASSOC)) {
                                                     ?>
                                                         <tr class="filter">
-                                                            <td> <img src="../image/<?php echo $order_item['image']; ?>" alt="img" class="product-image"></td>
+                                                            <td> <img src="../public/image/<?php echo $order_item['image']; ?>" alt="img" class="product-image"></td>
                                                             <td><a style="color: var(--dark-olive);" href="admin_view_product.php?pid=<?php echo $order_item['product_id']; ?>"><?php echo $order_item['name']; ?></a></td>
                                                             <td><?php echo $order_item['quantity']; ?></td>
                                                             <td><?php echo $order_item['price']; ?></td>

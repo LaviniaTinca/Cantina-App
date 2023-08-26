@@ -1,6 +1,6 @@
 <?php
-include '../php/connection.php';
-include '../php/session_handler.php';
+include '../config/connection.php';
+include '../config/session_admin.php';
 
 //delete order 
 if (isset($_GET['delete'])) {
@@ -222,7 +222,7 @@ try {
                 // Send the AJAX request to update the status value in the database
                 $.ajax({
                     type: "POST",
-                    url: "set_order_status.php",
+                    url: "../api/set_order_status.php",
                     data: {
                         id: recordId,
                         status_type: statusType,

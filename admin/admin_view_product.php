@@ -1,6 +1,6 @@
 <?php
-include '../php/connection.php';
-include '../php/session_handler.php';
+include '../config/connection.php';
+include '../config/session_admin.php';
 
 ?>
 
@@ -71,7 +71,7 @@ include '../php/session_handler.php';
                                             </div>
                                             <div class="view_page">
                                                 <form action="admin_products.php" method="post">
-                                                    <img src="../image/<?php echo $fetch_products['image']; ?>">
+                                                    <img src="../public/image/<?php echo $fetch_products['image']; ?>">
                                                     <div class="detail">
                                                         <div class="name"><?php echo $fetch_products['name']; ?></div>
                                                         <div class="detail">
@@ -83,7 +83,7 @@ include '../php/session_handler.php';
                                                         </div>
                                                         <hr class="dotted-line">
                                                         <p>Pret: <?= $fetch_products['price']; ?> Ron</p>
-                                                        <p>Unitatea de măsură: <?= $fetch_products['measure']; ?></p>
+                                                        <p>Cantitatea unei porții: <?= $fetch_products['measure']; ?></p>
                                                         <p> Data adăugării: <?= $fetch_products['created_at']; ?></p>
 
                                                         <div class="form-container">

@@ -1,6 +1,6 @@
 <?php
-include '../php/connection.php';
-include '../php/session_handler.php';
+include '../config/connection.php';
+include '../config/session_admin.php';
 
 //EDIT USER SECTION GOOD
 if (isset($_POST['update_user'])) {
@@ -137,7 +137,6 @@ if (isset($_POST['update_user'])) {
                                                             <option value="user" <?php if ($fetch_edit['user_type'] === 'user') echo 'selected'; ?>>User</option>
                                                             <option value="admin" <?php if ($fetch_edit['user_type'] === 'admin') echo 'selected'; ?>>Admin</option>
                                                         </select>
-
 
                                                         <label for="add-password">Password:</label>
                                                         <input type="password" name="add_password" id="add-password" value="" required><span id="passwordError" class="error"></span>

@@ -1,59 +1,50 @@
 <?php
-include '../php/connection.php';
-include '../php/session_handler.php';
+include '../config/connection.php';
+include '../config/session_admin.php';
 
 //update product
 if (isset($_POST['update_product'])) {
-    // if ($_FILES['update_image']['error'] == UPLOAD_ERR_INI_SIZE || $_FILES['update_image']['error'] == UPLOAD_ERR_FORM_SIZE) {
-    //     $messages[] = "The uploaded file is too large.";
-    //     // } elseif ($_FILES['update_image']['error'] == UPLOAD_ERR_NO_FILE) {
-    //     //     $messages[] = "No file was uploaded.";
-    // } elseif ($_FILES['update_image']['error'] == UPLOAD_ERR_PARTIAL) {
-    //     $messages[] = "The uploaded file was only partially uploaded.";
-    // } elseif ($_FILES['update_image']['error'] == UPLOAD_ERR_NO_TMP_DIR || $_FILES['update_image']['error'] == UPLOAD_ERR_CANT_WRITE || $_FILES['update_image']['error'] == UPLOAD_ERR_EXTENSION) {
-    //     $messages[] = "An error occurred while uploading the file. Please try again later.";
-    // } elseif (!in_array($_FILES['update_image']['type'], ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'])) {
-    //     $messages[] = "The uploaded file must be a JPEG, PNG, or GIF image.";
-    // } else {
+
     $update_image_size = $_FILES['update_image']['size'];
     $update_image = $_FILES['update_image']['name'];
     $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
-    $update_image_folder = '../image/' . $update_image;
-    // }
+    $update_image_folder = '../public/image/' . $update_image;
+
     $update_id = htmlspecialchars($_POST['update_id'], ENT_QUOTES, 'UTF-8');
     $update_name = htmlspecialchars($_POST['update_name'], ENT_QUOTES, 'UTF-8');
     $update_detail = htmlspecialchars($_POST['update_detail'], ENT_QUOTES, 'UTF-8');
+    $category = htmlspecialchars($_POST['update_category'], ENT_QUOTES, 'UTF-8');
+    $measure = htmlspecialchars($_POST['update_measure'], ENT_QUOTES, 'UTF-8');
     $update_price = htmlspecialchars($_POST['update_price'], ENT_QUOTES, 'UTF-8');
 
-    if (empty($messages)) {
-        try {
-            $conn->beginTransaction();
-            $query = "SELECT image FROM `products` WHERE id = ?";
+    try {
+        $conn->beginTransaction();
+        $query = "SELECT image FROM `products` WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->execute([$update_id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result && !empty($update_image)) {
+            unlink('public/image/' . $result['image']);
+            move_uploaded_file($update_image_tmp_name, $update_image_folder);
+
+            $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=?, `category`=?, `measure`=?, `image`=? WHERE id = ?";
             $stmt = $conn->prepare($query);
-            $stmt->execute([$update_id]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($result && !empty($update_image)) {
-                unlink('image/' . $result['image']);
-                move_uploaded_file($update_image_tmp_name, $update_image_folder);
-
-                $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=?, `image`=? WHERE id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->execute([$update_name, $update_price, $update_detail, $update_image, $update_id]);
-            } else {
-                $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=? WHERE id = ?";
-                $stmt = $conn->prepare($query);
-                $stmt->execute([$update_name, $update_price, $update_detail, $update_id]);
-            }
-
-            $conn->commit();
-            $success_msg[] = "Produsul a fost adaugat!";
-
-            header('location: admin_products.php');
-        } catch (PDOException $e) {
-            $conn->rollback();
-            $error_msg[] = "Eroare la actualizare: " . $e->getMessage();
+            $stmt->execute([$update_name, $update_price, $update_detail, $category, $measure, $update_image, $update_id]);
+        } else {
+            $query = "UPDATE `products` SET `name`=?, `price`=?, `product_detail`=?, `category`=?, `measure`=? WHERE id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute([$update_name, $update_price, $update_detail, $category, $measure, $update_id]);
         }
+        $conn->commit();
+        $success_msg[] = "Produsul a fost actualizat!";
+        header('location: admin_products.php');
+    } catch (PDOException $e) {
+        $conn->rollback();
+        $error_msg[] = "Eroare la actualizare: " . $e->getMessage();
+    } catch (Exception $e) {
+        $conn->rollback();
+        $error_msg[] = "Eroare la actualizare: " . $e->getMessage();
     }
 }
 
@@ -122,9 +113,9 @@ if (isset($_POST['update_product'])) {
                                             while ($fetch_edit = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                 ?>
                                                 <div class="form-container">
-                                                    <form class="Form" action="" method="post" enctype="multipart/form-data">
+                                                    <form class="Form" action="admin_edit_product.php" method="post" enctype="multipart/form-data">
                                                         <div class="form-img">
-                                                            <img src="../image/<?php echo $fetch_edit['image']; ?>" alt="product to be edited">
+                                                            <img src="../public/image/<?php echo $fetch_edit['image']; ?>" alt="product to be edited">
                                                         </div>
                                                         <input type="hidden" name="update_id" value="<?php echo $fetch_edit['id']; ?>"><br>
                                                         <label for="name">Nume:</label>
@@ -157,7 +148,7 @@ if (isset($_POST['update_product'])) {
                                 <?php
                                             }
                                         } else {
-                                            //no results found
+                                            echo '<p>Nu s-au găsit rezultate</p>';
                                         }
                                     }
                                 } catch (PDOException $e) {

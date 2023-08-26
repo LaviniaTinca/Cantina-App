@@ -44,13 +44,8 @@ include '../php/session_handler.php'
                             <div class="todo-list" style="color: red; margin-left: 1rem">
                                 <p> add user -> email already exist</p>
                                 <p>page under construction, about us, contact, delete from wishlist -> add red button</p>
-                                <p>la add folosesc aceleasi clase peste to: add-product, add-products pt toggle. Nu stiu de ce nu imi ia daca schimb numele, voiam element/s</p>
-                                <p>de stilizat sidebar + icons</p>
                                 <br>
-                                <p>mesaj la subscribe success</p>
-                                <p>add product - SELECT CATEGORY / ADD CATEGORY</p>
-                                <p>data meniului - la alegerea datei din picker se actualizeaza in link dar la refresh dispare</p>
-
+                                <p>mesaj la subscribe success validari email</p>
                             </div>
                             <hr>
                             <h3>PRODUCT SECTION</h3>
@@ -60,7 +55,6 @@ include '../php/session_handler.php'
                             <h3>CUSTOMER SECTION</h3>
                             <div class="todo-list" style="color: red; margin-left: 1rem">
 
-                                <p>toggle reviews nu merge dinamic dupa ce filtrez, desi mergea , dupa filtrare le deschide pe toate</p>
                                 <p>you should replace unique_id() with a function that generates a unique identifier for each user. This can be achieved using functions like uniqid() or uuid_create(), depending on your requirements.</p>
                             </div>
                             <hr>
@@ -71,6 +65,8 @@ include '../php/session_handler.php'
                             <p>link catre nutrition dar nu se vede</p>
                             <a href="https://www.verywellfit.com/recipe-nutrition-analyzer-4157076" target="_blank"><img width="320" height="656" alt="food nutrition" src="https://www.verywellfit.com/thmb/Hjx_Y0nSOh33G58i6t7WIHanalo=/1000x0/Nutrition-Label-Embed--1436565376-33f46ca82cdf445cb129e2a8e0e16db4.png" /></a>
                             <p>mai e de facut pdf si trimitere mail + updatare cod scadereaa cantitatii disponibile din produs la comanda si afisare mesaj cand nu mai e</p>
+                            <p>!!!!!!!!!!!!!!!!!</p>
+                            <p>de vazut functia uniqueID() - daca cumva id-ul generat e deja in baza de date</p>
                         </div>
                     </div>
                 </div>
