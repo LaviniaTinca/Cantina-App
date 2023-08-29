@@ -1,5 +1,6 @@
 <?php
 include '../config/connection.php';
+include '../api/functions.php';
 session_start();
 
 if (isset($_SESSION['user_id'])) {
@@ -16,6 +17,7 @@ if (isset($_POST['submit'])) {
   $pass = $_POST['password'];
   $pass = htmlspecialchars($pass, ENT_QUOTES, 'UTF-8');
   try {
+    $conn->beginTransaction();
     $select_user = $conn->prepare("SELECT * FROM `users` WHERE  email = ?");
     $select_user->execute([$email]);
     $user_data = $select_user->fetch(PDO::FETCH_ASSOC);
@@ -25,34 +27,20 @@ if (isset($_POST['submit'])) {
       $_SESSION['user_email'] = $user_data['email'];
       $_SESSION['user_type'] = $user_data['user_type'];
 
-      $query = "SELECT * FROM `daily_menu` WHERE `date` = CURDATE()";
-      $stmt = $conn->prepare($query);
-      if ($stmt->execute()) {
-        $daily_menu = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch the row as an associative array
+      //check if the menu is set for today and empty the cart
+      is_set_menu($conn, $user_data);
 
-        if (!$daily_menu) {
-          // The daily menu is not set, so the user cannot have anything in the cart
-          $query_clear_cart = "DELETE FROM cart WHERE user_id = ?";
-          $stmt_clear_cart = $conn->prepare($query_clear_cart);
-          if ($stmt_clear_cart->execute([$user_data['id']])) {
-          } else {
-            $error_info = $stmt_clear_cart->errorInfo();
-            $error_msg[] = "Eroare : " . $error_info[2];
-          }
-        }
-      } else {
-        $error_info = $stmt->errorInfo();
-        $error_msg = 'Eroare' . $error_info[2];
-      }
-
+      $conn->commit();
       header('location: home.php');
     } else {
       $messages[] = 'Email sau parola incorectă!';
     }
-  } catch (PDOException $th) {
-    $error_msg = 'Eroare ' . $th->getMessage();
-  } catch (Exception $th) {
-    $error_msg = 'Eroare' . $th->getMessage();
+  } catch (PDOException $e) {
+    $conn->rollBack();
+    $error_msg = 'Eroare ' . $e->getMessage();
+  } catch (Exception $e) {
+    $conn->rollBack();
+    $error_msg = 'Eroare' . $e->getMessage();
   }
 }
 
@@ -97,8 +85,7 @@ if (isset($_POST['submit'])) {
           <label for="email"><b>Email:</b></label><br>
           <input type="email" id="email" name="email"><span id="emailError" class="error"></span><br><br>
           <label for="password"><b>Parola:</b></label><br>
-          <input type="password" id="password" name="password">
-          <span id="passwordError" class="error"></span><br><br>
+          <input type="password" id="password" name="password"><span id="passwordError" class="error"></span><br><br>
           <button type="submit" name="submit" class="auth-button">AUTENTIFICARE</button>
           <a href="../pages/register.php">
             <h3>Nu ai cont? Înregistrează-te aici!</h3>

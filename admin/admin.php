@@ -1,6 +1,7 @@
 <?php
 include '../config/connection.php';
 include '../config/session_admin.php';
+include '../api/functions.php';
 
 //for chart
 try {
@@ -55,21 +56,13 @@ try {
                             <a href="admin_users.php">
                                 <div class="widget  jump user-widget">
                                     <?php
-                                    try {
-                                        $stmt = $conn->prepare("SELECT * FROM users WHERE user_type = 'user'");
-                                        $stmt->execute();
-                                        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                        $num_of_users = count($users);
-                                    } catch (PDOException $e) {
-                                        $error_msg[] = "Eroare: " . $e->getMessage();
-                                    } catch (Exception $e) {
-                                        $error_msg[] = "Eroare: " . $e->getMessage();
-                                    }
+                                    $table = 'users';
+                                    $num_of = widget_query($conn, $table);
                                     ?>
                                     <div class="small-widget">
                                         <i class='bx bx-group'></i>
                                     </div>
-                                    <h3><?php echo $num_of_users; ?></h3>
+                                    <h3><?php echo $num_of; ?></h3>
                                     <p>Utilizatori</p>
                                 </div>
                             </a>
@@ -97,7 +90,6 @@ try {
                                     <div class="small-widget">
                                         <i class="bx bx-receipt"></i>
                                     </div>
-                                    <!-- <h3><?php echo $num_of_orders; ?></h3> -->
                                     <h3><?php echo $todayOrders; ?>/ <?php echo $num_of_orders; ?> </h3>
 
                                     <p>Comenzi azi</p>
@@ -107,21 +99,13 @@ try {
                             <a href="admin_products.php">
                                 <div class="widget jump product-widget">
                                     <?php
-                                    try {
-                                        $stmt = $conn->prepare("SELECT * FROM products ");
-                                        $stmt->execute();
-                                        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                        $num_of_products = count($result);
-                                    } catch (PDOException $e) {
-                                        $error_msg[] = "Eroare: " . $e->getMessage();
-                                    } catch (Exception $e) {
-                                        $error_msg[] = "Eroare: " . $e->getMessage();
-                                    }
+                                    $table = 'products';
+                                    $num_of = widget_query($conn, $table);
                                     ?>
                                     <div class="small-widget">
                                         <i class="bx bx-package"></i>
                                     </div>
-                                    <h3><?php echo $num_of_products; ?></h3>
+                                    <h3><?php echo $num_of; ?></h3>
                                     <p>Produse</p>
                                 </div>
                             </a>
@@ -129,28 +113,20 @@ try {
                             <a href="admin_messages.php">
                                 <div class="widget jump message-widget">
                                     <?php
-                                    try {
-                                        $stmt = $conn->prepare("SELECT * FROM messages");
-                                        $stmt->execute();
-                                        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                                        $num_of_messages = count($result);
-                                    } catch (PDOException $e) {
-                                        $error_msg[] = "Eroare: " . $e->getMessage();
-                                    } catch (Exception $e) {
-                                        $error_msg[] = "Eroare: " . $e->getMessage();
-                                    }
+                                    $table = 'messages';
+                                    $num_of = widget_query($conn, $table);
                                     ?>
                                     <div class="small-widget">
                                         <i class="bx bx-envelope"></i>
                                     </div>
-                                    <h3><?php echo $num_of_messages; ?></h3>
+                                    <h3><?php echo $num_of; ?></h3>
                                     <p>Mesaje</p>
                                 </div>
                             </a>
                         </section>
                     </div>
                     <div class="banner" style="height: auto;">
-                        <canvas id="myChart" style="width:70%;max-width:600px"></canvas>
+                        <canvas id="myChart" class="chart"></canvas>
                     </div>
                 </div>
             </div>

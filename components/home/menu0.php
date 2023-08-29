@@ -32,7 +32,7 @@
                 } else {
                     echo '
                                 <div class="empty">
-                                    <p>Nu sunt încă adăugate produse.</p>
+                                    <p>Nu sunt încă adăugate produse în meniul zilei.</p>
                                 </div>
                             ';
                 }

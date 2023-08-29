@@ -309,7 +309,6 @@ if (isset($_POST['edit-announcement'])) {
     <script>
         //for setting announcement through checkbox
         $(document).ready(function() {
-            // Function to handle checkbox click event
             $(".announcement-checkbox").click(function() {
                 const announcementId = $(this).data("announcement-id");
                 const isSet = $(this).prop("checked") ? 1 : 0;
@@ -324,7 +323,6 @@ if (isset($_POST['edit-announcement'])) {
                     },
                     dataType: "json",
                     success: function(response) {
-                        // Handle the response 
                         if (response.success) {
                             $("#success-message").text("Anunțul a fost actualizat!");
                             setTimeout(function() {

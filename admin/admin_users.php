@@ -77,16 +77,21 @@ if (isset($_POST['add_user'])) {
 //delete user 
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
-    try {
-        $query = "DELETE FROM `users` WHERE id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$delete_id]);
+    $ok = false;
+    if ($ok) {
+        try {
+            $query = "DELETE FROM `users` WHERE id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute([$delete_id]);
 
-        $success_msg[] = "Utilizatorul a fost șters!";
-    } catch (PDOException $e) {
-        $error_msg[] = "Eroare: " . $e->getMessage();
-    } catch (Exception $e) {
-        $error_msg[] = "Eroare: " . $e->getMessage();
+            $success_msg[] = "Utilizatorul a fost șters!";
+        } catch (PDOException $e) {
+            $error_msg[] = "Eroare: " . $e->getMessage();
+        } catch (Exception $e) {
+            $error_msg[] = "Eroare: " . $e->getMessage();
+        }
+    } else {
+        $warning_msg[] = 'Stergerea utilizatorilor este dezactivata momentan!';
     }
 }
 
@@ -220,7 +225,7 @@ try {
                                         <h2>Utilizator nou</h2>
 
                                         <form class="Form" onsubmit="return validateForm()" action="admin_users.php" method="post" enctype="multipart/form-data">
-                                            <label for="add-name">Name:</label>
+                                            <label for="add-name">Nume:</label>
                                             <input type="text" name="add_name" id="add-name" required>
                                             <span id="nameError"></span>
 
@@ -228,11 +233,11 @@ try {
                                             <input type="email" name="add_email" id="add-email" required><span id="emailError" class="error"></span>
                                             <span id="emailError"></span>
 
-                                            <label for="add-password">Password:</label>
+                                            <label for="add-password">Parola:</label>
                                             <input type="password" name="add_password" id="add-password" required><span id="passwordError" class="error"></span>
                                             <span id="passwordError"></span>
 
-                                            <label for="add-confirm-password">Confirm Password:</label>
+                                            <label for="add-confirm-password">Confirmă Parola:</label>
                                             <input type="password" name="add_confirm_password" id="add-confirm-password" required><span id="confirmPasswordError" class="error"></span>
                                             <span id="confirmPasswordError"></span>
                                             <input class="form-button" type="submit" name="add_user" id="add_user" value="ÎNREGISTREAZĂ">
@@ -261,10 +266,10 @@ try {
                                             <thead>
                                                 <tr>
                                                     <th class="sortable">Nr.</th>
-                                                    <th class="sortable" data-column="name">Name</th>
+                                                    <th class="sortable" data-column="name">Nume</th>
                                                     <th class="sortable" data-column="email">Email</th>
-                                                    <th class="sortable" data-column="user_type">User Type</th>
-                                                    <th>Actions</th>
+                                                    <th class="sortable" data-column="user_type">Rol</th>
+                                                    <th>Acțiuni</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

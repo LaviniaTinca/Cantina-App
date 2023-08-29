@@ -46,11 +46,11 @@ if (isset($_POST['update_user'])) {
         }
 
         // Check if the email already exists in the database
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND id != ?");
-        $stmt->execute([$add_email, $id]);
-        if ($stmt->rowCount() > 0) {
-            throw new Exception("Acest email este deja folosit.");
-        }
+        // $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND id != ?");
+        // $stmt->execute([$add_email, $id]);
+        // if ($stmt->rowCount() > 0) {
+        //     throw new Exception("Acest email este deja folosit.");
+        // }
     } catch (PDOException $e) {
         $messages[] = "Eroare: " . $e->getMessage();
         $warning_msg[] = "Eroare: " . $e->getMessage();
@@ -148,26 +148,26 @@ if (isset($_POST['update_user'])) {
                                                     <form class="Form" onsubmit="return validateForm()" action="admin_edit_user.php" method="post" enctype="multipart/form-data">
                                                         <input type="hidden" name="update_id" value="<?php echo $fetch_edit['id']; ?>"><br>
 
-                                                        <label for="add-name">Name:</label>
+                                                        <label for="add-name">Nume:</label>
                                                         <input type="text" name="add_name" id="add-name" value="<?php echo $fetch_edit['name']; ?>" required>
                                                         <span id="nameError"></span>
 
-                                                        <label for="add-email">Email:</label>
-                                                        <input type="email" name="add_email" id="add-email" value="<?php echo $fetch_edit['email']; ?>" required><span id="emailError" class="error"></span>
+                                                        <!-- <label for="add-email">Email:</label> -->
+                                                        <input type="hidden" name="add_email" id="add-email" value="<?php echo $fetch_edit['email']; ?>" required><span id="emailError" class="error"></span>
                                                         <span id="emailError"></span>
 
-                                                        <label for="user-type">User Type:</label>
+                                                        <label for="user-type">Rol:</label>
                                                         <select name="user_type" id="user-type">
 
                                                             <option value="user" <?php if ($fetch_edit['user_type'] === 'user') echo 'selected'; ?>>User</option>
                                                             <option value="admin" <?php if ($fetch_edit['user_type'] === 'admin') echo 'selected'; ?>>Admin</option>
                                                         </select>
 
-                                                        <label for="add-password">Password:</label>
+                                                        <label for="add-password">Parola:</label>
                                                         <input type="password" name="add_password" id="add-password" value="" required><span id="passwordError" class="error"></span>
                                                         <span id="passwordError"></span>
 
-                                                        <label for="add-confirm-password">Confirm Password:</label>
+                                                        <label for="add-confirm-password">Confirmă Parola:</label>
                                                         <input type="password" name="add_confirm_password" id="add-confirm-password" value="" required><span id="confirmPasswordError" class="error"></span>
                                                         <span id="confirmPasswordError"></span>
                                                         <input class="form-button" type="submit" name="update_user" value="ACTUALIZEAZĂ">
@@ -177,7 +177,7 @@ if (isset($_POST['update_user'])) {
                                 <?php
                                             }
                                         } else {
-                                            //no results found
+                                            echo '<p>Nu s-a găsit utilizatorul!</p>';
                                         }
                                     }
                                 } catch (PDOException $e) {

@@ -8,16 +8,29 @@
   
 html{
   font-size: 16px;
-  /* font-family:  'Open sans'; */
   font-family:  Arial, Helvetica, sans-serif;
   -ms-overflow-style: scrollbar;
   -webkit-tap-highlight-color: transparent;
   --ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
+
+
+.main{
+  width: 85vw;
+  background: #fff;
+  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 10%);
+  margin: 1rem auto;
+  margin-top: 100px;
+  padding: 2%;
+  overflow: auto; 
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
 body{
   background-image: url('../public/images/background.jpg');
-  /* background-image: url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg'); */
   background-size: auto;
   width: 100%;
 }
@@ -218,7 +231,6 @@ header{
   box-shadow: var(--box-shadow);
   background-image: linear-gradient(to top, rgba(255,255,255,0.9), rgba(255,255,255,0.3)),
   url('../public/images/background.jpg');
-  /* url('https://simplestorieswholesale.com/sites/default/files/products/11606-B.jpg'); */
   padding: 1rem;
   z-index: 101;
   transition: .3s;
@@ -1484,6 +1496,10 @@ select:focus{
 }
 
 /*-----admin general section----------*/
+.chart{
+  width:70%;
+  max-width:600px;
+}
 
 .widgets {
   display: grid;

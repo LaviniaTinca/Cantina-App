@@ -128,7 +128,7 @@ if (isset($_POST['order'])) {
         $stmt_empty_cart->execute([$user_id]);
 
         $conn->commit(); // Commit the transaction
-        $success_msg[] = "Comanda a fost plasată! ";
+        $success_msg[] = "Comanda a fost plasată! Sunteti asteptati sa o ridicati! ";
     } catch (PDOException $e) {
         $conn->rollBack(); // Rollback the transaction in case of any error
         $error_msg[] = "Eroare la plasarea comenzii: " . $e->getMessage();
@@ -213,6 +213,8 @@ if (isset($_POST['order'])) {
                                     $fetch_products = $select_products->fetch(PDO::FETCH_ASSOC);
                                     if ($fetch_cart['qty'] <= $questioned_product['qty']) {
                                         $sub_total = $fetch_cart['qty'] * $fetch_products['price'];
+                                    } else {
+                                        $sub_total = $questioned_product['qty'] * $fetch_products['price'];
                                     }
                                     $grand_total += $sub_total;
                             ?>
@@ -231,7 +233,8 @@ if (isset($_POST['order'])) {
                                         <td>
                                             <form method="post" action="cart.php">
                                                 <input type="hidden" name="cart_id" value="<?= $fetch_cart['id']; ?>">
-                                                <input type="number" name="qty" required min="1" value="<?= $fetch_cart['qty']; ?>" max="99" maxlength="2" class="qty edit">
+                                                <input type="number" name="qty" required min="1" value="<?php echo $questioned_product['qty'] > $fetch_cart['qty'] ? $fetch_cart['qty'] : $questioned_product['qty'];
+                                                                                                        ?>" max="<?php echo $questioned_product['qty']; ?>" title="<?php echo $questioned_product['qty'] > $fetch_cart['qty'] ? $fetch_cart['qty'] : 'pe stoc sunt' . $questioned_product['qty'] . ' porții disponibile'; ?>" maxlength="2" class="qty edit">
                                                 <button type="submit" name="update_cart" title="Modifică">
                                                     <i class="fas fa-edit"></i>
                                                 </button>

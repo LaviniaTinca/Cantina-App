@@ -39,24 +39,29 @@ include '../config/session.php';
             <?php
             if (isset($_GET['pid'])) {
                 try {
-
                     $pid = $_GET['pid'];
-                    $query = "SELECT id from `daily_menu` where `date` = CURDATE()";
-                    $stmt = $conn->prepare($query);
-                    $stmt->execute();
-                    $not_available = ($stmt->rowCount() > 0) ? '' : 'not-available';
 
-                    $query = "SELECT products.*, dmi.id AS menu_id, dmi.qty AS qty
-                                                FROM daily_menu
-                                                JOIN daily_menu_items AS dmi ON dmi.daily_menu_id = daily_menu.id
-                                                JOIN products ON dmi.product_id = products.id
-                                                WHERE daily_menu.date = CURDATE() and products.id = ?";
-                    $select_product = $conn->prepare($query);
-                    $select_product->execute([$pid]);
-                    if ($select_product->rowCount() > 0) {
-                        $fetch_product = $select_product->fetch(PDO::FETCH_ASSOC);
-                        $not_available = ($fetch_product['qty'] <= 0) ? 'not-available' : '';
+                    $query1 = "SELECT id from `daily_menu` where `date` = CURDATE()";
+                    $stmt1 = $conn->prepare($query1);
+                    $stmt1->execute();
+                    if ($stmt1->rowCount() > 0) {
+                        $query = "SELECT products.*, dmi.id AS menu_id, dmi.qty AS qty
+                                                    FROM daily_menu
+                                                    JOIN daily_menu_items AS dmi ON dmi.daily_menu_id = daily_menu.id
+                                                    JOIN products ON dmi.product_id = products.id
+                                                    WHERE daily_menu.date = CURDATE() and products.id = ?";
+                        $select_product = $conn->prepare($query);
+                        $select_product->execute([$pid]);
+                        if ($select_product->rowCount() > 0) {
+                            $fetch_product = $select_product->fetch(PDO::FETCH_ASSOC);
+                            $not_available = ($fetch_product['qty'] <= 0) ? 'not-available' : '';
+                        } else {
+                            $not_available = 'not-available';
+                        }
+                    } else {
+                        $not_available = 'not-available';
                     }
+
                     $select_products = $conn->prepare("SELECT * FROM `products` WHERE id = '$pid'");
                     $select_products->execute();
                     if ($select_products->rowCount() > 0) {
@@ -70,20 +75,19 @@ include '../config/session.php';
                                     <?php echo $fetch_products['product_detail']; ?>
                                 </div>
                                 <input type="hidden" name="product_id" value="<?php echo $fetch_products['id']; ?>">
-                                <div class="button">
-                                    <input type="hidden" name="qty" value="1" min="0" class="quantity">
-                                </div>
-                                <div class="flex">
-                                    <p class="price"> <?= $fetch_products['price']; ?> Ron</p>
-                                    <p class="price"> <?= $fetch_products['measure']; ?></p>
+                                <hr class="dotted-line">
+                                <div>
+                                    <p>Preț: <?= $fetch_products['price']; ?> Ron</p>
+                                    <p>Cantitatea unei porții: <?= $fetch_products['measure']; ?></p>
+                                    <br>
                                     <div class="<?php echo $not_available ?>">
                                         <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
                                         <button type="submit" name="add_to_cart" class="auth-button">Adaugă <i class="bx bx-cart"></i></button>
                                     </div>
-
                                 </div>
                             </div>
                         </form>
+
             <?php
                     }
                 } catch (PDOException $th) {

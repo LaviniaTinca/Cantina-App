@@ -316,7 +316,7 @@ try {
                                             <label for="add-detail">Detaliile produsului:</label>
                                             <textarea name="add_detail" id="add-detail" required></textarea>
                                             <label for="add-price">Preț:</label>
-                                            <input type="number" name="add_price" id="add-price" required>
+                                            <input type="number" name="add_price" min="0" id="add-price" required>
                                             <label for="measure">Unitatea de Masura:</label>
                                             <input type="text" name="measure" id="measure" required>
                                             <label for="add-image">Imagine:</label>
