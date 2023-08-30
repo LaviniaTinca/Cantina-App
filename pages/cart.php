@@ -274,7 +274,7 @@ if (isset($_POST['order'])) {
                                 <button type="submit" name="empty_cart" class="cart-btn transparent-button" onclick="return confirm('Dorești să golești coșul de cumpărături?')"><i class="fas fa-trash-alt" title="Golește"></i> Golește coșul</button>
                             </form>
                             <form action="cart.php" method="post">
-                                <button type="submit" name="order" style="margin: .5rem;" class="cart-btn transparent-button">Comandă</button>
+                                <button type="submit" name="order" style="margin: .5rem;" class="cart-btn transparent-button"><i class="fas fa-shopping-cart" title="Comanda"></i> Comandă</button>
                             </form>
                         </div>
 

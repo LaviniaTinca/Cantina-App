@@ -32,9 +32,9 @@ if (isset($_GET['delete'])) {
             $query = "DELETE FROM `daily_menu_items` WHERE id = ?";
             $stmt = $conn->prepare($query);
             $stmt->execute([$delete_id]);
-            $success_msg[] = $ok . 'produsul a fost sters din meniu';
+            $success_msg[] = 'Produsul a fost sters din meniu';
         } else {
-            $error_msg[] = "Produsul nu poate fi sters";
+            $error_msg[] = "Produsul nu poate fi șters, este în coșul de cumpărături al unui client!";
         }
     } catch (PDOException $e) {
         $error_msg[] = "Eroare la ștergerea produsului: " . $e->getMessage();
