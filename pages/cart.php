@@ -1,6 +1,7 @@
 <?php
 include '../config/connection.php';
 include '../config/session.php';
+include '../api/functions.php';
 
 //update product in cart
 if (isset($_POST['update_cart'])) {

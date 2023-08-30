@@ -9,7 +9,7 @@ if (isset($_SESSION['user_id'])) {
 
 if (!isset($_SESSION['user_id'])) {
     header('location: login.php');
-    exit(); // Add exit to stop further execution
+    exit();
 }
 
 if (isset($_POST['logout'])) {
@@ -22,7 +22,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
 $messages = array();
 
 
-// List of pages that don't exist yet
+// List of pages that exist
 $pages_list = array(
     'cart.php',
     'contact.php',

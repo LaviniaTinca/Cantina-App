@@ -14,7 +14,7 @@
                                                 FROM daily_menu AS dm
                                                 JOIN daily_menu_items AS dmi ON dmi.daily_menu_id = dm.id
                                                 JOIN products ON dmi.product_id = products.id 
-                                                WHERE dm.date = CURDATE() LIMIT 3";
+                                                WHERE dm.date = CURDATE() and dm.special_note = 1 LIMIT 3";
                 $stmt = $conn->prepare($query);
                 $stmt->execute();
                 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);

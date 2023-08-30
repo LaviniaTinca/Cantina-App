@@ -1,6 +1,7 @@
 <?php
 include '../config/connection.php';
 include '../config/session_admin.php';
+include '../api/functions.php';
 
 //update product qty in menu 
 if (isset($_POST['update_menu'])) {
@@ -26,10 +27,15 @@ if (isset($_POST['update_menu'])) {
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
     try {
-        $query = "DELETE FROM `daily_menu_items` WHERE id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->execute([$delete_id]);
-        $success_msg[] = 'produsul a fost sters din meniu';
+        $ok = check_product_for_delete($conn, $delete_id);
+        if ($ok) {
+            $query = "DELETE FROM `daily_menu_items` WHERE id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->execute([$delete_id]);
+            $success_msg[] = $ok . 'produsul a fost sters din meniu';
+        } else {
+            $error_msg[] = "Produsul nu poate fi sters";
+        }
     } catch (PDOException $e) {
         $error_msg[] = "Eroare la ștergerea produsului: " . $e->getMessage();
     } catch (Exception $e) {
@@ -106,10 +112,28 @@ if (isset($_POST['empty_menu'])) {
 
                             <!-- Banner Section - with image card -->
                             <section>
+
+                                <?php
+                                $query = "SELECT * FROM `daily_menu` WHERE `date` = CURDATE()";
+                                $stmt = $conn->prepare($query);
+                                $stmt->execute();
+                                $record = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch a single row, not all rows
+                                ?>
                                 <div class="flex">
                                     <a href="admin_products.php">
                                         <h4 class="cart-btn"> + Adaugă produs nou / Actualizează produs</h4>
                                     </a>
+                                    <?php
+
+                                    if ($record) {
+                                    ?>
+                                        <h4 class="cart-btn">Seteaza meniul
+                                            <input type="checkbox" class="menu-checkbox" title="Setează meniul" data-menu-id="<?php echo $record['id']; ?>" <?php echo ($record['special_note'] == 1) ? 'checked' : ''; ?>>
+                                        </h4>
+                                    <?php
+                                    } else {
+                                    }
+                                    ?>
                                 </div>
 
                                 <div class="category-box">
@@ -214,6 +238,37 @@ if (isset($_POST['empty_menu'])) {
     <?php include '../components/alert.php'; ?>
 
     <script src="../js/script.js"></script>
+    <script>
+        //for setting announcement through checkbox
+        $(document).ready(function() {
+            $(".menu-checkbox").click(function() {
+                const menuId = $(this).data("menu-id");
+                const isSet = $(this).prop("checked") ? 1 : 0;
+
+                // Send the AJAX request to update the is_set value in the db
+                $.ajax({
+                    type: "POST",
+                    url: "../api/set_menu.php",
+                    data: {
+                        id: menuId,
+                        is_set: isSet
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success) {
+                            $("#success-message").text("Meniul a fost setat!");
+                            setTimeout(function() {
+                                $("#success-message").empty();
+                            }, 3000);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

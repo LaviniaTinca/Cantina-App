@@ -1,6 +1,7 @@
 <?php
 include '../config/connection.php';
 include '../config/session.php';
+include '../api/functions.php';
 
 // Handle email subscription
 if (isset($_POST['subscribe-button'])) {

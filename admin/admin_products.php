@@ -1,6 +1,7 @@
 <?php
 include '../config/connection.php';
 include '../config/session_admin.php';
+include '../api/functions.php';
 
 //add product to the db
 if (isset($_POST['add_product'])) {
@@ -143,7 +144,6 @@ if (isset($_POST['add-to-menu'])) {
             $query = "SELECT * FROM `daily_menu` WHERE date = CURDATE() FOR UPDATE";
             $check_menu = $conn->prepare($query);
             $check_menu->execute();
-            echo $check_menu->rowCount();
 
             if ($check_menu->rowCount() > 0) {
                 // Retrieve the daily_menu_id for today
@@ -172,7 +172,6 @@ if (isset($_POST['add-to-menu'])) {
                     // Commit the transaction
                     $conn->commit();
                     $success_msg[] = 'produsul a fost adăugat în meniul zilei';
-                    //header('location: admin_products.php');
                 }
             } else {
                 // Create a new daily menu entry for today
@@ -189,7 +188,6 @@ if (isset($_POST['add-to-menu'])) {
                 // Commit the transaction
                 $conn->commit();
                 $success_msg[] = 'produsul a fost adăugat în meniul zilei';
-                header('location: admin_products.php');
             }
         } catch (PDOException $e) {
             $conn->rollback();

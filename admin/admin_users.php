@@ -1,6 +1,7 @@
 <?php
 include '../config/connection.php';
 include '../config/session_admin.php';
+include '../api/functions.php';
 
 // Add user to the database
 if (isset($_POST['add_user'])) {

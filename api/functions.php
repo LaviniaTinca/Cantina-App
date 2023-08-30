@@ -1,8 +1,43 @@
 <?php
 
+function unique_id()
+{
+    $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charLength = strlen($chars);
+    $randomString = '';
+    for ($i = 0; $i < 20; $i++) {
+        $randomString .= $chars[mt_rand(0, $charLength - 1)];
+    }
+    return $randomString;
+}
+
+function check_login($conn)
+{
+    if (isset($_SESSION['user_email'])) {
+        $email = $_SESSION['user_email'];
+        $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ?");
+        $select_user->execute([$email]);
+
+        if ($select_user->rowCount() > 0) {
+            $user_data = $select_user->fetch(PDO::FETCH_ASSOC);
+            return $user_data;
+        }
+    }
+    //redirect to login
+    header("Location: login.php");
+    die;
+}
+//function for user_type select
+function test_input($data)
+{
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
 function is_set_menu($conn, $user_data)
 {
-
     // is set the daily menu?
     $query = "SELECT * FROM `daily_menu` WHERE `date` = CURDATE()";
     $stmt = $conn->prepare($query);
@@ -60,4 +95,29 @@ function widget_query($conn, $table)
         $error_msg[] = "Eroare: " . $e->getMessage();
     }
     return $num_of;
+}
+
+function check_product_for_delete($conn, $delete_id)
+{
+    $query = "SELECT product_id FROM daily_menu_items WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->execute([$delete_id]);
+    $product_id_to_delete = $stmt->fetchColumn();
+
+    $query_check_cart = "SELECT cart.id FROM cart WHERE product_id = ?";
+    $stmt_check_cart = $conn->prepare($query_check_cart);
+    $stmt_check_cart->execute([$product_id_to_delete]);
+
+    $query_check_order = "SELECT oi.id FROM order_items oi
+                      INNER JOIN orders o ON oi.order_id = o.id
+                      WHERE oi.product_id = ? AND o.order_date = CURDATE()";
+
+    $stmt_check_order = $conn->prepare($query_check_order);
+    $stmt_check_order->execute([$product_id_to_delete]);
+
+    if ($stmt_check_cart->rowCount() > 0 || $stmt_check_order->rowCount() > 0) {
+        return false;
+    } else {
+        return true;
+    }
 }

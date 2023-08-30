@@ -1,6 +1,7 @@
 <?php
 
 include("../config/connection.php");
+include("../api/functions.php");
 $messages = array();
 
 // Add user to the database

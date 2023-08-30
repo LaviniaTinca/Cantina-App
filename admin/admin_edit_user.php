@@ -1,6 +1,7 @@
 <?php
 include '../config/connection.php';
 include '../config/session_admin.php';
+include '../api/functions.php';
 
 // update user in the database
 if (isset($_POST['update_user'])) {

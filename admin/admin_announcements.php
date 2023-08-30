@@ -1,6 +1,7 @@
 <?php
 include '../config/connection.php';
 include '../config/session_admin.php';
+include '../api/functions.php';
 
 // Handle save announcement
 if (isset($_POST['save-announcement'])) {

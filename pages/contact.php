@@ -1,6 +1,7 @@
 <?php
 include '../config/connection.php';
 include '../config/session.php';
+include '../api/functions.php';
 
 // Handle contact us 
 if (isset($_POST['contact'])) {
