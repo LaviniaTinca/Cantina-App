@@ -23,6 +23,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(array('error' => 'Database error: ' . $e->getMessage()));
     }
 } else {
-    // Return a JSON response indicating an error for invalid request method
     echo json_encode(array('error' => 'Invalid request method'));
 }
