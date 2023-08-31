@@ -6,11 +6,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $isSet = $_POST['is_set'];
 
     try {
-        $stmt = $conn->prepare("UPDATE daily_menu SET special_note = ? WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE daily_menu SET is_set = ? WHERE id = ?");
         $stmt->execute([$isSet, $menuID]);
 
         if ($stmt->rowCount() > 0) {
-            $stmt = $conn->prepare("UPDATE daily_menu SET special_note = 0 WHERE id != ?");
+            $stmt = $conn->prepare("UPDATE daily_menu SET is_set = 0 WHERE id != ?");
             $stmt->execute([$menuID]);
             $success_msg[] = "Meniul zilei a fost setat!";
 

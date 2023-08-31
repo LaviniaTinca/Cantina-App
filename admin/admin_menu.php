@@ -117,7 +117,7 @@ if (isset($_POST['empty_menu'])) {
                                 $query = "SELECT * FROM `daily_menu` WHERE `date` = CURDATE()";
                                 $stmt = $conn->prepare($query);
                                 $stmt->execute();
-                                $record = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch a single row, not all rows
+                                $record = $stmt->fetch(PDO::FETCH_ASSOC);
                                 ?>
                                 <div class="flex">
                                     <a href="admin_products.php">
@@ -128,7 +128,7 @@ if (isset($_POST['empty_menu'])) {
                                     if ($record) {
                                     ?>
                                         <h4 class="cart-btn">Seteaza meniul
-                                            <input type="checkbox" class="menu-checkbox" title="Setează meniul" data-menu-id="<?php echo $record['id']; ?>" <?php echo ($record['special_note'] == 1) ? 'checked' : ''; ?>>
+                                            <input type="checkbox" class="menu-checkbox" title="Setează meniul" data-menu-id="<?php echo $record['id']; ?>" <?php echo ($record['is_set'] == 1) ? 'checked' : ''; ?>>
                                         </h4>
                                     <?php
                                     } else {
@@ -239,7 +239,7 @@ if (isset($_POST['empty_menu'])) {
 
     <script src="../js/script.js"></script>
     <script>
-        //for setting announcement through checkbox
+        //for setting menu through checkbox
         $(document).ready(function() {
             $(".menu-checkbox").click(function() {
                 const menuId = $(this).data("menu-id");

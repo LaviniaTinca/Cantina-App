@@ -3,7 +3,7 @@ include '../config/connection.php';
 
 //for both checkboxes
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get the announcement ID, status type, and is_set value from the AJAX request
+    // Get the order ID, status type, and is_set value from the AJAX request
     $orderId = $_POST['id'];
     $statusType = $_POST['status_type']; // 'order_status' or 'payment_status' in this case
     $isSet = $_POST['is_set']; // Value of the checkbox 

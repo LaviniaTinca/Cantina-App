@@ -15,10 +15,9 @@ try {
 
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Return the announcement details as JSON response
+        // Return the user details as JSON response
         echo json_encode($user);
     } else {
-        // If ID is not provided, return an empty response or an error message
         echo json_encode(array('error' => 'ID not provided'));
     }
 } catch (PDOException $e) {

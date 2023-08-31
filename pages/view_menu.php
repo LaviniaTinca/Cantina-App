@@ -97,7 +97,7 @@ if (isset($_POST['add_to_cart'])) {
                                                 FROM daily_menu
                                                 JOIN daily_menu_items AS dmi ON dmi.daily_menu_id = daily_menu.id
                                                 JOIN products ON dmi.product_id = products.id
-                                                WHERE daily_menu.special_note = 1 AND daily_menu.date = CURDATE()";
+                                                WHERE daily_menu.is_set = 1 AND daily_menu.date = CURDATE()";
                         $select_products = $conn->prepare($query);
                         $select_products->execute();
                         if ($select_products->rowCount() > 0) {
