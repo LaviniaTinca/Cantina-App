@@ -8,5 +8,4 @@ This app uses vanilla HTML, CSS, JS, PHP, jQuery and was made using XAMPP server
 
 Thank you!
 
-![general](https://github.com/LaviniaTinca/Cantina-App/assets/87981804/2bf75d6e-ecd2-45b9-89e0-20c4b858ff8a)
 ![acasa](https://github.com/LaviniaTinca/Cantina-App/assets/87981804/39a31a43-c9bf-40d9-b829-100e10722291)
